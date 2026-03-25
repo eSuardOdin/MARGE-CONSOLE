@@ -15,10 +15,10 @@ int init_cpu(cpu_t* cpu)
 
 int fetch_instruction(cpu_t* cpu, uint8_t* rom)
 {
-    //#ifdef DEBUG
+    #ifdef DEBUG
     printf("[PC: 0x%08X] ", cpu->pc);
-
-    //#endif
+    #endif
+    
     // Get current pointed to instruction
     uint32_t inst = rom[cpu->pc]             |
                     rom[cpu->pc + 1]  << 8   |
@@ -86,9 +86,9 @@ e_inst_type get_instruction_type(uint8_t opcode)
 
 int r_type(cpu_t *cpu)
 {
-    // #ifdef DEBUG
+    #ifdef DEBUG
     printf("[instruction: 0x%08X] ", cpu->ir);
-    // #endif
+    #endif
     // Extract values from instruction
     uint8_t rd  =       (cpu->ir & 0x00000F80) >> 7;
     uint8_t funct3 =    (cpu->ir & 0x00007000) >> 12;
@@ -96,9 +96,9 @@ int r_type(cpu_t *cpu)
     uint8_t rs2 =       (cpu->ir & 0x01F00000) >> 20;
     uint8_t funct7 =    (cpu->ir & 0xFE000000) >> 25;
     
-    // #ifdef DEBUG
+    #ifdef DEBUG
     printf("| funct7 %d | rs2 %d | rs1 %d | funct3 %d | rd %d | opcode %d |\n", funct7, rs2, rs1, funct3, rd, (uint8_t) cpu->ir & 0xFF);
-    // #endif
+    #endif
     printf("** VALUES BEFORE **\n");
     printf("[rd - x%d] %8X\n[rs1 - x%d] %8X\n[rs2 - x%d] %8X\n", 
         rd, cpu->x[rd], rs1, cpu->x[rs1], rs2, cpu->x[rs2]);

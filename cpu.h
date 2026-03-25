@@ -1,6 +1,10 @@
 #ifndef CPU_H
 #define CPU_H
 
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include <stdint.h>
 #include <stdio.h>
 #include <fcntl.h>
