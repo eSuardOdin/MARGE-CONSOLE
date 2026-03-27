@@ -49,6 +49,7 @@ int decode_execute_instruction(cpu_t* cpu)
         case U_TYPE:
         case J_TYPE:
         case UNKNOWN_TYPE:
+        return 0;
     }
     return 0;
 }
@@ -58,24 +59,24 @@ e_inst_type get_instruction_type(uint8_t opcode)
 {
     switch(opcode)
     {
-        case 0b0110011:
+        case 0x33:
             return R_TYPE;
-        case 0b0010011:
-        case 0b0000011:
-        case 0b1100111:
-        case 0b1110011:
+        case 0x13:
+        case 0x3:
+        case 0x67:
+        case 0x73:
             return I_TYPE;
-        case 0b0100011:
+        case 0x23:
             return S_TYPE;
-        case 0b1100011:
+        case 0x63:
             return B_TYPE;
-        case 0b0110111:
-        case 0b0010111:
+        case 0x37:
+        case 0x17:
             return U_TYPE;
-        case 0b1101111:
+        case 0x6F:
             return J_TYPE;
         default:
-            return UNKNOWN_TYPE;
+        return UNKNOWN_TYPE;
         
     }
 }
@@ -102,50 +103,167 @@ int r_type(cpu_t *cpu)
     printf("** VALUES BEFORE **\n");
     printf("[rd - x%d] %8X\n[rs1 - x%d] %8X\n[rs2 - x%d] %8X\n", 
         rd, cpu->x[rd], rs1, cpu->x[rs1], rs2, cpu->x[rs2]);
-    switch(funct3)
-    {
+    switch (funct3) {
         case 0x0:
-            switch(funct7)
-            {
-                case 0x00: // ADD
-                   cpu->x[rd] = rd == 0 ? 0 : cpu->x[rs1] + cpu->x[rs2];
-                   break;
-                case 0x20: // SUB
-                   cpu->x[rd] = rd == 0 ? 0 : cpu->x[rs1] - cpu->x[rs2];
-                   break;
-                case 0x01: // MUL (signed * signed)
-                    cpu->x[rd] = rd == 0 ? 0 : (cpu->x[rs1] * cpu->x[rs2]) & 0xFFFFFFFF;
-                    break;
+            switch (funct7) {
+            case 0x00: // ADD
+                printf("ADD ");
+                cpu->x[rd] = rd == 0 ? 0 : cpu->x[rs1] + cpu->x[rs2];
+                break;
+            case 0x20: // SUB
+                printf("SUB ");
+                cpu->x[rd] = rd == 0 ? 0 : cpu->x[rs1] - cpu->x[rs2];
+                break;
+            case 0x01: // MUL (signed * signed)
+                printf("MUL ");
+                cpu->x[rd] = rd == 0 ? 0 : (cpu->x[rs1] * cpu->x[rs2]) & 0xFFFFFFFF;
+                break;
             }
             break;
+
+
         case 0x1:
-            switch(funct7)
+            switch (funct7) {
+            case 0x00: // Shift Left Logical
             {
-                case 0x00: // Shift Left Logical
-                   cpu->x[rd] = rd == 0 ? 0 : cpu->x[rs1] << cpu->x[rs2];
-                   break;
-                case 0x01: // MUL High (signed * signed)
-                    int64_t mul = (int64_t)cpu->x[rs1] * (int64_t)cpu->x[rs2];
-                    cpu->x[rd] = rd == 0 ? 0 : (mul >> 32) & 0xFFFFFFFF;
-                    break;
+                printf("SLL ");
+                // Get only the 5 lower bits for the shift value
+                int shift = cpu->x[rs2] & 0x1F;
+                cpu->x[rd] = rd == 0 ? 0 : cpu->x[rs1] << shift;
             }
             break;
-        case 0x2:
-            switch(funct7)
+            case 0x01: // MUL High (signed * signed)
             {
+                printf("MUL High ");
+                int64_t mul = (int64_t)cpu->x[rs1] * (int64_t)cpu->x[rs2];
+                cpu->x[rd] = rd == 0 ? 0 : (mul >> 32) & 0xFFFFFFFF;
+                break;
+            }
+            }
+            break;
+
+
+        case 0x2:
+            switch (funct7) {
                 case 0x00: // Set Less Than
-                    if(rd != 0)
+                {
+                    printf("SLT ");
+                    if (rd != 0) 
                     {
-                        cpu->x[rd] = cpu->x[rs1] < cpu->x[rs2] ? 1 : 0;      
+                        cpu->x[rd] = cpu->x[rs1] < cpu->x[rs2] ? 1 : 0;
                     }
-                   break;
+                    break;
+                }
                 case 0x01: // MUL High (signed * unsigned)
+                {
+                    printf("MUL High S*U ");
                     int64_t mul = (int64_t)cpu->x[rs1] * (int64_t)(uint32_t)cpu->x[rs2];
                     cpu->x[rd] = rd == 0 ? 0 : (mul >> 32) & 0xFFFFFFFF;
                     break;
+                }
+            }
+
+
+        case 0x3:
+            switch (funct7) {
+            case 0x00: // Set Less Than (Unsigned)
+                if (rd != 0) 
+                {
+                    printf("SLT U ");
+                    cpu->x[rd] = (uint32_t)cpu->x[rs1] < (uint32_t)cpu->x[rs2] ? 1 : 0;
+                }
+                break;
+            case 0x01: // MUL High (U)
+                if (rd != 0) 
+                {
+                    printf("MUL High U ");
+                    uint64_t mul = (int64_t)(uint32_t)cpu->x[rs1] * (int64_t)(uint32_t)cpu->x[rs2];
+                    cpu->x[rd] = rd == 0 ? 0 : (mul >> 32) & 0xFFFFFFFF;
+                }
+                break;
+            }
+
+
+        case 0x4:
+            switch (funct7) {
+            case 0x00: // XOR
+                if (rd != 0) 
+                {
+                    printf("XOR ");
+                    cpu->x[rd] = cpu->x[rs1] ^ cpu->x[rs2];
+                }
+                break;
+            case 0x01: // DIV
+                if (rd != 0) 
+                {
+                    printf("DIV ");
+                    cpu->x[rd] = cpu->x[rs1] / cpu->x[rs2];
+                    // TODO : Check what need to happen when rs2 == x0
+                }
+                break;
+            }
+
+        case 0x5:
+            switch (funct7) {
+                case 0x00: // SRL (Shift Right Logical)
+                {
+                    if(rd != 0)
+                    {
+                        printf("SRL ");
+                        // Get only the 5 lower bits for the shift value
+                        int shift = cpu->x[rs2] & 0x1F;
+                        cpu->x[rd] = (int32_t)((uint32_t)cpu->x[rs1] >> shift);
+                    }
+                    break;
+                }
+                case 0x20: // SRA (Shift Right Arithmetic)
+                {
+                    if(rd != 0)
+                    {
+                        printf("SRA ");
+                        // Get only the 5 lower bits for the shift value
+                        int shift = cpu->x[rs2] & 0x1F;
+                        cpu->x[rd] = cpu->x[rs1] >> shift;
+                    }
+                    break;
+                }
+                case 0x01: // DIV
+                {
+                    
+                    break;
+                }
+            }
+
+        case 0x6:
+            switch (funct7) {
+                case 0x00: // XOR
+                {
+
+                }
+                    break;
+                case 0x01: // DIV
+                {
+                    
+                }
+                break;
+            }
+
+        case 0x7:
+            switch (funct7) {
+                case 0x00: // XOR
+                {
+
+                }
+                    break;
+                case 0x01: // DIV
+                {
+                    
+                }
+                break;
             }
     }
 
+    printf(" x%d, x%d, x%d\n", rd, rs1, rs2);
     printf("** VALUES AFTER **\n");
     printf("[rd - x%d] %8X\n[rs1 - x%d] %8X\n[rs2 - x%d] %8X\n", 
         rd, cpu->x[rd], rs1, cpu->x[rs1], rs2, cpu->x[rs2]);
