@@ -95,9 +95,43 @@ int decode_execute_instruction(cpu_t* cpu);
  */
 e_inst_type get_instruction_type(uint8_t opcode);
 
+
+
+/**
+ * @brief Executes a R-type instruction formatted
+ * as : 
+ * 
+ * [ funct7 [31:25] | rs2 [24:20] | rs1 [19:15] | funct3 [14:12] |
+ * rd [11:7] | opcode [6:0] ]
+ * 
+ * R-type contains basic arithmetic (ADD, SUB, MUL..) and logic (XOR, AND..) instructions 
+ * 
+ * @param cpu The CPU to execute on
+ * @return int Status code
+ */
 int r_type(cpu_t *cpu);
+
+
+
+/**
+ * @brief Executes a I-type instruction formatted
+ * as : 
+ * 
+ * [ imm [31:20] | rs1 [19:15] | funct3 [14:12] |
+ * rd [11:7] | opcode [6:0] ]
+ * 
+ * I-type contains same instructions as R-type but rs2 is replaced
+ * by immediate value (imm) ranging from -2048 to 2047 
+ * 
+ * @param cpu The CPU to execute on
+ * @return int Status code
+ */
 int i_type(cpu_t *cpu);
+
+
 int s_type(cpu_t *cpu);
+
+
 int b_type(cpu_t *cpu);
 int u_type(cpu_t *cpu);
 int j_type(cpu_t *cpu);

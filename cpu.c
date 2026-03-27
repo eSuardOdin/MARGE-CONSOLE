@@ -320,11 +320,39 @@ int i_type(cpu_t *cpu)
                 case 0x3:   // SLTI U
                     cpu->x[rd] = (uint32_t)cpu->x[rs1] < (uint32_t)imm ? 1 : 0;
                     break;
+                case 0x4:   // XORI
+                    cpu->x[rd] = (uint32_t)cpu->x[rs1] ^ sign_imm;
+                    break;
+                case 0x5:
+                {
+                    int shift = imm & 0x1F;
+                    if(cpu->ir & 0x40000000)    // SRAI - Sign extension
+                    {
+                        cpu->x[rd] = cpu->x[rs1] >> shift;
+                    }
+                    else                        // SRLI
+                    {
+                        cpu->x[rd] = (int32_t)((uint32_t)cpu->x[rs1] >> shift);
+                    }
+                    break;
+                }
+                case 0x6:   // ORI
+                {
+                    cpu->x[rd] = cpu->x[rs1] | sign_imm;
+                    break;
+                }
+                case 0x7:   // ANDI
+                {
+                    cpu->x[rd] = cpu->x[rs1] & sign_imm;
+                    break;
+                }
             }
         }
         case 0x3:
         case 0x67:
         case 0x73:
+
+        return 0;
     }
     switch (funct3) {
         case 0x0:
