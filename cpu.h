@@ -73,11 +73,25 @@ typedef struct
     uint32_t    ir;                 // Fetched instruction register
 } cpu_t;
 
+/**
+ * @brief Initialize the CPU state
+ * 
+ * @param cpu The cpu to init
+ * @return int Status code
+ */
 int init_cpu(cpu_t* cpu);
 
-
+/**
+ * @brief Get the instruction pointed to by program counter
+ * 
+ * @param cpu 
+ * @param rom 
+ * @return int 
+ */
 int fetch_instruction(cpu_t* cpu, uint8_t* rom);
 
+
+uint8_t read_memory(int32_t addr);
 
 /**
  * @brief Executes the instruction in the instruction register
@@ -95,8 +109,6 @@ int decode_execute_instruction(cpu_t* cpu);
  */
 e_inst_type get_instruction_type(uint8_t opcode);
 
-
-
 /**
  * @brief Executes a R-type instruction formatted
  * as : 
@@ -110,8 +122,6 @@ e_inst_type get_instruction_type(uint8_t opcode);
  * @return int Status code
  */
 int r_type(cpu_t *cpu);
-
-
 
 /**
  * @brief Executes a I-type instruction formatted

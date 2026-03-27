@@ -85,7 +85,6 @@ e_inst_type get_instruction_type(uint8_t opcode)
 
 
 
-
 int r_type(cpu_t *cpu)
 {
     #ifdef DEBUG
@@ -349,6 +348,38 @@ int i_type(cpu_t *cpu)
             }
         }
         case 0x3:
+        {
+            switch(funct3)
+            {
+                case 0x0:   // LB: rd = Memory[rsd + imm] 
+                {
+                    int32_t imm_8b = imm & 0xFF;
+                    if(imm_8b & 0x80)
+                    {
+                        imm_8b |= 0xFFFFFF00;
+                    }
+                    cpu->x[rd] = read_memory(rs1 + imm);
+                    break;
+                }
+                case 0x1:
+                {
+                    break;
+                }
+                case 0x2:
+                {
+                    break;
+                }
+                case 0x4:
+                {
+                    break;
+                }
+                case 0x5:
+                {
+                    break;
+                }
+
+            }   
+        }
         case 0x67:
         case 0x73:
 
