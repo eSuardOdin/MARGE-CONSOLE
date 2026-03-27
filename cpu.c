@@ -1,4 +1,5 @@
 #include "cpu.h"
+#include <stdint.h>
 
 
 int init_cpu(cpu_t* cpu)
@@ -216,7 +217,7 @@ int r_type(cpu_t *cpu)
                     }
                     break;
                 }
-                case 0x20: // SRA (Shift Right Arithmetic)
+                case 0x20: // SRA (Shift Right Arithmetic - Extends sign bit)
                 {
                     if(rd != 0)
                     {
@@ -229,35 +230,36 @@ int r_type(cpu_t *cpu)
                 }
                 case 0x01: // DIV
                 {
-                    
+                    printf("DIV ");
+                    cpu->x[rd] = cpu->x[rs1] / cpu->x[rs2];
                     break;
                 }
             }
 
         case 0x6:
             switch (funct7) {
-                case 0x00: // XOR
+                case 0x00: // OR
                 {
-
-                }
+                    cpu->x[rd] = cpu->x[rs1] | cpu->x[rs2];
                     break;
-                case 0x01: // DIV
-                {
-                    
                 }
-                break;
+                case 0x01: // REM (modulo)
+                {
+                    cpu->x[rd] = cpu->x[rs1] % cpu->x[rs2];
+                    break;
+                }
             }
 
         case 0x7:
             switch (funct7) {
-                case 0x00: // XOR
+                case 0x00: // AND
                 {
-
+                    cpu->x[rd] = cpu->x[rs1] & cpu->x[rs2];
                 }
                     break;
-                case 0x01: // DIV
+                case 0x01: // REMU (unsigned modulo)
                 {
-                    
+                    cpu->x[rd] = (uint32_t)cpu->x[rs1] % (uint32_t)cpu->x[rs2];
                 }
                 break;
             }
@@ -270,8 +272,95 @@ int r_type(cpu_t *cpu)
     return 0;
 }
 
+
+
+
+
+
+
+
+
+
 int i_type(cpu_t *cpu)
 {
+    #ifdef DEBUG
+    printf("[instruction: 0x%08X] ", cpu->ir);
+    #endif
+    // Extract values from instruction
+    uint8_t opcode =    (cpu->ir & 0x0000007F);
+    uint8_t rd  =       (cpu->ir & 0x00000F80) >> 7;
+    uint8_t funct3 =    (cpu->ir & 0x00007000) >> 12;
+    uint8_t rs1 =       (cpu->ir & 0x000F8000) >> 15;
+    int32_t imm =       (cpu->ir & 0xFFF00000) >> 20;
+    // Sign extend immediate value
+    int32_t sign_imm =  ((imm & 0x800) == 0x800) ? imm | 0xFFFFF000 : imm;
+    
+    #ifdef DEBUG
+    printf("| imm %d | rs1 %d | funct3 %d | rd %d | opcode %d |\n", imm, rs1, funct3, rd, (uint8_t) cpu->ir & 0xFF);
+    #endif
+    printf("** VALUES BEFORE **\n");
+    printf("[rd - x%d] %8X\n[rs1 - x%d] %8X\n[imm] %8X\n", rd, cpu->x[rd], rs1, cpu->x[rs1], imm);
+    
+
+    switch (opcode)
+    {
+        case 0x13:
+        {
+            switch (funct3) 
+            {
+                case 0x0:   // ADDI
+                    cpu->x[rd] = cpu->x[rs1] + sign_imm;
+                    break;
+                case 0x1:   // SLLI
+                    cpu->x[rd] = cpu->x[rs1] << (imm & 0x1F);
+                    break;
+                case 0x2:   // SLTI rd = (rs1 < imm)?1:0
+                    cpu->x[rd] = cpu->x[rs1] < sign_imm ? 1 : 0;
+                    break;
+                case 0x3:   // SLTI U
+                    cpu->x[rd] = (uint32_t)cpu->x[rs1] < (uint32_t)imm ? 1 : 0;
+                    break;
+            }
+        }
+        case 0x3:
+        case 0x67:
+        case 0x73:
+    }
+    switch (funct3) {
+        case 0x0:
+        break;
+
+
+        case 0x1:
+            break;
+
+
+        case 0x2:
+            break;
+
+
+        case 0x3:
+            break;
+
+
+        case 0x4:
+            break;
+
+        case 0x5:
+            break;
+
+        case 0x6:
+            break;
+
+        case 0x7:
+            break;
+    }
+
+    printf(" x%d, x%d, %d\n", rd, rs1, imm);
+    printf("** VALUES AFTER **\n");
+    printf("[rd - x%d] %8X\n[rs1 - x%d] %8X\n[imm] %8X\n", rd, cpu->x[rd], rs1, cpu->x[rs1], imm);
+    return 0;
+
     return 0;   
 }
 
