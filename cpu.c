@@ -351,16 +351,33 @@ int i_type(cpu_t *cpu)
             {
                 case 0x0:   // LB: rd = Memory[rsd + imm] 
                 {
-                    int32_t imm_8b = imm & 0xFF;
-                    if(imm_8b & 0x80)
+                    int32_t offset = imm & 0xFF;
+                    if(offset & 0x80)
                     {
-                        imm_8b |= 0xFFFFFF00;
+                        offset |= 0xFFFFFF00;
                     }
-                    cpu->x[rd] = read_memory(cpu->bus, rs1 + imm);
+                    // sign extend readen value (check if a cast does not do it by itself)
+                    int32_t val= read_memory(cpu->bus, rs1 + offset);
+                    if(val & 0x80)
+                    {
+                        cpu->x[rd] = val | 0xFFFFFF00;
+                    }
                     break;
                 }
-                case 0x1:
+                case 0x1:   // LH
                 {
+                    int32_t offset = imm & 0xFF;
+                    if(offset & 0x80)
+                    {
+                        offset |= 0xFFFFFF00;
+                    }
+                    int32_t val =  (read_memory(cpu->bus, rs1 + offset + 1) << 8) |
+                                    read_memory(cpu->bus, rs1 + offset); 
+                    // sign extend readen value (check if a cast does not do it by itself)
+                    if(val & 0x8000)
+                    {
+                        cpu->x[rd] = val | 0xFFFF0000;
+                    }
                     break;
                 }
                 case 0x2:
