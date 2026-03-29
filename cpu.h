@@ -5,48 +5,20 @@
 #define DEBUG
 #endif
 
-#include <stdint.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#include "common.h"
+#include "bus.h"
 
 
 typedef enum
 {
-    x0,
-    x1,
-    x2,
-    x3,
-    x4,
-    x5,
-    x6,
-    x7,
-    x8,
-    x9,
-    x10,
-    x11,
-    x12,
-    x13,
-    x14,
-    x15,
-    x16,
-    x17,
-    x18,
-    x19,
-    x20,
-    x21,
-    x22,
-    x23,
-    x24,
-    x25,
-    x26,
-    x27,
-    x28,
-    x29,
-    x30,
-    x31
-
+    x0,x1,x2,x3,
+    x4,x5,x6,x7,
+    x8,x9,x10,x11,
+    x12,x13,x14,x15,
+    x16,x17,x18,x19,
+    x20,x21,x22,x23,
+    x24,x25,x26,x27,
+    x28,x29,x30,x31
 } e_register;
 
 
@@ -66,11 +38,16 @@ typedef enum
     UNKNOWN_TYPE
 } e_inst_type;
 
+/**
+ * @brief Struct representing the CPU state
+ * 
+ */
 typedef struct
 {
 	uint32_t 	pc;
 	int32_t 	x[31];		        // Registers
     uint32_t    ir;                 // Fetched instruction register
+    bus_t*      bus;
 } cpu_t;
 
 /**
@@ -79,7 +56,7 @@ typedef struct
  * @param cpu The cpu to init
  * @return int Status code
  */
-int init_cpu(cpu_t* cpu);
+int init_cpu(cpu_t* cpu, bus_t* bus);
 
 /**
  * @brief Get the instruction pointed to by program counter
@@ -91,7 +68,7 @@ int init_cpu(cpu_t* cpu);
 int fetch_instruction(cpu_t* cpu, uint8_t* rom);
 
 
-uint8_t read_memory(int32_t addr);
+
 
 /**
  * @brief Executes the instruction in the instruction register

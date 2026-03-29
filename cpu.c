@@ -1,13 +1,11 @@
 #include "cpu.h"
+#include "bus.h"
 #include <stdint.h>
 
 
-int init_cpu(cpu_t* cpu)
+int init_cpu(cpu_t* cpu, bus_t* bus)
 {
-    for(int32_t i = 0; i < 32; i++)
-    {
-        cpu->x[i] = i;
-    }
+    cpu->bus = bus;
     cpu->pc = 0;
     cpu->ir = 0;
     return 0;
@@ -358,7 +356,7 @@ int i_type(cpu_t *cpu)
                     {
                         imm_8b |= 0xFFFFFF00;
                     }
-                    cpu->x[rd] = read_memory(rs1 + imm);
+                    cpu->x[rd] = read_memory(cpu->bus, rs1 + imm);
                     break;
                 }
                 case 0x1:

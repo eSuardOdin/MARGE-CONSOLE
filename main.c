@@ -1,7 +1,7 @@
 #include "cpu.h"
-#include <unistd.h>
-#include <stdlib.h>
-#include <errno.h>
+#include "cartridge.h"
+#include "bus.h"
+#include "common.h"
 #ifndef ROM_SIZE
 #define ROM_SIZE    65535
 #endif
@@ -44,8 +44,18 @@ int main(int argc, char** argv)
     }
 
 
+
+
+    // Load cartridge
+    cartridge_t cartridge;
+    init_cartridge(&cartridge, ROM);
+    
+    // Link to bus
+    bus_t bus;
+    init_bus(&bus, &cartridge);
+
     cpu_t cpu;
-    init_cpu(&cpu);
+    init_cpu(&cpu, &bus);
     // while(cpu.pc + 4 < byte_read)
     while(cpu.pc + 4 < 64)
     {
