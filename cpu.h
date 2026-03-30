@@ -1,9 +1,6 @@
 #ifndef CPU_H
 #define CPU_H
 
-#ifndef DEBUG
-#define DEBUG
-#endif
 
 #include "common.h"
 #include "bus.h"
@@ -45,7 +42,7 @@ typedef enum
 typedef struct
 {
 	uint32_t 	pc;
-	int32_t 	x[31];		        // Registers
+	int32_t 	x[32];		        // Registers
     uint32_t    ir;                 // Fetched instruction register
     bus_t*      bus;
 } cpu_t;
@@ -122,6 +119,9 @@ int s_type(cpu_t *cpu);
 int b_type(cpu_t *cpu);
 int u_type(cpu_t *cpu);
 int j_type(cpu_t *cpu);
+
+
+void print_registers(cpu_t* cpu);
 
 #endif
 

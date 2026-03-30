@@ -11,7 +11,8 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#define VRAM_OFST   0x04000000
 
+#define VRAM_OFST   0x04000000
+#define ROM_OFST    0x00020000
 
 #endif

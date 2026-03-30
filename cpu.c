@@ -1,6 +1,7 @@
 #include "cpu.h"
 #include "bus.h"
 #include <stdint.h>
+#include <sys/select.h>
 
 
 int init_cpu(cpu_t* cpu, bus_t* bus)
@@ -33,6 +34,7 @@ int fetch_instruction(cpu_t* cpu, uint8_t* rom)
 
 int decode_execute_instruction(cpu_t* cpu)
 {
+    print_registers(cpu);
     uint8_t opcode = cpu->ir & 0b1111111;
     e_inst_type inst_type = get_instruction_type(opcode);
     printf("\nInstruction type is %d", inst_type);
@@ -43,7 +45,9 @@ int decode_execute_instruction(cpu_t* cpu)
             return r_type(cpu);
 
         case I_TYPE:
+            return i_type(cpu);
         case S_TYPE:
+            return s_type(cpu);
         case B_TYPE:
         case U_TYPE:
         case J_TYPE:
@@ -95,9 +99,7 @@ int r_type(cpu_t *cpu)
     uint8_t rs2 =       (cpu->ir & 0x01F00000) >> 20;
     uint8_t funct7 =    (cpu->ir & 0xFE000000) >> 25;
     
-    #ifdef DEBUG
     printf("| funct7 %d | rs2 %d | rs1 %d | funct3 %d | rd %d | opcode %d |\n", funct7, rs2, rs1, funct3, rd, (uint8_t) cpu->ir & 0xFF);
-    #endif
     printf("** VALUES BEFORE **\n");
     printf("[rd - x%d] %8X\n[rs1 - x%d] %8X\n[rs2 - x%d] %8X\n", 
         rd, cpu->x[rd], rs1, cpu->x[rs1], rs2, cpu->x[rs2]);
@@ -280,9 +282,8 @@ int r_type(cpu_t *cpu)
 
 int i_type(cpu_t *cpu)
 {
-    #ifdef DEBUG
     printf("[instruction: 0x%08X] ", cpu->ir);
-    #endif
+    
     // Extract values from instruction
     uint8_t opcode =    (cpu->ir & 0x0000007F);
     uint8_t rd  =       (cpu->ir & 0x00000F80) >> 7;
@@ -292,12 +293,8 @@ int i_type(cpu_t *cpu)
     // Sign extend immediate value
     int32_t sign_imm =  ((imm & 0x800) == 0x800) ? imm | 0xFFFFF000 : imm;
     
-    #ifdef DEBUG
     printf("| imm %d | rs1 %d | funct3 %d | rd %d | opcode %d |\n", imm, rs1, funct3, rd, (uint8_t) cpu->ir & 0xFF);
-    #endif
-    printf("** VALUES BEFORE **\n");
-    printf("[rd - x%d] %8X\n[rs1 - x%d] %8X\n[imm] %8X\n", rd, cpu->x[rd], rs1, cpu->x[rs1], imm);
-    
+ 
 
     switch (opcode)
     {
@@ -306,18 +303,23 @@ int i_type(cpu_t *cpu)
             switch (funct3) 
             {
                 case 0x0:   // ADDI
+                    printf("ADDI \n");
                     cpu->x[rd] = cpu->x[rs1] + sign_imm;
                     break;
                 case 0x1:   // SLLI
+                    printf("SLLI ");
                     cpu->x[rd] = cpu->x[rs1] << (imm & 0x1F);
                     break;
                 case 0x2:   // SLTI rd = (rs1 < imm)?1:0
+                    printf("SLTI ");
                     cpu->x[rd] = cpu->x[rs1] < sign_imm ? 1 : 0;
                     break;
                 case 0x3:   // SLTI U
+                    printf("SLTI U ");
                     cpu->x[rd] = (uint32_t)cpu->x[rs1] < (uint32_t)imm ? 1 : 0;
                     break;
                 case 0x4:   // XORI
+                    printf("XORI ");
                     cpu->x[rd] = (uint32_t)cpu->x[rs1] ^ sign_imm;
                     break;
                 case 0x5:
@@ -325,25 +327,30 @@ int i_type(cpu_t *cpu)
                     int shift = imm & 0x1F;
                     if(cpu->ir & 0x40000000)    // SRAI - Sign extension
                     {
+                        printf("SRAI ");
                         cpu->x[rd] = cpu->x[rs1] >> shift;
                     }
                     else                        // SRLI
                     {
+                        printf("SRLI ");
                         cpu->x[rd] = (int32_t)((uint32_t)cpu->x[rs1] >> shift);
                     }
                     break;
                 }
                 case 0x6:   // ORI
                 {
+                    printf("ORI ");
                     cpu->x[rd] = cpu->x[rs1] | sign_imm;
                     break;
                 }
                 case 0x7:   // ANDI
                 {
+                    printf("ANDI ");
                     cpu->x[rd] = cpu->x[rs1] & sign_imm;
                     break;
                 }
             }
+            break;
         }
         case 0x3:
         {
@@ -351,13 +358,13 @@ int i_type(cpu_t *cpu)
             {
                 case 0x0:   // LB: rd = Memory[rsd + imm] 
                 {
-                    int32_t offset = imm & 0xFF;
-                    if(offset & 0x80)
-                    {
-                        offset |= 0xFFFFFF00;
-                    }
+                    // int32_t offset = imm & 0xFF;
+                    // if(offset & 0x80)
+                    // {
+                    //     offset |= 0xFFFFFF00;
+                    // }
                     // sign extend readen value (check if a cast does not do it by itself)
-                    int32_t val= read_memory(cpu->bus, rs1 + offset);
+                    int32_t val= read_memory(cpu->bus, rs1 + sign_imm);
                     if(val & 0x80)
                     {
                         cpu->x[rd] = val | 0xFFFFFF00;
@@ -366,13 +373,13 @@ int i_type(cpu_t *cpu)
                 }
                 case 0x1:   // LH
                 {
-                    int32_t offset = imm & 0xFF;
-                    if(offset & 0x80)
-                    {
-                        offset |= 0xFFFFFF00;
-                    }
-                    int32_t val =  (read_memory(cpu->bus, rs1 + offset + 1) << 8) |
-                                    read_memory(cpu->bus, rs1 + offset); 
+                    // int32_t offset = imm & 0xFF;
+                    // if(imm & 0x80)
+                    // {
+                    //     offset |= 0xFFFFFF00;
+                    // }
+                    int32_t val =  (read_memory(cpu->bus, rs1 + sign_imm + 1) << 8) |
+                                    read_memory(cpu->bus, rs1 + sign_imm); 
                     // sign extend readen value (check if a cast does not do it by itself)
                     if(val & 0x8000)
                     {
@@ -382,64 +389,95 @@ int i_type(cpu_t *cpu)
                 }
                 case 0x2:
                 {
+                    int32_t val =   (read_memory(cpu->bus, rs1 + sign_imm + 3) << 24) |
+                                    (read_memory(cpu->bus, rs1 + sign_imm + 2) << 16) |
+                                    (read_memory(cpu->bus, rs1 + sign_imm + 1) << 8) |
+                                    read_memory(cpu->bus, rs1 + sign_imm); 
+                    
+                    cpu->x[rd] = val;
                     break;
                 }
-                case 0x4:
+                case 0x4:       // LB (unsigned)
                 {
+                    int32_t val= read_memory(cpu->bus, rs1 + sign_imm);
+                    if(val & 0x80)
+                    {
+                        cpu->x[rd] = val & 0x000000FF;
+                    }
                     break;
                 }
                 case 0x5:
                 {
+                    int32_t val =  (read_memory(cpu->bus, rs1 + sign_imm + 1) << 8) |
+                                    read_memory(cpu->bus, rs1 + sign_imm); 
+                    // zero extend readen value (check if a cast does not do it by itself)
+                    if(val & 0x8000)
+                    {
+                        cpu->x[rd] = val & 0x0000FFFF;
+                    }
                     break;
                 }
 
-            }   
+            } 
+            break;  
         }
         case 0x67:
+            switch(funct3)
+            {
+                case 0x0:
+                {
+                    cpu->x[rd] = cpu->pc + 4;
+                    cpu->pc = cpu->x[rs1] + sign_imm;
+                    break;
+                }
+            }
+            break;
         case 0x73:
 
         return 0;
     }
-    switch (funct3) {
-        case 0x0:
-        break;
-
-
-        case 0x1:
-            break;
-
-
-        case 0x2:
-            break;
-
-
-        case 0x3:
-            break;
-
-
-        case 0x4:
-            break;
-
-        case 0x5:
-            break;
-
-        case 0x6:
-            break;
-
-        case 0x7:
-            break;
-    }
-
-    printf(" x%d, x%d, %d\n", rd, rs1, imm);
-    printf("** VALUES AFTER **\n");
-    printf("[rd - x%d] %8X\n[rs1 - x%d] %8X\n[imm] %8X\n", rd, cpu->x[rd], rs1, cpu->x[rs1], imm);
-    return 0;
-
+    
     return 0;   
 }
 
 int s_type(cpu_t *cpu)
 {
+    printf("[instruction: 0x%08X] ", cpu->ir);
+    // Extract values from instruction
+    uint8_t opcode =    (cpu->ir & 0x0000007F);
+    uint8_t imm_1  =    (cpu->ir & 0x00000F80) >> 7;
+    uint8_t funct3 =    (cpu->ir & 0x00007000) >> 12;
+    uint8_t rs1 =       (cpu->ir & 0x000F8000) >> 15;
+    uint8_t rs2 =       (cpu->ir & 0x01F00000) >> 20;
+    int32_t imm_2 =     (cpu->ir & 0xFE000000) >> 25;
+    
+    int32_t imm = imm_2 << 5 | imm_1;
+
+    printf("| imm[11:5] %d | rs2 %d | rs1 %d | funct3 %d | imm %d | opcode %d |\n", imm_1, rs2, rs1, funct3, imm_2, (uint8_t) cpu->ir & 0xFF);
+    
+    switch(funct3)
+    {
+        case 0x0:       // SB
+        {
+            printf("SB \n");
+            write_memory(cpu->bus, cpu->x[rs2] & 0xFF, rs1 + imm);
+        }
+        case 0x1:       // SH
+        {
+            printf("SH \n");
+            write_memory(cpu->bus, cpu->x[rs2] & 0xFF, rs1 + imm);
+            write_memory(cpu->bus, (cpu->x[rs2] & 0xFF00) >> 8, rs1 + imm + 1);
+        }
+        case 0x2:       // SW
+        {
+            printf("SW \n");
+            write_memory(cpu->bus, cpu->x[rs2] & 0xFF, rs1 + imm);
+            write_memory(cpu->bus, (cpu->x[rs2] & 0xFF00) >> 8, rs1 + imm + 1);
+            write_memory(cpu->bus, (cpu->x[rs2] & 0xFF0000) >> 16, rs1 + imm + 2);
+            write_memory(cpu->bus, (cpu->x[rs2] & 0xFF000000) >> 24, rs1 + imm + 3);
+        }
+    }
+
     return 0;
 }
 
@@ -458,3 +496,15 @@ int j_type(cpu_t *cpu)
     return 0;
 }
 
+
+
+
+void print_registers(cpu_t* cpu)
+{
+    printf("********************************\nIR: [%08X]\t\tPC: [%08X]\n", cpu->ir, cpu->pc);
+    for(uint32_t i = 0; i < 32; i += 8)
+    {
+        printf("[x%2d] %08X | [x%2d] %08X | [x%2d] %08X | [x%2d] %08X | [x%2d] %08X | [x%2d] %08X | [x%2d] %08X | [x%2d] %08X\n",
+        i, cpu->x[i], i+1, cpu->x[i+1], i+2, cpu->x[i+2], i+3, cpu->x[i+3], i+4, cpu->x[i+4], i+5, cpu->x[i+5], i+6, cpu->x[i+6], i+7, cpu->x[i+7]);
+    }
+}
