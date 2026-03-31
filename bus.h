@@ -13,6 +13,7 @@ typedef struct bus_t
 {
     cartridge_t*    cartridge;
     uint8_t*        vram;
+    uint8_t         framebuffer[0x4B000];
 } bus_t;
 
 int init_bus(bus_t* bus, cartridge_t* cart);

@@ -13,6 +13,11 @@
 
 
 #define VRAM_OFST   0x04000000
-#define ROM_OFST    0x00020000
+#define FB_OFST     0x04000000
+#define RAM_OFST    0x03FE0000
+#define IO_OFST     0x0404B000
+
+
+extern const int COLORSPAL[32];
 
 #endif

@@ -15,9 +15,9 @@ int init_cpu(cpu_t* cpu, bus_t* bus)
 
 int fetch_instruction(cpu_t* cpu, uint8_t* rom)
 {
-    #ifdef DEBUG
+    cpu->x[0] = 0;
     printf("[PC: 0x%08X] ", cpu->pc);
-    #endif
+    
     
     // Get current pointed to instruction
     uint32_t inst = rom[cpu->pc]             |
@@ -124,21 +124,21 @@ int r_type(cpu_t *cpu)
 
         case 0x1:
             switch (funct7) {
-            case 0x00: // Shift Left Logical
-            {
-                printf("SLL ");
-                // Get only the 5 lower bits for the shift value
-                int shift = cpu->x[rs2] & 0x1F;
-                cpu->x[rd] = rd == 0 ? 0 : cpu->x[rs1] << shift;
-            }
-            break;
-            case 0x01: // MUL High (signed * signed)
-            {
-                printf("MUL High ");
-                int64_t mul = (int64_t)cpu->x[rs1] * (int64_t)cpu->x[rs2];
-                cpu->x[rd] = rd == 0 ? 0 : (mul >> 32) & 0xFFFFFFFF;
-                break;
-            }
+                case 0x00: // Shift Left Logical
+                {
+                    printf("SLL ");
+                    // Get only the 5 lower bits for the shift value
+                    int shift = cpu->x[rs2] & 0x1F;
+                    cpu->x[rd] = rd == 0 ? 0 : cpu->x[rs1] << shift;
+                    break;
+                }
+                case 0x01: // MUL High (signed * signed)
+                {
+                    printf("MUL High ");
+                    int64_t mul = (int64_t)cpu->x[rs1] * (int64_t)cpu->x[rs2];
+                    cpu->x[rd] = rd == 0 ? 0 : (mul >> 32) & 0xFFFFFFFF;
+                    break;
+                }
             }
             break;
 
@@ -230,7 +230,10 @@ int r_type(cpu_t *cpu)
                 case 0x01: // DIV
                 {
                     printf("DIV ");
-                    cpu->x[rd] = cpu->x[rs1] / cpu->x[rs2];
+                    if(rd != 0)
+                    {
+                        cpu->x[rd] = cpu->x[rs1] / cpu->x[rs2];
+                    }
                     break;
                 }
             }
@@ -239,12 +242,18 @@ int r_type(cpu_t *cpu)
             switch (funct7) {
                 case 0x00: // OR
                 {
-                    cpu->x[rd] = cpu->x[rs1] | cpu->x[rs2];
+                    if(rd != 0)
+                    {
+                        cpu->x[rd] = cpu->x[rs1] | cpu->x[rs2];
+                    }
                     break;
                 }
                 case 0x01: // REM (modulo)
                 {
-                    cpu->x[rd] = cpu->x[rs1] % cpu->x[rs2];
+                    if(rd != 0)
+                    {
+                        cpu->x[rd] = cpu->x[rs1] % cpu->x[rs2];
+                    }
                     break;
                 }
             }
@@ -253,14 +262,20 @@ int r_type(cpu_t *cpu)
             switch (funct7) {
                 case 0x00: // AND
                 {
-                    cpu->x[rd] = cpu->x[rs1] & cpu->x[rs2];
-                }
+                    if(rd != 0)
+                    {
+                        cpu->x[rd] = cpu->x[rs1] & cpu->x[rs2];
+                    }
                     break;
+                }
                 case 0x01: // REMU (unsigned modulo)
                 {
-                    cpu->x[rd] = (uint32_t)cpu->x[rs1] % (uint32_t)cpu->x[rs2];
+                    if(rd != 0)
+                    {
+                        cpu->x[rd] = (uint32_t)cpu->x[rs1] % (uint32_t)cpu->x[rs2];
+                    }
+                    break;
                 }
-                break;
             }
     }
 
@@ -304,15 +319,26 @@ int i_type(cpu_t *cpu)
             {
                 case 0x0:   // ADDI
                     printf("ADDI \n");
-                    cpu->x[rd] = cpu->x[rs1] + sign_imm;
+                    if(rd != 0)
+                    {
+                        cpu->x[rd] = cpu->x[rs1] + sign_imm;
+                    }
                     break;
                 case 0x1:   // SLLI
                     printf("SLLI ");
-                    cpu->x[rd] = cpu->x[rs1] << (imm & 0x1F);
+                    if(rd != 0)
+                    {
+                        printf("  ** Shifting %08X << %d  -  ", cpu->x[rs1], (imm & 0x1F));
+                        cpu->x[rd] = cpu->x[rs1] << (imm & 0x1F);
+                        printf(" RESULT: x%d: %08X   **     ", rd, cpu->x[rd]);
+                    }
                     break;
                 case 0x2:   // SLTI rd = (rs1 < imm)?1:0
                     printf("SLTI ");
-                    cpu->x[rd] = cpu->x[rs1] < sign_imm ? 1 : 0;
+                    if(rd != 0)
+                    {
+                        cpu->x[rd] = cpu->x[rs1] < sign_imm ? 1 : 0;
+                    }
                     break;
                 case 0x3:   // SLTI U
                     printf("SLTI U ");
@@ -460,21 +486,24 @@ int s_type(cpu_t *cpu)
         case 0x0:       // SB
         {
             printf("SB \n");
-            write_memory(cpu->bus, cpu->x[rs2] & 0xFF, rs1 + imm);
+            write_memory(cpu->bus, cpu->x[rs2] & 0xFF, cpu->x[rs1] + imm);
+            break;
         }
         case 0x1:       // SH
         {
             printf("SH \n");
-            write_memory(cpu->bus, cpu->x[rs2] & 0xFF, rs1 + imm);
-            write_memory(cpu->bus, (cpu->x[rs2] & 0xFF00) >> 8, rs1 + imm + 1);
+            write_memory(cpu->bus, cpu->x[rs2] & 0xFF, cpu->x[rs1] + imm);
+            write_memory(cpu->bus, (cpu->x[rs2] & 0xFF00) >> 8, cpu->x[rs1] + imm + 1);
+            break;
         }
         case 0x2:       // SW
         {
             printf("SW \n");
-            write_memory(cpu->bus, cpu->x[rs2] & 0xFF, rs1 + imm);
-            write_memory(cpu->bus, (cpu->x[rs2] & 0xFF00) >> 8, rs1 + imm + 1);
-            write_memory(cpu->bus, (cpu->x[rs2] & 0xFF0000) >> 16, rs1 + imm + 2);
-            write_memory(cpu->bus, (cpu->x[rs2] & 0xFF000000) >> 24, rs1 + imm + 3);
+            write_memory(cpu->bus, cpu->x[rs2] & 0xFF, cpu->x[rs1] + imm);
+            write_memory(cpu->bus, (cpu->x[rs2] & 0xFF00) >> 8, cpu->x[rs1] + imm + 1);
+            write_memory(cpu->bus, (cpu->x[rs2] & 0xFF0000) >> 16, cpu->x[rs1] + imm + 2);
+            write_memory(cpu->bus, (cpu->x[rs2] & 0xFF000000) >> 24, cpu->x[rs1] + imm + 3);
+            break;
         }
     }
 
