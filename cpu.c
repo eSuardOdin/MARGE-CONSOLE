@@ -1,6 +1,7 @@
 #include "cpu.h"
 #include "bus.h"
 #include <stdint.h>
+#include <stdlib.h>
 #include <sys/select.h>
 
 
@@ -49,6 +50,7 @@ int decode_execute_instruction(cpu_t* cpu)
         case S_TYPE:
             return s_type(cpu);
         case B_TYPE:
+            return b_type(cpu);
         case U_TYPE:
         case J_TYPE:
         case UNKNOWN_TYPE:
@@ -291,7 +293,7 @@ int r_type(cpu_t *cpu)
 
 
 
-
+int test = 0;
 
 
 
@@ -319,6 +321,11 @@ int i_type(cpu_t *cpu)
             {
                 case 0x0:   // ADDI
                     printf("ADDI \n");
+                    if(test) 
+                    {
+                        printf("EXITING BEFORE ADDING %d to x%d with rs1=x%d\n", sign_imm, rd, rs1);
+                        exit(EXIT_FAILURE);
+                    }
                     if(rd != 0)
                     {
                         cpu->x[rd] = cpu->x[rs1] + sign_imm;
@@ -512,6 +519,65 @@ int s_type(cpu_t *cpu)
 
 int b_type(cpu_t *cpu)
 {
+    printf("[instruction: 0x%08X] ", cpu->ir);
+    // Extract values from instruction
+    uint8_t opcode =    (cpu->ir & 0x0000007F);
+    uint8_t funct3 =    (cpu->ir & 0x00007000) >> 12;
+    uint8_t rs1 =       (cpu->ir & 0x000F8000) >> 15;
+    uint8_t rs2 =       (cpu->ir & 0x01F00000) >> 20;
+
+    int32_t imm = ((cpu->ir >> 31) & 0x1)  << 12    
+            | ((cpu->ir >>  7) & 0x1)  << 11        
+            | ((cpu->ir >> 25) & 0x3F) << 5      
+            | ((cpu->ir >>  8) & 0xF)  << 1;        
+    printf("imm is %b\n", imm);
+    if(imm & 0x1000)
+    {
+        imm |= 0xFFFFE000;
+    }
+    switch(funct3)
+    {
+        case 0x0:
+        {
+
+            break;
+        }
+        case 0x1:       // BNE
+        {
+            printf("BNE\n");
+            if(cpu->x[rs1] != cpu->x[rs2])
+            {
+                printf("x[%d]: %08X\nx[%d]: %08X\nBranching from %d to %d + %d\n",
+                rs1, cpu->x[rs1], rs2, cpu->x[rs2], cpu->pc, cpu->pc, imm);
+                cpu->pc += imm;
+                printf("PC is now %08X\n", cpu->pc);
+                test = 1;
+            }
+            break;
+        }
+        case 0x4:
+        {
+
+            break;
+        }
+        case 0x5:
+        {
+
+            break;
+        }
+        case 0x6:
+        {
+
+            break;
+        }
+        case 0x7:
+        {
+
+            break;
+        }
+
+
+    }
     return 0;
 }
 

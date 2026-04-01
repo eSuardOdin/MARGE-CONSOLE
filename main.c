@@ -67,7 +67,8 @@ int main(int argc, char** argv)
     cpu_t cpu;
     init_cpu(&cpu, &bus);
     // while(cpu.pc + 4 < byte_read)
-    while(cpu.pc + 4 < 0x2410 * 4)
+    // while(cpu.pc + 4 < 0x2410 * 4)
+    while(cpu.pc + 4 < 64)
     {
         fetch_instruction(&cpu, ROM);
         decode_execute_instruction(&cpu);
