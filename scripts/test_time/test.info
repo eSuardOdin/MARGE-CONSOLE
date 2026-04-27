@@ -1,0 +1,5 @@
+riscv64-linux-gnu-objdump -d test_time/test.bin
+
+============================
+
+riscv64-linux-gnu-objdump -t test_time/test.bin

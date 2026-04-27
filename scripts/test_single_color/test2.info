@@ -1,0 +1,5 @@
+riscv64-linux-gnu-objdump -d test_single_color/test2.bin
+
+============================
+
+riscv64-linux-gnu-objdump -t test_single_color/test2.bin
