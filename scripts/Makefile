@@ -46,9 +46,9 @@ compile_boot:
 %.bin: %.elf
 	@echo "### Generating $@ from $<..."
 	riscv64-linux-gnu-objcopy -O binary $< $@
-	@echo riscv64-linux-gnu-objdump -d $@     > $*.info
+	riscv64-linux-gnu-objdump -d $<     > $*.info
 	@echo "\n============================\n" >> $*.info
-	@echo riscv64-linux-gnu-objdump -t  $@   >> $*.info
+	riscv64-linux-gnu-objdump -t  $<   >> $*.info
 	@echo "### $@ compiled !"
 	@echo "####################################################\n\n"
 
