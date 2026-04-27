@@ -53,4 +53,4 @@ The 32 bit architecture is able to adress ~4.1Gib
 
 ## Palette
 
-![alt text](image.png)
+![alt text](./img/palette.png)
