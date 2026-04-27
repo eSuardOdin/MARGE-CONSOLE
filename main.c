@@ -6,12 +6,15 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_render.h>
+#include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_audio.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 
+#define FILE_OFFST  0x2000
 #ifndef ROM_SIZE
 #define ROM_SIZE    65535
 #endif
@@ -26,36 +29,11 @@ int main(int argc, char** argv)
     {
         fprintf(stderr, "Usage: riscv_emu <executable_filepath>\n");
     }
-    // Open executable
-    FILE* stream = fopen(argv[1], "rb");
-    if(stream == NULL)
-    {
-        perror("open");
-    }
-    // Get ROM size
-    fseek(stream, 0L, SEEK_END);
-    long rom_size = ftell(stream);
-    printf("ROM SIZE is %ld\n", rom_size);
-    if(rom_size > ROM_SIZE)
-    {
-        fprintf(stderr, "ROM is too large (%ld bytes), %d bytes maximum.\n", rom_size, ROM_SIZE);
-    }
-    rewind(stream);
 
-
-    uint8_t* ROM = malloc(rom_size * sizeof(uint8_t));
-
-    // Read ROM
-    ssize_t byte_read = fread(ROM, sizeof(uint8_t), rom_size, stream);
-    if(byte_read != rom_size)
-    {
-        fprintf(stderr, "ROM is not loaded.\n");
-        exit(EXIT_FAILURE);
-    }
-
-
-
-
+    // Read instruction and data
+    uint8_t* ROM;
+    size_t rom_size = get_ptr_to_romdata(argv[1], &ROM);
+    
     // Load cartridge
     cartridge_t cartridge;
     init_cartridge(&cartridge, ROM);
@@ -63,22 +41,54 @@ int main(int argc, char** argv)
     // Link to bus
     bus_t bus;
     init_bus(&bus, &cartridge);
-
+    
     cpu_t cpu;
     init_cpu(&cpu, &bus);
-    // while(cpu.pc + 4 < byte_read)
-    // while(cpu.pc + 4 < 0x2410 * 4)
-    while(cpu.pc + 4 < 64)
-    {
-        fetch_instruction(&cpu, ROM);
-        decode_execute_instruction(&cpu);
-        printf("\n");
+
+    // Put .data in memory
+    for(int i = 0; i < 0x1000 && (RAM_OFST + i) < rom_size; i++)    // 1000 is arbitrary .data size, need a constant
+    {                                                               // to be checked at compile time with lib
+        cpu.bus->ram[i] = ROM[RAM_OFST + i];
     }
-    printf("ENDED EXECUTION\n");
+    int res;
+
+
+    // // Dump memory
+    // for(int i = 0x404B000; i < 0x404B020; i += 4)
+    // {
+    //     printf("[0x%08X] %02X %02X %02X %02X\n",
+    //         i,
+    //         read_memory(cpu.bus, i),
+    //         read_memory(cpu.bus, i+1),
+    //         read_memory(cpu.bus, i+2),
+    //         read_memory(cpu.bus, i+3));
+    // }
 
 
 
-    // Display the framebuffer once to test
+    // while(1)
+    // {
+    //     fetch_instruction(&cpu, ROM);
+    //     res = decode_execute_instruction(&cpu);
+    //     if(res == 1)    // If EBREAK called ( see cpu.c )
+    //     {
+    //         break;
+    //     }
+    // }
+    // printf("ENDED EXECUTION\n");
+    // // Dump memory
+    // for(int i = 0x404B000; i < 0x404B020; i += 4)
+    // {
+    //     printf("[0x%08X] %02X %02X %02X %02X\n",
+    //         i,
+    //         read_memory(cpu.bus, i),
+    //         read_memory(cpu.bus, i+1),
+    //         read_memory(cpu.bus, i+2),
+    //         read_memory(cpu.bus, i+3));
+    // }
+
+
+
 
     SDL_Renderer *renderer;
 	SDL_Window *window;
@@ -107,12 +117,18 @@ int main(int argc, char** argv)
 		SDL_Quit();
 		return EXIT_FAILURE;
 	}
-    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, 
+    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 
                                   width, height);
 
 
 
-    int running = 1;
+    // Frame calculation variables
+    Uint64 sdl_start;
+    Uint64 sdl_end;
+    Uint64 sdl_delta = 0;       
+
+    int is_ebreak = 0;          // Check if any instructions to execute
+    int running = 1;            // Is program still running
     SDL_Event event;
     while(running)
     {
@@ -126,15 +142,38 @@ int main(int argc, char** argv)
                 default: break;
             }
         }
+
+
+        // *** Main execution ***
+        sdl_start = SDL_GetTicks64();
+        sdl_end = sdl_start + sdl_delta;
+        while ((sdl_end - sdl_start) / 1000.0 <= 0.016666667 && running) // While difference in seconds < 60FPS
+        {
+            // Execute instructions while not in 1/60 sec
+            if(!is_ebreak)
+            {
+                fetch_instruction(&cpu, ROM);
+                res = decode_execute_instruction(&cpu);
+                if(res == 1)    // If EBREAK called ( see cpu.c )
+                {
+                    is_ebreak = 1;
+                }
+            }
+            sdl_end = SDL_GetTicks64();
+        }
+
+        // *** rendering logic ***
         int col; 
         for(int i = 0; i < 240*160; i++)
         {
-            col = COLORSPAL[cpu.bus->framebuffer[i]];
+            col = (COLORSPAL[cpu.bus->framebuffer[i] & 0x1F] << 8) | 0xFF;
             gFrameBuffer[i] = col;
         }
         char* pix;
         int pitch;
     
+        printf("fb[0] = %d\n", cpu.bus->framebuffer[0]);
+
         SDL_LockTexture(texture, NULL, (void**)&pix, &pitch);
         for (int i = 0, sp = 0, dp = 0; i < height; i++, dp += width, sp += pitch)
             memcpy(pix + sp, gFrameBuffer + dp, width * 4);
@@ -142,9 +181,12 @@ int main(int argc, char** argv)
         SDL_UnlockTexture(texture);  
         SDL_RenderCopy(renderer, texture, NULL, NULL);
         SDL_RenderPresent(renderer);
-        SDL_Delay(1);
+        
+        sdl_delta = SDL_GetTicks64() - sdl_end;
+
     }
 
 
+    dump_memory(cpu.bus, 0, 0x100);
     return 0;
 }

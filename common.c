@@ -1,4 +1,5 @@
 #include "common.h"
+#include "bus.h"
 
 const int COLORSPAL[32] =
 {
@@ -10,3 +11,36 @@ const int COLORSPAL[32] =
     0x47CCA9, 0x96E3C9, 0x2469B3, 0x0B8BE6, 0x0BAFE6,
     0xF28D85, 0xF0BB90
 };
+
+
+int get_ptr_to_romdata(char *path, uint8_t **rom)
+{
+    // Open executable
+    FILE* stream = fopen(path, "rb");
+    if(stream == NULL)
+    {
+        perror("open");
+    }
+    // Get ROM size
+    fseek(stream, 0L, SEEK_END);
+    long rom_size = ftell(stream);
+    printf("ROM SIZE is %ld\n", rom_size);
+    // if(rom_size > ROM_SIZE)
+    // {
+    //     fprintf(stderr, "ROM is too large (%ld bytes), %d bytes maximum.\n", rom_size, ROM_SIZE);
+    // }
+    rewind(stream);
+
+
+    *rom = malloc(rom_size * sizeof(uint8_t));
+
+    // Read ROM
+    ssize_t byte_read = fread(*rom, sizeof(uint8_t), rom_size, stream);
+    if(byte_read != rom_size)
+    {
+        fprintf(stderr, "ROM is not loaded.\n");
+        exit(EXIT_FAILURE);
+    }
+    return rom_size;
+}
+

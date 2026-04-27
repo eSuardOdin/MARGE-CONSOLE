@@ -42,6 +42,8 @@ The 32 bit architecture is able to adress ~4.1Gib
 
 - `[0x04000000 - 0x0404AFFF] Framebuffer` Contains pixels to be displayed on the 240x160px display. Data is encoded as 1 byte per pixel ([5:0]: index to one of the 32 colors in the palette)
 
+### [0x404B000 - 0x406AFFF] RAM
+
 ### [0x404B000 - ] IO Adresses
 
 ## To think about
