@@ -11,6 +11,8 @@ int init_bus(bus_t* bus, cartridge_t* cart)
     {
         bus->framebuffer[i] = 0;
     }
+    // Init controller
+    bus->controller = 0;
     return 0;
 }
 
@@ -37,6 +39,10 @@ uint8_t read_memory(bus_t* bus, int32_t addr)
     else if (addr < IO_OFST)
     {
         return bus->ram[addr - RAM_OFST];
+    }
+    else if (addr < STACK_OFST)
+    {
+        return bus->controller;
     }
     // If data could not be retreived, send garbage.
     return 0xFF;
@@ -65,6 +71,10 @@ void write_memory(bus_t* bus, uint8_t data, int32_t addr)
     else if (addr < IO_OFST)
     {
         bus->ram[addr - RAM_OFST] = data;
+    }
+    else if (addr < STACK_OFST)
+    {
+        bus->controller = data;
     }
 }
 

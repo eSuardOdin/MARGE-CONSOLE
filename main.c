@@ -2,6 +2,7 @@
 #include "cartridge.h"
 #include "bus.h"
 #include "common.h"
+#include "io.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
@@ -139,6 +140,10 @@ int main(int argc, char** argv)
                 case SDL_QUIT:
                     running = 0;
                     break;
+                case SDL_KEYDOWN:
+                case SDL_KEYUP:
+                    handle_key_event(&event, &bus);
+                    break;
                 default: break;
             }
         }
@@ -172,7 +177,7 @@ int main(int argc, char** argv)
         char* pix;
         int pitch;
     
-        printf("fb[0] = %d\n", cpu.bus->framebuffer[0]);
+        //printf("fb[0] = %d\n", cpu.bus->framebuffer[0]);
 
         SDL_LockTexture(texture, NULL, (void**)&pix, &pitch);
         for (int i = 0, sp = 0, dp = 0; i < height; i++, dp += width, sp += pitch)

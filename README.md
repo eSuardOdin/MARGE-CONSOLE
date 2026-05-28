@@ -44,7 +44,20 @@ The 32 bit architecture is able to adress ~4.1Gib
 
 ### [0x404B000 - 0x406AFFF] RAM
 
-### [0x404B000 - ] IO Adresses
+### [0x406B000 - ] IO Adresses
+#### Controllers
+Controller state is stored on a single byte, bit 6 and 7 are selectors in order to know what we want to read and the other six bits are state of the observed buttons.
+
+**Not sure yet how to handle the writing** :
+*There my be no need to store state when it change, i can just poll the state when asked by the ROM*
+ 
+*Exemple with states of bits [6-7]:*
+- `00 - Bit 0 to 5 represents respectively: Right, Left, Up, Down, Select, Start`
+- `01 - Bit 0 to 5 represents respectively: A, B, X, Y, R trigger, L trigger`
+- `10 - Bit 0 to 5 represents respectively: TBD`
+- `11 - Bit 0 to 5 represents respectively: TBD`
+
+`[0x406B000] First controller` 
 
 ## To think about
 

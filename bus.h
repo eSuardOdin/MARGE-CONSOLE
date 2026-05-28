@@ -15,6 +15,7 @@ typedef struct bus_t
     uint8_t*        vram;
     uint8_t         framebuffer[0x4B000];
     uint8_t         ram[0x2000];
+    uint8_t         controller;
 } bus_t;
 
 int init_bus(bus_t* bus, cartridge_t* cart);
