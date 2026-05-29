@@ -5,8 +5,8 @@
 
 
 
-// void display_map(bus_t* bus, SDL_Renderer* renderer, SDL_Texture* texture, int* gFrameBuffer)
-// {
+void display_map(bus_t* bus, SDL_Renderer* renderer, SDL_Texture* texture, int* gFrameBuffer)
+{
 //     // Get current map to print
 //     int map_index = read_memory(bus, MAP_INDEX);
 
@@ -26,4 +26,4 @@
 //         }
 //     }
 
-// }
+}
