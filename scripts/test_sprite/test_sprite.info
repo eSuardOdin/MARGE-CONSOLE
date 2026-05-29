@@ -1,0 +1,183 @@
+
+test_sprite/test_sprite.elf:     format de fichier elf32-littleriscv
+
+
+Déassemblage de la section .text :
+
+00000000 <_boot>:
+   0:	03ff0137          	lui	sp,0x3ff0
+   4:	fff10113          	addi	sp,sp,-1 # 3feffff <MAP_1_ADDR+0x3feeb0b>
+   8:	1d8000ef          	jal	ra,1e0 <main>
+   c:	00100073          	ebreak
+  10:	0000006f          	j	10 <_boot+0x10>
+
+00000014 <init_tileset>:
+  14:	fe010113          	addi	sp,sp,-32
+  18:	00812e23          	sw	s0,28(sp)
+  1c:	02010413          	addi	s0,sp,32
+  20:	fe042623          	sw	zero,-20(s0)
+  24:	0400006f          	j	64 <init_tileset+0x50>
+  28:	0404b717          	auipc	a4,0x404b
+  2c:	fd870713          	addi	a4,a4,-40 # 404b000 <FUNKY_TILE>
+  30:	fec42783          	lw	a5,-20(s0)
+  34:	00279793          	slli	a5,a5,0x2
+  38:	00f707b3          	add	a5,a4,a5
+  3c:	0007a683          	lw	a3,0(a5)
+  40:	0406c737          	lui	a4,0x406c
+  44:	fec42783          	lw	a5,-20(s0)
+  48:	00f707b3          	add	a5,a4,a5
+  4c:	00078713          	mv	a4,a5
+  50:	0ff6f793          	zext.b	a5,a3
+  54:	00f70023          	sb	a5,0(a4) # 406c000 <BLANK_TILE+0x1fffc>
+  58:	fec42783          	lw	a5,-20(s0)
+  5c:	00178793          	addi	a5,a5,1
+  60:	fef42623          	sw	a5,-20(s0)
+  64:	fec42703          	lw	a4,-20(s0)
+  68:	03f00793          	li	a5,63
+  6c:	fae7dee3          	bge	a5,a4,28 <init_tileset+0x14>
+  70:	fe042423          	sw	zero,-24(s0)
+  74:	0440006f          	j	b8 <init_tileset+0xa4>
+  78:	0404c717          	auipc	a4,0x404c
+  7c:	f8c70713          	addi	a4,a4,-116 # 404c004 <BLANK_TILE>
+  80:	fe842783          	lw	a5,-24(s0)
+  84:	00279793          	slli	a5,a5,0x2
+  88:	00f707b3          	add	a5,a4,a5
+  8c:	0007a683          	lw	a3,0(a5)
+  90:	0406c737          	lui	a4,0x406c
+  94:	fe842783          	lw	a5,-24(s0)
+  98:	00f707b3          	add	a5,a4,a5
+  9c:	04078793          	addi	a5,a5,64
+  a0:	00078713          	mv	a4,a5
+  a4:	0ff6f793          	zext.b	a5,a3
+  a8:	00f70023          	sb	a5,0(a4) # 406c000 <BLANK_TILE+0x1fffc>
+  ac:	fe842783          	lw	a5,-24(s0)
+  b0:	00178793          	addi	a5,a5,1
+  b4:	fef42423          	sw	a5,-24(s0)
+  b8:	fe842703          	lw	a4,-24(s0)
+  bc:	03f00793          	li	a5,63
+  c0:	fae7dce3          	bge	a5,a4,78 <init_tileset+0x64>
+  c4:	00000013          	nop
+  c8:	00000013          	nop
+  cc:	01c12403          	lw	s0,28(sp)
+  d0:	02010113          	addi	sp,sp,32
+  d4:	00008067          	ret
+
+000000d8 <init_maps>:
+  d8:	fe010113          	addi	sp,sp,-32
+  dc:	00812e23          	sw	s0,28(sp)
+  e0:	02010413          	addi	s0,sp,32
+  e4:	fe042623          	sw	zero,-20(s0)
+  e8:	0600006f          	j	148 <init_maps+0x70>
+  ec:	0404c797          	auipc	a5,0x404c
+  f0:	f1478793          	addi	a5,a5,-236 # 404c000 <FUNKY_TILE_INDEX>
+  f4:	0007a683          	lw	a3,0(a5)
+  f8:	0407c737          	lui	a4,0x407c
+  fc:	fec42783          	lw	a5,-20(s0)
+ 100:	00f707b3          	add	a5,a4,a5
+ 104:	00078713          	mv	a4,a5
+ 108:	0ff6f793          	zext.b	a5,a3
+ 10c:	00f70023          	sb	a5,0(a4) # 407c000 <BLANK_TILE+0x2fffc>
+ 110:	0404c797          	auipc	a5,0x404c
+ 114:	ef078793          	addi	a5,a5,-272 # 404c000 <FUNKY_TILE_INDEX>
+ 118:	0007a783          	lw	a5,0(a5)
+ 11c:	4087d693          	srai	a3,a5,0x8
+ 120:	0407c737          	lui	a4,0x407c
+ 124:	fec42783          	lw	a5,-20(s0)
+ 128:	00f707b3          	add	a5,a4,a5
+ 12c:	00178793          	addi	a5,a5,1
+ 130:	00078713          	mv	a4,a5
+ 134:	0ff6f793          	zext.b	a5,a3
+ 138:	00f70023          	sb	a5,0(a4) # 407c000 <BLANK_TILE+0x2fffc>
+ 13c:	fec42783          	lw	a5,-20(s0)
+ 140:	00278793          	addi	a5,a5,2
+ 144:	fef42623          	sw	a5,-20(s0)
+ 148:	fec42703          	lw	a4,-20(s0)
+ 14c:	4af00793          	li	a5,1199
+ 150:	f8e7dee3          	bge	a5,a4,ec <init_maps+0x14>
+ 154:	fe042423          	sw	zero,-24(s0)
+ 158:	0680006f          	j	1c0 <init_maps+0xe8>
+ 15c:	0404b797          	auipc	a5,0x404b
+ 160:	fa478793          	addi	a5,a5,-92 # 404b100 <BLANK_TILE_INDEX>
+ 164:	0007a683          	lw	a3,0(a5)
+ 168:	0407c7b7          	lui	a5,0x407c
+ 16c:	4b078713          	addi	a4,a5,1200 # 407c4b0 <BLANK_TILE+0x304ac>
+ 170:	fe842783          	lw	a5,-24(s0)
+ 174:	00f707b3          	add	a5,a4,a5
+ 178:	00078713          	mv	a4,a5
+ 17c:	0ff6f793          	zext.b	a5,a3
+ 180:	00f70023          	sb	a5,0(a4)
+ 184:	0404b797          	auipc	a5,0x404b
+ 188:	f7c78793          	addi	a5,a5,-132 # 404b100 <BLANK_TILE_INDEX>
+ 18c:	0007a783          	lw	a5,0(a5)
+ 190:	4087d693          	srai	a3,a5,0x8
+ 194:	0407c7b7          	lui	a5,0x407c
+ 198:	4b078713          	addi	a4,a5,1200 # 407c4b0 <BLANK_TILE+0x304ac>
+ 19c:	fe842783          	lw	a5,-24(s0)
+ 1a0:	00f707b3          	add	a5,a4,a5
+ 1a4:	00178793          	addi	a5,a5,1
+ 1a8:	00078713          	mv	a4,a5
+ 1ac:	0ff6f793          	zext.b	a5,a3
+ 1b0:	00f70023          	sb	a5,0(a4)
+ 1b4:	fe842783          	lw	a5,-24(s0)
+ 1b8:	00278793          	addi	a5,a5,2
+ 1bc:	fef42423          	sw	a5,-24(s0)
+ 1c0:	fe842703          	lw	a4,-24(s0)
+ 1c4:	4af00793          	li	a5,1199
+ 1c8:	f8e7dae3          	bge	a5,a4,15c <init_maps+0x84>
+ 1cc:	00000013          	nop
+ 1d0:	00000013          	nop
+ 1d4:	01c12403          	lw	s0,28(sp)
+ 1d8:	02010113          	addi	sp,sp,32
+ 1dc:	00008067          	ret
+
+000001e0 <main>:
+ 1e0:	ff010113          	addi	sp,sp,-16
+ 1e4:	00112623          	sw	ra,12(sp)
+ 1e8:	00812423          	sw	s0,8(sp)
+ 1ec:	01010413          	addi	s0,sp,16
+ 1f0:	e25ff0ef          	jal	ra,14 <init_tileset>
+ 1f4:	ee5ff0ef          	jal	ra,d8 <init_maps>
+ 1f8:	0404b797          	auipc	a5,0x404b
+ 1fc:	f0c78793          	addi	a5,a5,-244 # 404b104 <JOYPAD_0>
+ 200:	0007a783          	lw	a5,0(a5)
+ 204:	00078693          	mv	a3,a5
+ 208:	0406b7b7          	lui	a5,0x406b
+ 20c:	00278793          	addi	a5,a5,2 # 406b002 <BLANK_TILE+0x1effe>
+ 210:	00078713          	mv	a4,a5
+ 214:	0006c783          	lbu	a5,0(a3)
+ 218:	0ff7f793          	zext.b	a5,a5
+ 21c:	00f70023          	sb	a5,0(a4)
+ 220:	fd9ff06f          	j	1f8 <main+0x18>
+
+============================
+
+
+test_sprite/test_sprite.elf:     format de fichier elf32-littleriscv
+
+SYMBOL TABLE:
+00000000 l    d  .text	00000000 .text
+00000224 l    d  .rodata	00000000 .rodata
+0404b000 l    d  .data	00000000 .data
+0404c000 l    d  .bss	00000000 .bss
+00000000 l    d  .riscv.attributes	00000000 .riscv.attributes
+00000000 l    d  .comment	00000000 .comment
+00000000 l    df *ABS*	00000000 boot.o
+00000000 l    df *ABS*	00000000 test_sprite.c
+00000224 l     O .rodata	00000004 FB_ADDR
+00000228 l     O .rodata	00000004 TILESET_ADDR
+0000022c l     O .rodata	00000004 MAP_INDEX
+00000230 l     O .rodata	00000004 MAP_0_ADDR
+00000234 l     O .rodata	00000960 MAP_0
+00000b94 l     O .rodata	00000960 MAP_1
+000014f4 l     O .rodata	00000004 MAP_1_ADDR
+0404c000 l     O .bss	00000004 FUNKY_TILE_INDEX
+0404b000 l     O .data	00000100 FUNKY_TILE
+0404b100 l     O .data	00000004 BLANK_TILE_INDEX
+0404c004 l     O .bss	00000100 BLANK_TILE
+0404b104 l     O .data	00000004 JOYPAD_0
+00000000 g       .text	00000000 _boot
+000001e0 g     F .text	00000044 main
+000000d8 g     F .text	00000108 init_maps
+00000014 g     F .text	000000c4 init_tileset
+
+

@@ -2,6 +2,7 @@
 #include "cartridge.h"
 #include "bus.h"
 #include "common.h"
+#include "display.h"
 #include "io.h"
 
 #include <SDL2/SDL.h>
@@ -125,8 +126,7 @@ int main(int argc, char** argv)
 
     // Frame calculation variables
     Uint64 sdl_start;
-    Uint64 sdl_end;
-    Uint64 sdl_delta = 0;       
+    Uint64 sdl_end;     
 
     int is_ebreak = 0;          // Check if any instructions to execute
     int running = 1;            // Is program still running
@@ -151,21 +151,19 @@ int main(int argc, char** argv)
 
         // *** Main execution ***
         sdl_start = SDL_GetTicks64();
-        sdl_end = sdl_start + sdl_delta;
-        while ((sdl_end - sdl_start) / 1000.0 <= 0.016666667 && running) // While difference in seconds < 60FPS
+        //sdl_end = sdl_start + sdl_delta;
+        // Execute instructions while not in 1/60 sec
+        for (int i = 0; i < INST_PER_FRAME && !is_ebreak; i++)
         {
-            // Execute instructions while not in 1/60 sec
-            if(!is_ebreak)
+            fetch_instruction(&cpu, ROM);
+            res = decode_execute_instruction(&cpu);
+            if(res == 1)    // If EBREAK called ( see cpu.c )
             {
-                fetch_instruction(&cpu, ROM);
-                res = decode_execute_instruction(&cpu);
-                if(res == 1)    // If EBREAK called ( see cpu.c )
-                {
-                    is_ebreak = 1;
-                }
+                is_ebreak = 1;
             }
-            sdl_end = SDL_GetTicks64();
         }
+        //if (SDL_GetTicks64() - (sdl_start + sdl_delta) <= 16.66667) break;
+        
 
         // *** rendering logic ***
         int col; 
@@ -179,16 +177,25 @@ int main(int argc, char** argv)
     
         //printf("fb[0] = %d\n", cpu.bus->framebuffer[0]);
 
-        SDL_LockTexture(texture, NULL, (void**)&pix, &pitch);
-        for (int i = 0, sp = 0, dp = 0; i < height; i++, dp += width, sp += pitch)
-            memcpy(pix + sp, gFrameBuffer + dp, width * 4);
-
-        SDL_UnlockTexture(texture);  
+        SDL_UpdateTexture(texture, NULL, gFrameBuffer, width * sizeof(int));
         SDL_RenderCopy(renderer, texture, NULL, NULL);
         SDL_RenderPresent(renderer);
         
-        sdl_delta = SDL_GetTicks64() - sdl_end;
 
+        display_map(&bus, &renderer, &texture);
+
+        // Wait in order to get to 60 FPS
+        // int elapsed_ms = SDL_GetTicks64() - sdl_start;
+        //if(elapsed_ms < 1000 / FPS_TARGET)
+        // {
+        //     SDL_Delay(1000 / FPS_TARGET - elapsed_ms);
+        // }
+        // int elapsed_ms = SDL_GetTicks64() - sdl_start;
+        // int to_wait = 1000/FPS_TARGET - elapsed_ms;
+        // if(to_wait > 0)
+        // {
+        //     SDL_Delay((uint32_t) (1000/FPS_TARGET - elapsed_ms));
+        // }
     }
 
 

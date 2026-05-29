@@ -1,7 +1,7 @@
 static int FB_ADDR = 0x04000000;
 static int FB_SIZE = 0x4B000;
 static int TIME = 0;
-static int color = 12;
+static int color = 13;
 int main() {
   for(int i = 0; i < FB_SIZE; i++)
   {

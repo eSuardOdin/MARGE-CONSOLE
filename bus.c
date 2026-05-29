@@ -13,6 +13,8 @@ int init_bus(bus_t* bus, cartridge_t* cart)
     }
     // Init controller
     bus->controller = 0;
+    // Init map index
+    bus->map_index = 0;
     return 0;
 }
 
@@ -31,19 +33,47 @@ uint8_t read_memory(bus_t* bus, int32_t addr)
             return bus->cartridge->ram[addr - CART_RAM_OFST];
         }
     }
-    else if(addr < RAM_OFST)     // VRAM
+
+    // If reading from framebuffer memory ( --- why would I ? --- )
+    else if( addr >= VRAM_OFST && addr < RAM_OFST)
     {
         return bus->framebuffer[addr - FB_OFST];
         // printf("Write on framebuffer: [%08X]: %08X\n", addr, data);
     }
-    else if (addr < IO_OFST)
+
+    // Reading from in console RAM
+    else if (addr >= RAM_OFST && addr < IO_OFST)
     {
         return bus->ram[addr - RAM_OFST];
     }
-    else if (addr < STACK_OFST)
+
+    // Reading from IO and system registers
+    else if (addr >= IO_OFST && addr < TILESET_OFST)
     {
-        return bus->controller;
+        // Get controller status
+        if(addr == JOYPAD_0)
+        {
+            return bus->controller;
+        }
+        // Get map index
+        if(addr == MAP_INDEX)
+        {
+            return bus->map_index;
+        }
     }
+
+    // If reading from tileset memory
+    else if (addr >= TILESET_OFST && addr < MAPS_OFST)
+    {
+        return bus->tileset[addr - TILESET_OFST];
+    }
+
+    // If reading from tilemap memory
+    else if (addr >= MAPS_OFST && addr < STACK_OFST)
+    {
+        return bus->maps[addr - MAPS_OFST];
+    }
+    
     // If data could not be retreived, send garbage.
     return 0xFF;
 }
@@ -52,7 +82,9 @@ uint8_t read_memory(bus_t* bus, int32_t addr)
 void write_memory(bus_t* bus, uint8_t data, int32_t addr)
 {
     // printf("In write_memory, address is %08X\n", addr);
-    if(addr < VRAM_OFST)        // CARTRIDGE
+    
+    // If writing in cartridge
+    if(addr < VRAM_OFST)
     {
         if(addr < CART_RAM_OFST)
         {
@@ -63,19 +95,46 @@ void write_memory(bus_t* bus, uint8_t data, int32_t addr)
         bus->cartridge->ram[addr - CART_RAM_OFST] = data;
         // printf("Write on cartridge RAM: [%08X]: %08X\n", addr, data);
     }
-    else if(addr < RAM_OFST)     // VRAM
+
+    // If writing in FRAMEBUFFER
+    else if(addr >= FB_OFST && addr < RAM_OFST)
     {
         bus->framebuffer[addr - FB_OFST] = data;
         // printf("Write on framebuffer: [%08X]: %08X\n", addr, data);
     }
-    else if (addr < IO_OFST)
+
+    // If writing in RAM
+    else if (addr >= RAM_OFST && addr < IO_OFST)
     {
         bus->ram[addr - RAM_OFST] = data;
     }
-    else if (addr < STACK_OFST)
+
+    // If writing in IO / system registers memory
+    else if (addr >= IO_OFST && addr < TILESET_OFST)
     {
-        bus->controller = data;
+        if(addr == JOYPAD_0)
+        {
+            bus->controller = data;
+        }
+        // Set map index
+        else if(addr == MAP_INDEX)
+        {
+            bus->map_index = data;
+        }
     }
+
+    // If writing in tileset memory
+    else if (addr >= TILESET_OFST && addr < MAPS_OFST)
+    {
+        bus->tileset[addr - TILESET_OFST] = data;
+    }
+
+    // If writing in tilemap memory
+    else if (addr >= MAPS_OFST && addr < STACK_OFST)
+    {
+        bus->maps[addr - MAPS_OFST] = data;
+    }
+
 }
 
 

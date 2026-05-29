@@ -12,19 +12,23 @@
 #include <stdlib.h>
 #include <errno.h>
 
+#define SCREEN_WIDTH        240
+#define SCREEN_HEIGHT       160
 
 // --- CPU SPECS ---
 #define FREQUENCY_MHZ       16800000
-#define INSTRUCTION_COST    4
+#define INSTRUCTION_COST    1
 #define FPS_TARGET          60
-#define INST_PER_FRAME      (FREQUENCY_MHZ / INSTRUCTION_COST / INST_PER_FRAME)
+#define INST_PER_FRAME      (FREQUENCY_MHZ / INSTRUCTION_COST / FPS_TARGET)
 
-// --- MEMORY MAPPING OFFSETS ---
+// --- MEMORY MAPPING OFFSETS AND STARTING POINT ---
+#define CART_RAM_OFST       0x03FE0000
 #define VRAM_OFST           0x04000000
 #define FB_OFST             0x04000000
-#define CART_RAM_OFST       0x03FE0000
 #define RAM_OFST            0x0404B000
 #define IO_OFST             0x0406B000
+#define TILESET_OFST        0x0406C000
+#define MAPS_OFST           0x0407C000
 #define STACK_OFST          0x0FFFFFFF // To be defined
 
 
@@ -36,6 +40,11 @@
 #define JOYPAD_LEFT         0x2
 #define JOYPAD_DOWN         0x4 
 #define JOYPAD_RIGHT        0x8
+
+
+// --- System Registers ---
+// Defines wich map is to be printed
+#define MAP_INDEX           0x0406B002
 
 extern const int COLORSPAL[32];
 
