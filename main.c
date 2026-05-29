@@ -166,6 +166,7 @@ int main(int argc, char** argv)
         
 
         // *** rendering logic ***
+        display_map(&bus, renderer, texture);
         int col; 
         for(int i = 0; i < 240*160; i++)
         {
@@ -182,7 +183,6 @@ int main(int argc, char** argv)
         SDL_RenderPresent(renderer);
         
 
-        display_map(&bus, renderer, texture);
 
         // Wait in order to get to 60 FPS
         // int elapsed_ms = SDL_GetTicks64() - sdl_start;
