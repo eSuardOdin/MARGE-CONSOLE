@@ -182,7 +182,7 @@ int main(int argc, char** argv)
         SDL_RenderPresent(renderer);
         
 
-        display_map(&bus, &renderer, &texture);
+        display_map(&bus, renderer, texture);
 
         // Wait in order to get to 60 FPS
         // int elapsed_ms = SDL_GetTicks64() - sdl_start;
