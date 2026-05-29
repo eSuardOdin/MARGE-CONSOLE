@@ -18,12 +18,12 @@ void display_map(bus_t* bus, SDL_Renderer* renderer, SDL_Texture* texture)
     // Draw sprites
     for (int x = 0; x < 30; x++)
     {
-        int tile_index = read_memory(bus, map_address) | (read_memory(bus, map_address+1) << 8); 
-        for(int y = 0; y < 20; y++)
-        {
-            memcpy( tile, bus->, size_t size ); 
-            write_memory(bus, , FB_OFST)
-        }
+        // int tile_index = read_memory(bus, map_address) | (read_memory(bus, map_address+1) << 8); 
+        // for(int y = 0; y < 20; y++)
+        // {
+        //     memcpy( tile, bus->, size_t size ); 
+        //     write_memory(bus, , FB_OFST)
+        // }
     }
 
 }
