@@ -2,3 +2,4 @@
 *.txt
 .vscode
 test_roms
+scripts/*.bin
