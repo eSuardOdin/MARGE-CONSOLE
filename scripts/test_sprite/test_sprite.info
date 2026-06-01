@@ -6,8 +6,8 @@ Déassemblage de la section .text :
 
 00000000 <_boot>:
    0:	03ff0137          	lui	sp,0x3ff0
-   4:	fff10113          	addi	sp,sp,-1 # 3feffff <MAP_1_ADDR+0x3feeb0b>
-   8:	1d8000ef          	jal	ra,1e0 <main>
+   4:	fff10113          	addi	sp,sp,-1 # 3feffff <MAP_1_ADDR+0x3feeaab>
+   8:	238000ef          	jal	ra,240 <main>
    c:	00100073          	ebreak
   10:	0000006f          	j	10 <_boot+0x10>
 
@@ -67,87 +67,111 @@ Déassemblage de la section .text :
   dc:	00812e23          	sw	s0,28(sp)
   e0:	02010413          	addi	s0,sp,32
   e4:	fe042623          	sw	zero,-20(s0)
-  e8:	0600006f          	j	148 <init_maps+0x70>
-  ec:	0404c797          	auipc	a5,0x404c
-  f0:	f1478793          	addi	a5,a5,-236 # 404c000 <FUNKY_TILE_INDEX>
-  f4:	0007a683          	lw	a3,0(a5)
-  f8:	0407c737          	lui	a4,0x407c
-  fc:	fec42783          	lw	a5,-20(s0)
- 100:	00f707b3          	add	a5,a4,a5
- 104:	00078713          	mv	a4,a5
- 108:	0ff6f793          	zext.b	a5,a3
- 10c:	00f70023          	sb	a5,0(a4) # 407c000 <BLANK_TILE+0x2fffc>
- 110:	0404c797          	auipc	a5,0x404c
- 114:	ef078793          	addi	a5,a5,-272 # 404c000 <FUNKY_TILE_INDEX>
- 118:	0007a783          	lw	a5,0(a5)
- 11c:	4087d693          	srai	a3,a5,0x8
- 120:	0407c737          	lui	a4,0x407c
- 124:	fec42783          	lw	a5,-20(s0)
- 128:	00f707b3          	add	a5,a4,a5
- 12c:	00178793          	addi	a5,a5,1
- 130:	00078713          	mv	a4,a5
- 134:	0ff6f793          	zext.b	a5,a3
- 138:	00f70023          	sb	a5,0(a4) # 407c000 <BLANK_TILE+0x2fffc>
- 13c:	fec42783          	lw	a5,-20(s0)
- 140:	00278793          	addi	a5,a5,2
- 144:	fef42623          	sw	a5,-20(s0)
- 148:	fec42703          	lw	a4,-20(s0)
- 14c:	4af00793          	li	a5,1199
- 150:	f8e7dee3          	bge	a5,a4,ec <init_maps+0x14>
- 154:	fe042423          	sw	zero,-24(s0)
- 158:	0680006f          	j	1c0 <init_maps+0xe8>
- 15c:	0404b797          	auipc	a5,0x404b
- 160:	fa478793          	addi	a5,a5,-92 # 404b100 <BLANK_TILE_INDEX>
- 164:	0007a683          	lw	a3,0(a5)
- 168:	0407c7b7          	lui	a5,0x407c
- 16c:	4b078713          	addi	a4,a5,1200 # 407c4b0 <BLANK_TILE+0x304ac>
- 170:	fe842783          	lw	a5,-24(s0)
- 174:	00f707b3          	add	a5,a4,a5
- 178:	00078713          	mv	a4,a5
- 17c:	0ff6f793          	zext.b	a5,a3
- 180:	00f70023          	sb	a5,0(a4)
- 184:	0404b797          	auipc	a5,0x404b
- 188:	f7c78793          	addi	a5,a5,-132 # 404b100 <BLANK_TILE_INDEX>
- 18c:	0007a783          	lw	a5,0(a5)
- 190:	4087d693          	srai	a3,a5,0x8
- 194:	0407c7b7          	lui	a5,0x407c
- 198:	4b078713          	addi	a4,a5,1200 # 407c4b0 <BLANK_TILE+0x304ac>
- 19c:	fe842783          	lw	a5,-24(s0)
- 1a0:	00f707b3          	add	a5,a4,a5
- 1a4:	00178793          	addi	a5,a5,1
- 1a8:	00078713          	mv	a4,a5
- 1ac:	0ff6f793          	zext.b	a5,a3
- 1b0:	00f70023          	sb	a5,0(a4)
- 1b4:	fe842783          	lw	a5,-24(s0)
- 1b8:	00278793          	addi	a5,a5,2
- 1bc:	fef42423          	sw	a5,-24(s0)
- 1c0:	fe842703          	lw	a4,-24(s0)
- 1c4:	4af00793          	li	a5,1199
- 1c8:	f8e7dae3          	bge	a5,a4,15c <init_maps+0x84>
- 1cc:	00000013          	nop
- 1d0:	00000013          	nop
- 1d4:	01c12403          	lw	s0,28(sp)
- 1d8:	02010113          	addi	sp,sp,32
- 1dc:	00008067          	ret
+  e8:	0c00006f          	j	1a8 <init_maps+0xd0>
+  ec:	fec42783          	lw	a5,-20(s0)
+  f0:	0077f793          	andi	a5,a5,7
+  f4:	04079c63          	bnez	a5,14c <init_maps+0x74>
+  f8:	0404c797          	auipc	a5,0x404c
+  fc:	f0878793          	addi	a5,a5,-248 # 404c000 <FUNKY_TILE_INDEX>
+ 100:	0007a683          	lw	a3,0(a5)
+ 104:	0407c737          	lui	a4,0x407c
+ 108:	fec42783          	lw	a5,-20(s0)
+ 10c:	00f707b3          	add	a5,a4,a5
+ 110:	00078713          	mv	a4,a5
+ 114:	0ff6f793          	zext.b	a5,a3
+ 118:	00f70023          	sb	a5,0(a4) # 407c000 <BLANK_TILE+0x2fffc>
+ 11c:	0404c797          	auipc	a5,0x404c
+ 120:	ee478793          	addi	a5,a5,-284 # 404c000 <FUNKY_TILE_INDEX>
+ 124:	0007a783          	lw	a5,0(a5)
+ 128:	4087d693          	srai	a3,a5,0x8
+ 12c:	0407c737          	lui	a4,0x407c
+ 130:	fec42783          	lw	a5,-20(s0)
+ 134:	00f707b3          	add	a5,a4,a5
+ 138:	00178793          	addi	a5,a5,1
+ 13c:	00078713          	mv	a4,a5
+ 140:	0ff6f793          	zext.b	a5,a3
+ 144:	00f70023          	sb	a5,0(a4) # 407c000 <BLANK_TILE+0x2fffc>
+ 148:	0540006f          	j	19c <init_maps+0xc4>
+ 14c:	0404b797          	auipc	a5,0x404b
+ 150:	fb478793          	addi	a5,a5,-76 # 404b100 <BLANK_TILE_INDEX>
+ 154:	0007a683          	lw	a3,0(a5)
+ 158:	0407c737          	lui	a4,0x407c
+ 15c:	fec42783          	lw	a5,-20(s0)
+ 160:	00f707b3          	add	a5,a4,a5
+ 164:	00078713          	mv	a4,a5
+ 168:	0ff6f793          	zext.b	a5,a3
+ 16c:	00f70023          	sb	a5,0(a4) # 407c000 <BLANK_TILE+0x2fffc>
+ 170:	0404b797          	auipc	a5,0x404b
+ 174:	f9078793          	addi	a5,a5,-112 # 404b100 <BLANK_TILE_INDEX>
+ 178:	0007a783          	lw	a5,0(a5)
+ 17c:	4087d693          	srai	a3,a5,0x8
+ 180:	0407c737          	lui	a4,0x407c
+ 184:	fec42783          	lw	a5,-20(s0)
+ 188:	00f707b3          	add	a5,a4,a5
+ 18c:	00178793          	addi	a5,a5,1
+ 190:	00078713          	mv	a4,a5
+ 194:	0ff6f793          	zext.b	a5,a3
+ 198:	00f70023          	sb	a5,0(a4) # 407c000 <BLANK_TILE+0x2fffc>
+ 19c:	fec42783          	lw	a5,-20(s0)
+ 1a0:	00278793          	addi	a5,a5,2
+ 1a4:	fef42623          	sw	a5,-20(s0)
+ 1a8:	fec42703          	lw	a4,-20(s0)
+ 1ac:	4af00793          	li	a5,1199
+ 1b0:	f2e7dee3          	bge	a5,a4,ec <init_maps+0x14>
+ 1b4:	fe042423          	sw	zero,-24(s0)
+ 1b8:	0680006f          	j	220 <init_maps+0x148>
+ 1bc:	0404b797          	auipc	a5,0x404b
+ 1c0:	f4478793          	addi	a5,a5,-188 # 404b100 <BLANK_TILE_INDEX>
+ 1c4:	0007a683          	lw	a3,0(a5)
+ 1c8:	0407c7b7          	lui	a5,0x407c
+ 1cc:	4b078713          	addi	a4,a5,1200 # 407c4b0 <BLANK_TILE+0x304ac>
+ 1d0:	fe842783          	lw	a5,-24(s0)
+ 1d4:	00f707b3          	add	a5,a4,a5
+ 1d8:	00078713          	mv	a4,a5
+ 1dc:	0ff6f793          	zext.b	a5,a3
+ 1e0:	00f70023          	sb	a5,0(a4)
+ 1e4:	0404b797          	auipc	a5,0x404b
+ 1e8:	f1c78793          	addi	a5,a5,-228 # 404b100 <BLANK_TILE_INDEX>
+ 1ec:	0007a783          	lw	a5,0(a5)
+ 1f0:	4087d693          	srai	a3,a5,0x8
+ 1f4:	0407c7b7          	lui	a5,0x407c
+ 1f8:	4b078713          	addi	a4,a5,1200 # 407c4b0 <BLANK_TILE+0x304ac>
+ 1fc:	fe842783          	lw	a5,-24(s0)
+ 200:	00f707b3          	add	a5,a4,a5
+ 204:	00178793          	addi	a5,a5,1
+ 208:	00078713          	mv	a4,a5
+ 20c:	0ff6f793          	zext.b	a5,a3
+ 210:	00f70023          	sb	a5,0(a4)
+ 214:	fe842783          	lw	a5,-24(s0)
+ 218:	00278793          	addi	a5,a5,2
+ 21c:	fef42423          	sw	a5,-24(s0)
+ 220:	fe842703          	lw	a4,-24(s0)
+ 224:	4af00793          	li	a5,1199
+ 228:	f8e7dae3          	bge	a5,a4,1bc <init_maps+0xe4>
+ 22c:	00000013          	nop
+ 230:	00000013          	nop
+ 234:	01c12403          	lw	s0,28(sp)
+ 238:	02010113          	addi	sp,sp,32
+ 23c:	00008067          	ret
 
-000001e0 <main>:
- 1e0:	ff010113          	addi	sp,sp,-16
- 1e4:	00112623          	sw	ra,12(sp)
- 1e8:	00812423          	sw	s0,8(sp)
- 1ec:	01010413          	addi	s0,sp,16
- 1f0:	e25ff0ef          	jal	ra,14 <init_tileset>
- 1f4:	ee5ff0ef          	jal	ra,d8 <init_maps>
- 1f8:	0404b797          	auipc	a5,0x404b
- 1fc:	f0c78793          	addi	a5,a5,-244 # 404b104 <JOYPAD_0>
- 200:	0007a783          	lw	a5,0(a5)
- 204:	00078693          	mv	a3,a5
- 208:	0406b7b7          	lui	a5,0x406b
- 20c:	00278793          	addi	a5,a5,2 # 406b002 <BLANK_TILE+0x1effe>
- 210:	00078713          	mv	a4,a5
- 214:	0006c783          	lbu	a5,0(a3)
- 218:	0ff7f793          	zext.b	a5,a5
- 21c:	00f70023          	sb	a5,0(a4)
- 220:	fd9ff06f          	j	1f8 <main+0x18>
+00000240 <main>:
+ 240:	ff010113          	addi	sp,sp,-16
+ 244:	00112623          	sw	ra,12(sp)
+ 248:	00812423          	sw	s0,8(sp)
+ 24c:	01010413          	addi	s0,sp,16
+ 250:	dc5ff0ef          	jal	ra,14 <init_tileset>
+ 254:	e85ff0ef          	jal	ra,d8 <init_maps>
+ 258:	0404b797          	auipc	a5,0x404b
+ 25c:	eac78793          	addi	a5,a5,-340 # 404b104 <JOYPAD_0>
+ 260:	0007a783          	lw	a5,0(a5)
+ 264:	0007c783          	lbu	a5,0(a5)
+ 268:	0ff7f793          	zext.b	a5,a5
+ 26c:	0406b737          	lui	a4,0x406b
+ 270:	00270713          	addi	a4,a4,2 # 406b002 <BLANK_TILE+0x1effe>
+ 274:	0017f793          	andi	a5,a5,1
+ 278:	0ff7f793          	zext.b	a5,a5
+ 27c:	00f70023          	sb	a5,0(a4)
+ 280:	fd9ff06f          	j	258 <main+0x18>
 
 ============================
 
@@ -156,28 +180,28 @@ test_sprite/test_sprite.elf:     format de fichier elf32-littleriscv
 
 SYMBOL TABLE:
 00000000 l    d  .text	00000000 .text
-00000224 l    d  .rodata	00000000 .rodata
+00000284 l    d  .rodata	00000000 .rodata
 0404b000 l    d  .data	00000000 .data
 0404c000 l    d  .bss	00000000 .bss
 00000000 l    d  .riscv.attributes	00000000 .riscv.attributes
 00000000 l    d  .comment	00000000 .comment
 00000000 l    df *ABS*	00000000 boot.o
 00000000 l    df *ABS*	00000000 test_sprite.c
-00000224 l     O .rodata	00000004 FB_ADDR
-00000228 l     O .rodata	00000004 TILESET_ADDR
-0000022c l     O .rodata	00000004 MAP_INDEX
-00000230 l     O .rodata	00000004 MAP_0_ADDR
-00000234 l     O .rodata	00000960 MAP_0
-00000b94 l     O .rodata	00000960 MAP_1
-000014f4 l     O .rodata	00000004 MAP_1_ADDR
+00000284 l     O .rodata	00000004 FB_ADDR
+00000288 l     O .rodata	00000004 TILESET_ADDR
+0000028c l     O .rodata	00000004 MAP_INDEX
+00000290 l     O .rodata	00000004 MAP_0_ADDR
+00000294 l     O .rodata	00000960 MAP_0
+00000bf4 l     O .rodata	00000960 MAP_1
+00001554 l     O .rodata	00000004 MAP_1_ADDR
 0404c000 l     O .bss	00000004 FUNKY_TILE_INDEX
 0404b000 l     O .data	00000100 FUNKY_TILE
 0404b100 l     O .data	00000004 BLANK_TILE_INDEX
 0404c004 l     O .bss	00000100 BLANK_TILE
 0404b104 l     O .data	00000004 JOYPAD_0
 00000000 g       .text	00000000 _boot
-000001e0 g     F .text	00000044 main
-000000d8 g     F .text	00000108 init_maps
+00000240 g     F .text	00000044 main
+000000d8 g     F .text	00000168 init_maps
 00000014 g     F .text	000000c4 init_tileset
 
 

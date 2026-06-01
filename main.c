@@ -170,8 +170,10 @@ int main(int argc, char** argv)
         int col; 
         for(int i = 0; i < 240*160; i++)
         {
-            col = (COLORSPAL[cpu.bus->framebuffer[i] & 0x1F] << 8) | 0xFF;
-            gFrameBuffer[i] = col;
+            int c = COLORSPAL[cpu.bus->framebuffer[i] & 0x1F];
+            
+
+            gFrameBuffer[i] = (((c & 0xFF0000) << 8) | ((c & 0x00FF00) << 8) | ((c & 0x0000FF) << 8) | 0xFF);
         }
         char* pix;
         int pitch;
