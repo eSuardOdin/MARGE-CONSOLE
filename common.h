@@ -45,7 +45,8 @@
 // --- System Registers ---
 // Defines wich map is to be printed
 #define MAP_INDEX           0x0406B002
-
+#define SCROLL_X            0x0406B003 // Scroll of BG (X OFFSET)
+#define SCROLL_Y            0x0406B004 // Scroll of BG (Y OFFSET)
 extern const int COLORSPAL[32];
 
 
