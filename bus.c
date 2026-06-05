@@ -15,6 +15,12 @@ int init_bus(bus_t* bus, cartridge_t* cart)
     bus->controller = 0;
     // Init map index
     bus->map_index = 0;
+
+    // Init scroll registers
+    bus->scroll_x = bus->scroll_y = 0;
+
+    // Init frame counter
+    bus->frame_counter = 0;
     return 0;
 }
 
@@ -56,10 +62,27 @@ uint8_t read_memory(bus_t* bus, int32_t addr)
             return bus->controller;
         }
         // Get map index
-        if(addr == MAP_INDEX)
+        else if(addr == MAP_INDEX)
         {
             return bus->map_index;
         }
+        // Get scroll X register
+        else if(addr == SCROLL_X)
+        {
+            return bus->scroll_x;
+        }
+        // Get scroll Y register
+        else if(addr == SCROLL_Y)
+        {
+            return bus->scroll_y;
+        }
+        // Get current frame
+        else if(addr == FRAME_COUNTER)
+        {
+            return bus->frame_counter;
+        }
+
+
     }
 
     // If reading from tileset memory
@@ -120,6 +143,20 @@ void write_memory(bus_t* bus, uint8_t data, int32_t addr)
         else if(addr == MAP_INDEX)
         {
             bus->map_index = data;
+        }
+        // Set scroll X register
+        else if(addr == SCROLL_X)
+        {
+            bus->scroll_x = data;
+        }
+        // Set scroll Y register
+        else if(addr == SCROLL_Y)
+        {
+            bus->scroll_y = data;
+        }
+        else if(addr == FRAME_COUNTER)
+        {
+            bus->frame_counter = data;
         }
     }
 

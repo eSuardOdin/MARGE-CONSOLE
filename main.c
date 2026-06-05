@@ -183,9 +183,11 @@ int main(int argc, char** argv)
         SDL_UpdateTexture(texture, NULL, gFrameBuffer, width * sizeof(int));
         SDL_RenderCopy(renderer, texture, NULL, NULL);
         SDL_RenderPresent(renderer);
+        // Increment frame counter
+        int current_frame = read_memory(&bus, FRAME_COUNTER);
+        write_memory(&bus, current_frame+1, FRAME_COUNTER);
+
         
-
-
         // Wait in order to get to 60 FPS
         // int elapsed_ms = SDL_GetTicks64() - sdl_start;
         //if(elapsed_ms < 1000 / FPS_TARGET)

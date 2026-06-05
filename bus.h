@@ -23,12 +23,14 @@ typedef struct bus_t
     uint8_t         controller;
     // --- System registers ---
     uint8_t         map_index;
-
+    uint8_t         scroll_x;
+    uint8_t         scroll_y;
+    uint8_t         frame_counter;
 
     // Tiles the console can display, stored as an 8x8 array of color indexes
     uint8_t         tileset[0x10000];
-    // Collection of 64 screen of 30x20 tiles indexes ( )
-    uint8_t         maps[0x12C00];
+    // Collection of 64 screen of 64 * 64 tiles indexes (  )
+    uint8_t         maps[MAP_BYTES];
 
 } bus_t;
 
