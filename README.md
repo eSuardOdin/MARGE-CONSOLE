@@ -1,6 +1,11 @@
 # MARGE-CONSOLE
 
 
+# To do
+- Some values stored in console's memory need more than 8 bit, define what to do with them: May need to implement functions in the custom lib to access/write these values (GetScrollX() -> Get the 16bit scrollX value)
+- 
+
+
 
 ## Testing the CPU
 

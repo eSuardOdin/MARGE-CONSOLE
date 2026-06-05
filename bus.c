@@ -177,17 +177,17 @@ void write_memory(bus_t* bus, uint8_t data, int32_t addr)
 
 
 
-int dump_memory(bus_t* bus, int start, int size)
-{
-    for(int i = start; i < start + size; i += 4)
-    {
-        printf("[0x%08X] %02X %02X %02X %02X\n",
-            i,
-            read_memory(bus, i),
-            read_memory(bus, i+1),
-            read_memory(bus, i+2),
-            read_memory(bus, i+3));
-    }
+// int dump_memory(bus_t* bus, int start, int size)
+// {
+//     for(int i = start; i < start + size; i += 4)
+//     {
+//         printf("[0x%08X] %02X %02X %02X %02X\n",
+//             i,
+//             read_memory(bus, i),
+//             read_memory(bus, i+1),
+//             read_memory(bus, i+2),
+//             read_memory(bus, i+3));
+//     }
 
-    return 0;
-}
+//     return 0;
+// }

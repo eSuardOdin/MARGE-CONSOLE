@@ -3,7 +3,6 @@
 
 #include "common.h"
 #include "cartridge.h"
-#include <stdint.h>
 
 /**
  * @brief This struct is only the to abstract the communication between CPU (or other chips)
@@ -49,7 +48,7 @@ void write_memory(bus_t* bus, uint8_t data, int32_t addr);
  * @param size Number of adresses to dump
  * @return int status
  */
-int dump_memory(bus_t* bus, int start, int size); 
+// int dump_memory(bus_t* bus, int start, int size); 
 
 
 #endif

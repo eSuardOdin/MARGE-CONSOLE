@@ -61,7 +61,7 @@ void init_maps()
 {
     for(int i = 0; i < 64*64*2; i+=2)
     {
-        if(!(i % 5))
+        if(!(i % 8))
         {
             *(volatile unsigned char*)(MAP_0_ADDR + i) =     FUNKY_TILE_INDEX & 0xFF;
             *(volatile unsigned char*)(MAP_0_ADDR + i + 1) = (FUNKY_TILE_INDEX >> 8) & 0xFF;

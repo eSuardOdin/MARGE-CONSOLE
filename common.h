@@ -14,6 +14,8 @@
 
 #define SCREEN_WIDTH        240
 #define SCREEN_HEIGHT       160
+#define SCALE               3
+
 
 // --- CPU SPECS ---
 #define FREQUENCY_MHZ       16800000

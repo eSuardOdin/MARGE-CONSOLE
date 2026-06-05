@@ -95,17 +95,17 @@ int main(int argc, char** argv)
     SDL_Renderer *renderer;
 	SDL_Window *window;
     SDL_Texture *texture;
-    int gFrameBuffer[240*160];
-    int width   = 240;
-    int height  = 160;
+    int width   = SCREEN_WIDTH*SCALE;
+    int height  = SCREEN_HEIGHT*SCALE;
+    int gFrameBuffer[width*height];
 
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_AUDIO))
         return EXIT_FAILURE;
     // Create Window
-    window = SDL_CreateWindow("CPU Display test", 
+    window = SDL_CreateWindow("MARGE", 
         SDL_WINDOWPOS_CENTERED, 
         SDL_WINDOWPOS_CENTERED, 
-        width, height, 0);
+        width,height, 0);
     if(window == NULL)
 	{
 		SDL_Quit();
@@ -170,10 +170,21 @@ int main(int argc, char** argv)
         int col; 
         for(int i = 0; i < 240*160; i++)
         {
-            int c = COLORSPAL[cpu.bus->framebuffer[i] & 0x1F];
-            
-
-            gFrameBuffer[i] = (((c & 0xFF0000) << 8) | ((c & 0x00FF00) << 8) | ((c & 0x0000FF) << 8) | 0xFF);
+            // Scale the display
+            for(int x = 0; x < SCALE; x++)
+            {
+                for(int y = 0; y < SCALE; y++)
+                {
+                    int srcX = i % SCREEN_WIDTH;
+                    int srcY = i / SCREEN_WIDTH;
+                    int destX = srcX * SCALE;
+                    int destY = srcY * SCALE;
+                    // pixels[(destY + y) * Width * Scale + (destX+x)] = BGPalette[FrameBuffer[i]];
+                    int c = COLORSPAL[cpu.bus->framebuffer[i] & 0x1F];
+                    gFrameBuffer[( destY + y) * SCREEN_WIDTH * SCALE + (destX + x)] = (((c & 0xFF0000) << 8) | ((c & 0x00FF00) << 8) | ((c & 0x0000FF) << 8) | 0xFF);
+                    //(destY + y) * Width * Scale + (destX+x)
+                }
+            }
         }
         char* pix;
         int pitch;
@@ -203,6 +214,6 @@ int main(int argc, char** argv)
     }
 
 
-    dump_memory(cpu.bus, 0, 0x100);
+    // dump_memory(cpu.bus, 0, 0x100);
     return 0;
 }

@@ -3,6 +3,7 @@
 
 #include "bus.h"
 #include "common.h"
+#include "object.h"
 #include <string.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
@@ -15,5 +16,5 @@
 
 
 void display_map(bus_t* bus, SDL_Renderer* renderer, SDL_Texture* texture);
-
+void display_objects(bus_t* bus, SDL_Renderer* renderer, SDL_Texture* texture);
 #endif
