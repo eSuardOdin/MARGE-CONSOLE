@@ -1,6 +1,7 @@
 #include "display.h"
 #include "bus.h"
 #include "common.h"
+#include "object.h"
 #include <string.h>
 
 
@@ -43,5 +44,8 @@ void display_map(bus_t* bus, SDL_Renderer* renderer, SDL_Texture* texture)
 
 void display_objects(bus_t* bus, SDL_Renderer* renderer, SDL_Texture* texture)
 {
-    
+    for(int object = 0; object < OBJECT_NUMBER; object++)
+    {
+        object_t* obj = memcpy(obj, bus->oam + object*sizeof(object_t), sizeof(object_t));
+    }
 }

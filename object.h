@@ -20,26 +20,14 @@
 
 // X and Y offset, if object is (12,38), he is displayed as (-20, 6)
 #define OFFSET            0x20
-
-/*
-8x8
-8x16
-8x32
-
-16x8
-16x16
-16x32
-
-32x8
-32x16
-32x32
-*/
+#define OBJECT_NUMBER     0x40
 
 typedef struct object_t
 {
     uint16_t x_pos;
     uint16_t y_pos;
     uint16_t tile_index;
+    uint16_t animation_sprites;
     uint16_t flags; // TBD
 } object_t;
 

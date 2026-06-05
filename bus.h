@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "cartridge.h"
+#include "object.h"
 
 /**
  * @brief This struct is only the to abstract the communication between CPU (or other chips)
@@ -30,6 +31,8 @@ typedef struct bus_t
     uint8_t         tileset[0x10000];
     // Collection of 64 screen of 64 * 64 tiles indexes (  )
     uint8_t         maps[MAP_BYTES];
+
+    uint8_t         oam[OBJECT_NUMBER * sizeof(object_t)];
 
 } bus_t;
 

@@ -31,6 +31,8 @@
 #define IO_OFST             0x0406B000
 #define TILESET_OFST        0x0406C000
 #define MAPS_OFST           0x0407C000
+
+#define OAM_OFST            0x040FC000
 #define STACK_OFST          0x0FFFFFFF // To be defined
 
 
@@ -54,9 +56,8 @@
 #define FRAME_COUNTER       0x0406B0F0
 
 
-
 // --- Utility ---
-#define MAP_BYTES           0x80000       
+#define MAP_BYTES           0x80000   
 
 extern const int COLORSPAL[32];
 
