@@ -46,6 +46,13 @@ void display_objects(bus_t* bus, SDL_Renderer* renderer, SDL_Texture* texture)
 {
     for(int object = 0; object < OBJECT_NUMBER; object++)
     {
+        //if(object) break;
         object_t* obj = memcpy(obj, bus->oam + object*sizeof(object_t), sizeof(object_t));
+        printf("Object n°%d:\n\
+            X: %d\n\
+            Y: %d\n\
+            Tile index: %d\n\
+            Animation sprites: %d\n\
+            Flags: %d\n\n", object, obj->x_pos, obj->y_pos, obj->tile_index, obj->animation_sprites, obj->flags);
     }
 }

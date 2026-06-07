@@ -1,4 +1,7 @@
 static const int  FRAME_COUNTER = 0x0406B0F0;
+static const int OAM_ADDR = 0x040FC000;
+static const int OBJ_SIZE = 0xA;
+static const int OBJ_NUMBER = 0x40;
 
 static const int FB_ADDR = 0x04000000;
 static const int SCROLL_X = 0x0406B004;
@@ -42,7 +45,6 @@ static int BLANK_TILE[64] = {
 static int JOYPAD_0 = 0x0406B000;
 
 
-// awfull but fuck it
 void init_tileset()
 {
     for(int i = 0; i < 64; i++)
@@ -82,10 +84,47 @@ void init_maps()
 
 
 
+void store_sixteenth(int data, int addr)
+{
+    *(volatile unsigned char*)(addr)   = data & 0xFF;
+    *(volatile unsigned char*)(addr+1) = (data & 0xFF00) >> 8;
+}
+
+
+int store_object(int x, 
+    int y, 
+    int tile_index, 
+    int animation_sprites, 
+    int flags,
+    int base_addr)
+{
+    store_sixteenth(x, base_addr);
+    store_sixteenth(y, base_addr+2);
+    store_sixteenth(tile_index, base_addr+4);
+    store_sixteenth(animation_sprites, base_addr+6);
+    store_sixteenth(flags, base_addr+8);
+
+    return base_addr + OBJ_SIZE;
+}
+
+
+
+void init_objects()
+{
+    int base_addr = OAM_ADDR;
+    int new_addr;
+    for(int i = 0; i < OBJ_NUMBER; i++)
+    {
+        new_addr = store_object(i+3, i*2, i+24, i%5, i, base_addr);
+        base_addr = new_addr;
+    }
+}
+
 int main() {
 
     init_tileset();
     init_maps();
+    init_objects();
     int joypad;
     int current_sx;
     int saved_frame = 0;

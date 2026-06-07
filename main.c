@@ -214,6 +214,6 @@ int main(int argc, char** argv)
     }
 
 
-    // dump_memory(cpu.bus, 0, 0x100);
+    display_objects(&bus, renderer, texture);
     return 0;
 }
