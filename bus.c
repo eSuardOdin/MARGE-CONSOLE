@@ -1,6 +1,7 @@
 #include "bus.h"
 #include "cartridge.h"
 #include "common.h"
+#include "object.h"
 
 
 int init_bus(bus_t* bus, cartridge_t* cart)
@@ -21,6 +22,12 @@ int init_bus(bus_t* bus, cartridge_t* cart)
 
     // Init frame counter
     bus->frame_counter = 0;
+
+    // Init OAM
+    for(int i = 0; i < OBJECT_NUMBER * sizeof(object_t); i++)
+    {
+        bus->oam[i] = 0;
+    }
     return 0;
 }
 
@@ -96,6 +103,12 @@ uint8_t read_memory(bus_t* bus, int32_t addr)
     {
         return bus->maps[addr - MAPS_OFST];
     }
+
+    // Reading from OAM memory
+    else if(addr >= OAM_OFST && addr < STACK_OFST)
+    {
+        return bus->oam[addr - OAM_OFST];
+    }
     
     // If data could not be retreived, send garbage.
     return 0xFF;
@@ -170,6 +183,11 @@ void write_memory(bus_t* bus, uint8_t data, int32_t addr)
     else if (addr >= MAPS_OFST && addr < STACK_OFST)
     {
         bus->maps[addr - MAPS_OFST] = data;
+    }
+    // Writing in OAM memory
+    else if(addr >= OAM_OFST && addr < STACK_OFST)
+    {
+        bus->oam[addr - OAM_OFST] = data;
     }
 
 }

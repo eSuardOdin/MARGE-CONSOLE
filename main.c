@@ -166,7 +166,9 @@ int main(int argc, char** argv)
         
 
         // *** rendering logic ***
-        display_map(&bus, renderer, texture);
+        display_map(&bus);
+        display_objects(&bus);
+
         int col; 
         for(int i = 0; i < 240*160; i++)
         {
@@ -214,6 +216,5 @@ int main(int argc, char** argv)
     }
 
 
-    display_objects(&bus, renderer, texture);
     return 0;
 }

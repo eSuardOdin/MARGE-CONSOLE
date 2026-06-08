@@ -63,16 +63,16 @@ void init_maps()
 {
     for(int i = 0; i < 64*64*2; i+=2)
     {
-        if(!(i % 8))
-        {
-            *(volatile unsigned char*)(MAP_0_ADDR + i) =     FUNKY_TILE_INDEX & 0xFF;
-            *(volatile unsigned char*)(MAP_0_ADDR + i + 1) = (FUNKY_TILE_INDEX >> 8) & 0xFF;
-        }
-        else
-        {
+        // if(!(i % 8))
+        // {
+        //     *(volatile unsigned char*)(MAP_0_ADDR + i) =     FUNKY_TILE_INDEX & 0xFF;
+        //     *(volatile unsigned char*)(MAP_0_ADDR + i + 1) = (FUNKY_TILE_INDEX >> 8) & 0xFF;
+        // }
+        // else
+        // {
             *(volatile unsigned char*)(MAP_0_ADDR + i) = BLANK_TILE_INDEX & 0xFF;
             *(volatile unsigned char*)(MAP_0_ADDR + i + 1) = (BLANK_TILE_INDEX >> 8) & 0xFF;
-        }
+        // }
     }
 
     for(int i = 0; i < 64*64*2; i+=2)
@@ -113,11 +113,33 @@ void init_objects()
 {
     int base_addr = OAM_ADDR;
     int new_addr;
-    for(int i = 0; i < OBJ_NUMBER; i++)
-    {
-        new_addr = store_object(i+3, i*2, i+24, i%5, i, base_addr);
-        base_addr = new_addr;
-    }
+    // for(int i = 0; i < OBJ_NUMBER; i++)
+    // {
+    //     new_addr = store_object(i+3, i*2, i+24, i%5, i, base_addr);
+    //     base_addr = new_addr;
+    // }
+
+    new_addr = store_object(36, 36, 0, 0, 0, base_addr);
+    base_addr = new_addr;
+    new_addr = store_object(128, 74, 1, 2, 0x4, base_addr);
+    base_addr = new_addr;
+    new_addr = store_object(128, 74, 1, 2, 0x8, base_addr);
+    base_addr = new_addr;
+
+    new_addr = store_object(128, 74, 1, 2, 0xC, base_addr);
+    base_addr = new_addr;
+    new_addr = store_object(128, 74, 1, 2, 0x10, base_addr);
+    base_addr = new_addr;
+    new_addr = store_object(128, 74, 1, 2, 0x14, base_addr);
+    base_addr = new_addr;
+
+    new_addr = store_object(128, 74, 1, 2, 0x18, base_addr);
+    base_addr = new_addr;
+    new_addr = store_object(128, 74, 1, 2, 0x1C, base_addr);
+    base_addr = new_addr;
+    new_addr = store_object(128, 74, 1, 2, 0x20, base_addr);
+    base_addr = new_addr;
+
 }
 
 int main() {

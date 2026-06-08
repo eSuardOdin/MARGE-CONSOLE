@@ -6,8 +6,8 @@ Déassemblage de la section .text :
 
 00000000 <_boot>:
    0:	03ff0137          	lui	sp,0x3ff0
-   4:	fff10113          	addi	sp,sp,-1 # 3feffff <MAP_1_ADDR+0x3fe7b13>
-   8:	3b0000ef          	jal	ra,3b8 <main>
+   4:	fff10113          	addi	sp,sp,-1 # 3feffff <MAP_1_ADDR+0x3fe7a6b>
+   8:	458000ef          	jal	ra,460 <main>
    c:	00100073          	ebreak
   10:	0000006f          	j	10 <_boot+0x10>
 
@@ -67,261 +67,303 @@ Déassemblage de la section .text :
   dc:	00812e23          	sw	s0,28(sp)
   e0:	02010413          	addi	s0,sp,32
   e4:	fe042623          	sw	zero,-20(s0)
-  e8:	0c00006f          	j	1a8 <init_maps+0xd0>
-  ec:	fec42783          	lw	a5,-20(s0)
-  f0:	0077f793          	andi	a5,a5,7
-  f4:	04079c63          	bnez	a5,14c <init_maps+0x74>
-  f8:	0404c797          	auipc	a5,0x404c
-  fc:	f0878793          	addi	a5,a5,-248 # 404c000 <FUNKY_TILE_INDEX>
- 100:	0007a683          	lw	a3,0(a5)
- 104:	0407c737          	lui	a4,0x407c
- 108:	fec42783          	lw	a5,-20(s0)
- 10c:	00f707b3          	add	a5,a4,a5
- 110:	00078713          	mv	a4,a5
- 114:	0ff6f793          	zext.b	a5,a3
- 118:	00f70023          	sb	a5,0(a4) # 407c000 <FUNKY_TILE_INDEX+0x30000>
- 11c:	0404c797          	auipc	a5,0x404c
- 120:	ee478793          	addi	a5,a5,-284 # 404c000 <FUNKY_TILE_INDEX>
- 124:	0007a783          	lw	a5,0(a5)
- 128:	4087d693          	srai	a3,a5,0x8
- 12c:	0407c737          	lui	a4,0x407c
- 130:	fec42783          	lw	a5,-20(s0)
- 134:	00f707b3          	add	a5,a4,a5
- 138:	00178793          	addi	a5,a5,1
- 13c:	00078713          	mv	a4,a5
- 140:	0ff6f793          	zext.b	a5,a3
- 144:	00f70023          	sb	a5,0(a4) # 407c000 <FUNKY_TILE_INDEX+0x30000>
- 148:	0540006f          	j	19c <init_maps+0xc4>
- 14c:	0404b797          	auipc	a5,0x404b
- 150:	fb478793          	addi	a5,a5,-76 # 404b100 <BLANK_TILE_INDEX>
- 154:	0007a683          	lw	a3,0(a5)
- 158:	0407c737          	lui	a4,0x407c
- 15c:	fec42783          	lw	a5,-20(s0)
- 160:	00f707b3          	add	a5,a4,a5
- 164:	00078713          	mv	a4,a5
- 168:	0ff6f793          	zext.b	a5,a3
- 16c:	00f70023          	sb	a5,0(a4) # 407c000 <FUNKY_TILE_INDEX+0x30000>
- 170:	0404b797          	auipc	a5,0x404b
- 174:	f9078793          	addi	a5,a5,-112 # 404b100 <BLANK_TILE_INDEX>
- 178:	0007a783          	lw	a5,0(a5)
- 17c:	4087d693          	srai	a3,a5,0x8
- 180:	0407c737          	lui	a4,0x407c
- 184:	fec42783          	lw	a5,-20(s0)
- 188:	00f707b3          	add	a5,a4,a5
- 18c:	00178793          	addi	a5,a5,1
- 190:	00078713          	mv	a4,a5
- 194:	0ff6f793          	zext.b	a5,a3
- 198:	00f70023          	sb	a5,0(a4) # 407c000 <FUNKY_TILE_INDEX+0x30000>
- 19c:	fec42783          	lw	a5,-20(s0)
- 1a0:	00278793          	addi	a5,a5,2
- 1a4:	fef42623          	sw	a5,-20(s0)
- 1a8:	fec42703          	lw	a4,-20(s0)
- 1ac:	000027b7          	lui	a5,0x2
- 1b0:	f2f74ee3          	blt	a4,a5,ec <init_maps+0x14>
- 1b4:	fe042423          	sw	zero,-24(s0)
- 1b8:	0600006f          	j	218 <init_maps+0x140>
- 1bc:	0404b797          	auipc	a5,0x404b
- 1c0:	f4478793          	addi	a5,a5,-188 # 404b100 <BLANK_TILE_INDEX>
- 1c4:	0007a683          	lw	a3,0(a5)
- 1c8:	0407e737          	lui	a4,0x407e
- 1cc:	fe842783          	lw	a5,-24(s0)
- 1d0:	00f707b3          	add	a5,a4,a5
- 1d4:	00078713          	mv	a4,a5
- 1d8:	0ff6f793          	zext.b	a5,a3
- 1dc:	00f70023          	sb	a5,0(a4) # 407e000 <FUNKY_TILE_INDEX+0x32000>
- 1e0:	0404b797          	auipc	a5,0x404b
- 1e4:	f2078793          	addi	a5,a5,-224 # 404b100 <BLANK_TILE_INDEX>
- 1e8:	0007a783          	lw	a5,0(a5)
- 1ec:	4087d693          	srai	a3,a5,0x8
- 1f0:	0407e737          	lui	a4,0x407e
- 1f4:	fe842783          	lw	a5,-24(s0)
- 1f8:	00f707b3          	add	a5,a4,a5
- 1fc:	00178793          	addi	a5,a5,1
- 200:	00078713          	mv	a4,a5
- 204:	0ff6f793          	zext.b	a5,a3
- 208:	00f70023          	sb	a5,0(a4) # 407e000 <FUNKY_TILE_INDEX+0x32000>
- 20c:	fe842783          	lw	a5,-24(s0)
- 210:	00278793          	addi	a5,a5,2
- 214:	fef42423          	sw	a5,-24(s0)
- 218:	fe842703          	lw	a4,-24(s0)
- 21c:	000027b7          	lui	a5,0x2
- 220:	f8f74ee3          	blt	a4,a5,1bc <init_maps+0xe4>
- 224:	00000013          	nop
- 228:	00000013          	nop
- 22c:	01c12403          	lw	s0,28(sp)
- 230:	02010113          	addi	sp,sp,32
- 234:	00008067          	ret
+  e8:	0600006f          	j	148 <init_maps+0x70>
+  ec:	0404b797          	auipc	a5,0x404b
+  f0:	01478793          	addi	a5,a5,20 # 404b100 <BLANK_TILE_INDEX>
+  f4:	0007a683          	lw	a3,0(a5)
+  f8:	0407c737          	lui	a4,0x407c
+  fc:	fec42783          	lw	a5,-20(s0)
+ 100:	00f707b3          	add	a5,a4,a5
+ 104:	00078713          	mv	a4,a5
+ 108:	0ff6f793          	zext.b	a5,a3
+ 10c:	00f70023          	sb	a5,0(a4) # 407c000 <FUNKY_TILE_INDEX+0x30000>
+ 110:	0404b797          	auipc	a5,0x404b
+ 114:	ff078793          	addi	a5,a5,-16 # 404b100 <BLANK_TILE_INDEX>
+ 118:	0007a783          	lw	a5,0(a5)
+ 11c:	4087d693          	srai	a3,a5,0x8
+ 120:	0407c737          	lui	a4,0x407c
+ 124:	fec42783          	lw	a5,-20(s0)
+ 128:	00f707b3          	add	a5,a4,a5
+ 12c:	00178793          	addi	a5,a5,1
+ 130:	00078713          	mv	a4,a5
+ 134:	0ff6f793          	zext.b	a5,a3
+ 138:	00f70023          	sb	a5,0(a4) # 407c000 <FUNKY_TILE_INDEX+0x30000>
+ 13c:	fec42783          	lw	a5,-20(s0)
+ 140:	00278793          	addi	a5,a5,2
+ 144:	fef42623          	sw	a5,-20(s0)
+ 148:	fec42703          	lw	a4,-20(s0)
+ 14c:	000027b7          	lui	a5,0x2
+ 150:	f8f74ee3          	blt	a4,a5,ec <init_maps+0x14>
+ 154:	fe042423          	sw	zero,-24(s0)
+ 158:	0600006f          	j	1b8 <init_maps+0xe0>
+ 15c:	0404b797          	auipc	a5,0x404b
+ 160:	fa478793          	addi	a5,a5,-92 # 404b100 <BLANK_TILE_INDEX>
+ 164:	0007a683          	lw	a3,0(a5)
+ 168:	0407e737          	lui	a4,0x407e
+ 16c:	fe842783          	lw	a5,-24(s0)
+ 170:	00f707b3          	add	a5,a4,a5
+ 174:	00078713          	mv	a4,a5
+ 178:	0ff6f793          	zext.b	a5,a3
+ 17c:	00f70023          	sb	a5,0(a4) # 407e000 <FUNKY_TILE_INDEX+0x32000>
+ 180:	0404b797          	auipc	a5,0x404b
+ 184:	f8078793          	addi	a5,a5,-128 # 404b100 <BLANK_TILE_INDEX>
+ 188:	0007a783          	lw	a5,0(a5)
+ 18c:	4087d693          	srai	a3,a5,0x8
+ 190:	0407e737          	lui	a4,0x407e
+ 194:	fe842783          	lw	a5,-24(s0)
+ 198:	00f707b3          	add	a5,a4,a5
+ 19c:	00178793          	addi	a5,a5,1
+ 1a0:	00078713          	mv	a4,a5
+ 1a4:	0ff6f793          	zext.b	a5,a3
+ 1a8:	00f70023          	sb	a5,0(a4) # 407e000 <FUNKY_TILE_INDEX+0x32000>
+ 1ac:	fe842783          	lw	a5,-24(s0)
+ 1b0:	00278793          	addi	a5,a5,2
+ 1b4:	fef42423          	sw	a5,-24(s0)
+ 1b8:	fe842703          	lw	a4,-24(s0)
+ 1bc:	000027b7          	lui	a5,0x2
+ 1c0:	f8f74ee3          	blt	a4,a5,15c <init_maps+0x84>
+ 1c4:	00000013          	nop
+ 1c8:	00000013          	nop
+ 1cc:	01c12403          	lw	s0,28(sp)
+ 1d0:	02010113          	addi	sp,sp,32
+ 1d4:	00008067          	ret
 
-00000238 <store_sixteenth>:
- 238:	fe010113          	addi	sp,sp,-32
- 23c:	00812e23          	sw	s0,28(sp)
- 240:	02010413          	addi	s0,sp,32
- 244:	fea42623          	sw	a0,-20(s0)
- 248:	feb42423          	sw	a1,-24(s0)
- 24c:	fe842783          	lw	a5,-24(s0)
- 250:	fec42703          	lw	a4,-20(s0)
- 254:	0ff77713          	zext.b	a4,a4
- 258:	00e78023          	sb	a4,0(a5) # 2000 <MAP_0+0x1b14>
- 25c:	fec42783          	lw	a5,-20(s0)
- 260:	4087d693          	srai	a3,a5,0x8
- 264:	fe842783          	lw	a5,-24(s0)
- 268:	00178793          	addi	a5,a5,1
- 26c:	00078713          	mv	a4,a5
- 270:	0ff6f793          	zext.b	a5,a3
- 274:	00f70023          	sb	a5,0(a4)
- 278:	00000013          	nop
- 27c:	01c12403          	lw	s0,28(sp)
- 280:	02010113          	addi	sp,sp,32
- 284:	00008067          	ret
+000001d8 <store_sixteenth>:
+ 1d8:	fe010113          	addi	sp,sp,-32
+ 1dc:	00812e23          	sw	s0,28(sp)
+ 1e0:	02010413          	addi	s0,sp,32
+ 1e4:	fea42623          	sw	a0,-20(s0)
+ 1e8:	feb42423          	sw	a1,-24(s0)
+ 1ec:	fe842783          	lw	a5,-24(s0)
+ 1f0:	fec42703          	lw	a4,-20(s0)
+ 1f4:	0ff77713          	zext.b	a4,a4
+ 1f8:	00e78023          	sb	a4,0(a5) # 2000 <MAP_0+0x1a6c>
+ 1fc:	fec42783          	lw	a5,-20(s0)
+ 200:	4087d693          	srai	a3,a5,0x8
+ 204:	fe842783          	lw	a5,-24(s0)
+ 208:	00178793          	addi	a5,a5,1
+ 20c:	00078713          	mv	a4,a5
+ 210:	0ff6f793          	zext.b	a5,a3
+ 214:	00f70023          	sb	a5,0(a4)
+ 218:	00000013          	nop
+ 21c:	01c12403          	lw	s0,28(sp)
+ 220:	02010113          	addi	sp,sp,32
+ 224:	00008067          	ret
 
-00000288 <store_object>:
- 288:	fd010113          	addi	sp,sp,-48
- 28c:	02112623          	sw	ra,44(sp)
- 290:	02812423          	sw	s0,40(sp)
- 294:	03010413          	addi	s0,sp,48
- 298:	fea42623          	sw	a0,-20(s0)
- 29c:	feb42423          	sw	a1,-24(s0)
- 2a0:	fec42223          	sw	a2,-28(s0)
- 2a4:	fed42023          	sw	a3,-32(s0)
- 2a8:	fce42e23          	sw	a4,-36(s0)
- 2ac:	fcf42c23          	sw	a5,-40(s0)
- 2b0:	fd842583          	lw	a1,-40(s0)
- 2b4:	fec42503          	lw	a0,-20(s0)
- 2b8:	f81ff0ef          	jal	ra,238 <store_sixteenth>
- 2bc:	fd842783          	lw	a5,-40(s0)
- 2c0:	00278793          	addi	a5,a5,2
- 2c4:	00078593          	mv	a1,a5
- 2c8:	fe842503          	lw	a0,-24(s0)
- 2cc:	f6dff0ef          	jal	ra,238 <store_sixteenth>
- 2d0:	fd842783          	lw	a5,-40(s0)
- 2d4:	00478793          	addi	a5,a5,4
- 2d8:	00078593          	mv	a1,a5
- 2dc:	fe442503          	lw	a0,-28(s0)
- 2e0:	f59ff0ef          	jal	ra,238 <store_sixteenth>
- 2e4:	fd842783          	lw	a5,-40(s0)
- 2e8:	00678793          	addi	a5,a5,6
- 2ec:	00078593          	mv	a1,a5
- 2f0:	fe042503          	lw	a0,-32(s0)
- 2f4:	f45ff0ef          	jal	ra,238 <store_sixteenth>
- 2f8:	fd842783          	lw	a5,-40(s0)
- 2fc:	00878793          	addi	a5,a5,8
- 300:	00078593          	mv	a1,a5
- 304:	fdc42503          	lw	a0,-36(s0)
- 308:	f31ff0ef          	jal	ra,238 <store_sixteenth>
- 30c:	00a00713          	li	a4,10
- 310:	fd842783          	lw	a5,-40(s0)
- 314:	00f707b3          	add	a5,a4,a5
- 318:	00078513          	mv	a0,a5
- 31c:	02c12083          	lw	ra,44(sp)
- 320:	02812403          	lw	s0,40(sp)
- 324:	03010113          	addi	sp,sp,48
- 328:	00008067          	ret
+00000228 <store_object>:
+ 228:	fd010113          	addi	sp,sp,-48
+ 22c:	02112623          	sw	ra,44(sp)
+ 230:	02812423          	sw	s0,40(sp)
+ 234:	03010413          	addi	s0,sp,48
+ 238:	fea42623          	sw	a0,-20(s0)
+ 23c:	feb42423          	sw	a1,-24(s0)
+ 240:	fec42223          	sw	a2,-28(s0)
+ 244:	fed42023          	sw	a3,-32(s0)
+ 248:	fce42e23          	sw	a4,-36(s0)
+ 24c:	fcf42c23          	sw	a5,-40(s0)
+ 250:	fd842583          	lw	a1,-40(s0)
+ 254:	fec42503          	lw	a0,-20(s0)
+ 258:	f81ff0ef          	jal	ra,1d8 <store_sixteenth>
+ 25c:	fd842783          	lw	a5,-40(s0)
+ 260:	00278793          	addi	a5,a5,2
+ 264:	00078593          	mv	a1,a5
+ 268:	fe842503          	lw	a0,-24(s0)
+ 26c:	f6dff0ef          	jal	ra,1d8 <store_sixteenth>
+ 270:	fd842783          	lw	a5,-40(s0)
+ 274:	00478793          	addi	a5,a5,4
+ 278:	00078593          	mv	a1,a5
+ 27c:	fe442503          	lw	a0,-28(s0)
+ 280:	f59ff0ef          	jal	ra,1d8 <store_sixteenth>
+ 284:	fd842783          	lw	a5,-40(s0)
+ 288:	00678793          	addi	a5,a5,6
+ 28c:	00078593          	mv	a1,a5
+ 290:	fe042503          	lw	a0,-32(s0)
+ 294:	f45ff0ef          	jal	ra,1d8 <store_sixteenth>
+ 298:	fd842783          	lw	a5,-40(s0)
+ 29c:	00878793          	addi	a5,a5,8
+ 2a0:	00078593          	mv	a1,a5
+ 2a4:	fdc42503          	lw	a0,-36(s0)
+ 2a8:	f31ff0ef          	jal	ra,1d8 <store_sixteenth>
+ 2ac:	00a00713          	li	a4,10
+ 2b0:	fd842783          	lw	a5,-40(s0)
+ 2b4:	00f707b3          	add	a5,a4,a5
+ 2b8:	00078513          	mv	a0,a5
+ 2bc:	02c12083          	lw	ra,44(sp)
+ 2c0:	02812403          	lw	s0,40(sp)
+ 2c4:	03010113          	addi	sp,sp,48
+ 2c8:	00008067          	ret
 
-0000032c <init_objects>:
- 32c:	fe010113          	addi	sp,sp,-32
- 330:	00112e23          	sw	ra,28(sp)
- 334:	00812c23          	sw	s0,24(sp)
- 338:	02010413          	addi	s0,sp,32
- 33c:	040fc7b7          	lui	a5,0x40fc
- 340:	fef42623          	sw	a5,-20(s0)
- 344:	fe042423          	sw	zero,-24(s0)
- 348:	04c0006f          	j	394 <init_objects+0x68>
- 34c:	fe842783          	lw	a5,-24(s0)
- 350:	00378513          	addi	a0,a5,3 # 40fc003 <FUNKY_TILE_INDEX+0xb0003>
+000002cc <init_objects>:
+ 2cc:	fe010113          	addi	sp,sp,-32
+ 2d0:	00112e23          	sw	ra,28(sp)
+ 2d4:	00812c23          	sw	s0,24(sp)
+ 2d8:	02010413          	addi	s0,sp,32
+ 2dc:	040fc7b7          	lui	a5,0x40fc
+ 2e0:	fef42623          	sw	a5,-20(s0)
+ 2e4:	fec42783          	lw	a5,-20(s0)
+ 2e8:	00000713          	li	a4,0
+ 2ec:	00000693          	li	a3,0
+ 2f0:	00000613          	li	a2,0
+ 2f4:	02400593          	li	a1,36
+ 2f8:	02400513          	li	a0,36
+ 2fc:	f2dff0ef          	jal	ra,228 <store_object>
+ 300:	fea42423          	sw	a0,-24(s0)
+ 304:	fe842783          	lw	a5,-24(s0)
+ 308:	fef42623          	sw	a5,-20(s0)
+ 30c:	fec42783          	lw	a5,-20(s0)
+ 310:	00400713          	li	a4,4
+ 314:	00200693          	li	a3,2
+ 318:	00100613          	li	a2,1
+ 31c:	04a00593          	li	a1,74
+ 320:	08000513          	li	a0,128
+ 324:	f05ff0ef          	jal	ra,228 <store_object>
+ 328:	fea42423          	sw	a0,-24(s0)
+ 32c:	fe842783          	lw	a5,-24(s0)
+ 330:	fef42623          	sw	a5,-20(s0)
+ 334:	fec42783          	lw	a5,-20(s0)
+ 338:	00800713          	li	a4,8
+ 33c:	00200693          	li	a3,2
+ 340:	00100613          	li	a2,1
+ 344:	04a00593          	li	a1,74
+ 348:	08000513          	li	a0,128
+ 34c:	eddff0ef          	jal	ra,228 <store_object>
+ 350:	fea42423          	sw	a0,-24(s0)
  354:	fe842783          	lw	a5,-24(s0)
- 358:	00179593          	slli	a1,a5,0x1
- 35c:	fe842783          	lw	a5,-24(s0)
- 360:	01878613          	addi	a2,a5,24
- 364:	fe842703          	lw	a4,-24(s0)
- 368:	00500793          	li	a5,5
- 36c:	02f766b3          	rem	a3,a4,a5
- 370:	fec42783          	lw	a5,-20(s0)
- 374:	fe842703          	lw	a4,-24(s0)
- 378:	f11ff0ef          	jal	ra,288 <store_object>
- 37c:	fea42223          	sw	a0,-28(s0)
- 380:	fe442783          	lw	a5,-28(s0)
- 384:	fef42623          	sw	a5,-20(s0)
- 388:	fe842783          	lw	a5,-24(s0)
- 38c:	00178793          	addi	a5,a5,1
- 390:	fef42423          	sw	a5,-24(s0)
- 394:	04000793          	li	a5,64
- 398:	fe842703          	lw	a4,-24(s0)
- 39c:	faf748e3          	blt	a4,a5,34c <init_objects+0x20>
- 3a0:	00000013          	nop
- 3a4:	00000013          	nop
- 3a8:	01c12083          	lw	ra,28(sp)
- 3ac:	01812403          	lw	s0,24(sp)
- 3b0:	02010113          	addi	sp,sp,32
- 3b4:	00008067          	ret
-
-000003b8 <main>:
- 3b8:	fe010113          	addi	sp,sp,-32
- 3bc:	00112e23          	sw	ra,28(sp)
- 3c0:	00812c23          	sw	s0,24(sp)
- 3c4:	02010413          	addi	s0,sp,32
- 3c8:	c4dff0ef          	jal	ra,14 <init_tileset>
- 3cc:	d0dff0ef          	jal	ra,d8 <init_maps>
- 3d0:	f5dff0ef          	jal	ra,32c <init_objects>
- 3d4:	fe042623          	sw	zero,-20(s0)
- 3d8:	fe042423          	sw	zero,-24(s0)
- 3dc:	0406b7b7          	lui	a5,0x406b
- 3e0:	0f078793          	addi	a5,a5,240 # 406b0f0 <FUNKY_TILE_INDEX+0x1f0f0>
- 3e4:	0007c783          	lbu	a5,0(a5)
- 3e8:	0ff7f793          	zext.b	a5,a5
- 3ec:	fef42423          	sw	a5,-24(s0)
- 3f0:	fec42703          	lw	a4,-20(s0)
+ 358:	fef42623          	sw	a5,-20(s0)
+ 35c:	fec42783          	lw	a5,-20(s0)
+ 360:	00c00713          	li	a4,12
+ 364:	00200693          	li	a3,2
+ 368:	00100613          	li	a2,1
+ 36c:	04a00593          	li	a1,74
+ 370:	08000513          	li	a0,128
+ 374:	eb5ff0ef          	jal	ra,228 <store_object>
+ 378:	fea42423          	sw	a0,-24(s0)
+ 37c:	fe842783          	lw	a5,-24(s0)
+ 380:	fef42623          	sw	a5,-20(s0)
+ 384:	fec42783          	lw	a5,-20(s0)
+ 388:	01000713          	li	a4,16
+ 38c:	00200693          	li	a3,2
+ 390:	00100613          	li	a2,1
+ 394:	04a00593          	li	a1,74
+ 398:	08000513          	li	a0,128
+ 39c:	e8dff0ef          	jal	ra,228 <store_object>
+ 3a0:	fea42423          	sw	a0,-24(s0)
+ 3a4:	fe842783          	lw	a5,-24(s0)
+ 3a8:	fef42623          	sw	a5,-20(s0)
+ 3ac:	fec42783          	lw	a5,-20(s0)
+ 3b0:	01400713          	li	a4,20
+ 3b4:	00200693          	li	a3,2
+ 3b8:	00100613          	li	a2,1
+ 3bc:	04a00593          	li	a1,74
+ 3c0:	08000513          	li	a0,128
+ 3c4:	e65ff0ef          	jal	ra,228 <store_object>
+ 3c8:	fea42423          	sw	a0,-24(s0)
+ 3cc:	fe842783          	lw	a5,-24(s0)
+ 3d0:	fef42623          	sw	a5,-20(s0)
+ 3d4:	fec42783          	lw	a5,-20(s0)
+ 3d8:	01800713          	li	a4,24
+ 3dc:	00200693          	li	a3,2
+ 3e0:	00100613          	li	a2,1
+ 3e4:	04a00593          	li	a1,74
+ 3e8:	08000513          	li	a0,128
+ 3ec:	e3dff0ef          	jal	ra,228 <store_object>
+ 3f0:	fea42423          	sw	a0,-24(s0)
  3f4:	fe842783          	lw	a5,-24(s0)
- 3f8:	fef702e3          	beq	a4,a5,3dc <main+0x24>
- 3fc:	fe842783          	lw	a5,-24(s0)
- 400:	fef42623          	sw	a5,-20(s0)
- 404:	0404b797          	auipc	a5,0x404b
- 408:	e0078793          	addi	a5,a5,-512 # 404b204 <JOYPAD_0>
- 40c:	0007a783          	lw	a5,0(a5)
- 410:	0007c783          	lbu	a5,0(a5)
- 414:	0ff7f793          	zext.b	a5,a5
- 418:	fef42223          	sw	a5,-28(s0)
- 41c:	fe442703          	lw	a4,-28(s0)
- 420:	00800793          	li	a5,8
- 424:	02f71c63          	bne	a4,a5,45c <main+0xa4>
- 428:	0406b7b7          	lui	a5,0x406b
- 42c:	00478793          	addi	a5,a5,4 # 406b004 <FUNKY_TILE_INDEX+0x1f004>
- 430:	0007c783          	lbu	a5,0(a5)
- 434:	0ff7f793          	zext.b	a5,a5
- 438:	fef42023          	sw	a5,-32(s0)
- 43c:	fe042783          	lw	a5,-32(s0)
- 440:	0ff7f793          	zext.b	a5,a5
- 444:	0406b737          	lui	a4,0x406b
- 448:	00470713          	addi	a4,a4,4 # 406b004 <FUNKY_TILE_INDEX+0x1f004>
- 44c:	00178793          	addi	a5,a5,1
- 450:	0ff7f793          	zext.b	a5,a5
- 454:	00f70023          	sb	a5,0(a4)
- 458:	0400006f          	j	498 <main+0xe0>
- 45c:	fe442703          	lw	a4,-28(s0)
- 460:	00200793          	li	a5,2
- 464:	02f71a63          	bne	a4,a5,498 <main+0xe0>
- 468:	0406b7b7          	lui	a5,0x406b
- 46c:	00478793          	addi	a5,a5,4 # 406b004 <FUNKY_TILE_INDEX+0x1f004>
- 470:	0007c783          	lbu	a5,0(a5)
- 474:	0ff7f793          	zext.b	a5,a5
- 478:	fef42023          	sw	a5,-32(s0)
- 47c:	fe042783          	lw	a5,-32(s0)
- 480:	0ff7f793          	zext.b	a5,a5
- 484:	0406b737          	lui	a4,0x406b
- 488:	00470713          	addi	a4,a4,4 # 406b004 <FUNKY_TILE_INDEX+0x1f004>
- 48c:	fff78793          	addi	a5,a5,-1
+ 3f8:	fef42623          	sw	a5,-20(s0)
+ 3fc:	fec42783          	lw	a5,-20(s0)
+ 400:	01c00713          	li	a4,28
+ 404:	00200693          	li	a3,2
+ 408:	00100613          	li	a2,1
+ 40c:	04a00593          	li	a1,74
+ 410:	08000513          	li	a0,128
+ 414:	e15ff0ef          	jal	ra,228 <store_object>
+ 418:	fea42423          	sw	a0,-24(s0)
+ 41c:	fe842783          	lw	a5,-24(s0)
+ 420:	fef42623          	sw	a5,-20(s0)
+ 424:	fec42783          	lw	a5,-20(s0)
+ 428:	02000713          	li	a4,32
+ 42c:	00200693          	li	a3,2
+ 430:	00100613          	li	a2,1
+ 434:	04a00593          	li	a1,74
+ 438:	08000513          	li	a0,128
+ 43c:	dedff0ef          	jal	ra,228 <store_object>
+ 440:	fea42423          	sw	a0,-24(s0)
+ 444:	fe842783          	lw	a5,-24(s0)
+ 448:	fef42623          	sw	a5,-20(s0)
+ 44c:	00000013          	nop
+ 450:	01c12083          	lw	ra,28(sp)
+ 454:	01812403          	lw	s0,24(sp)
+ 458:	02010113          	addi	sp,sp,32
+ 45c:	00008067          	ret
+
+00000460 <main>:
+ 460:	fe010113          	addi	sp,sp,-32
+ 464:	00112e23          	sw	ra,28(sp)
+ 468:	00812c23          	sw	s0,24(sp)
+ 46c:	02010413          	addi	s0,sp,32
+ 470:	ba5ff0ef          	jal	ra,14 <init_tileset>
+ 474:	c65ff0ef          	jal	ra,d8 <init_maps>
+ 478:	e55ff0ef          	jal	ra,2cc <init_objects>
+ 47c:	fe042623          	sw	zero,-20(s0)
+ 480:	fe042423          	sw	zero,-24(s0)
+ 484:	0406b7b7          	lui	a5,0x406b
+ 488:	0f078793          	addi	a5,a5,240 # 406b0f0 <FUNKY_TILE_INDEX+0x1f0f0>
+ 48c:	0007c783          	lbu	a5,0(a5)
  490:	0ff7f793          	zext.b	a5,a5
- 494:	00f70023          	sb	a5,0(a4)
- 498:	0404b797          	auipc	a5,0x404b
- 49c:	d6c78793          	addi	a5,a5,-660 # 404b204 <JOYPAD_0>
- 4a0:	0007a783          	lw	a5,0(a5)
- 4a4:	0007c783          	lbu	a5,0(a5)
- 4a8:	0ff7f793          	zext.b	a5,a5
- 4ac:	0406b737          	lui	a4,0x406b
- 4b0:	00270713          	addi	a4,a4,2 # 406b002 <FUNKY_TILE_INDEX+0x1f002>
- 4b4:	0017f793          	andi	a5,a5,1
- 4b8:	0ff7f793          	zext.b	a5,a5
- 4bc:	00f70023          	sb	a5,0(a4)
- 4c0:	f1dff06f          	j	3dc <main+0x24>
+ 494:	fef42423          	sw	a5,-24(s0)
+ 498:	fec42703          	lw	a4,-20(s0)
+ 49c:	fe842783          	lw	a5,-24(s0)
+ 4a0:	fef702e3          	beq	a4,a5,484 <main+0x24>
+ 4a4:	fe842783          	lw	a5,-24(s0)
+ 4a8:	fef42623          	sw	a5,-20(s0)
+ 4ac:	0404b797          	auipc	a5,0x404b
+ 4b0:	d5878793          	addi	a5,a5,-680 # 404b204 <JOYPAD_0>
+ 4b4:	0007a783          	lw	a5,0(a5)
+ 4b8:	0007c783          	lbu	a5,0(a5)
+ 4bc:	0ff7f793          	zext.b	a5,a5
+ 4c0:	fef42223          	sw	a5,-28(s0)
+ 4c4:	fe442703          	lw	a4,-28(s0)
+ 4c8:	00800793          	li	a5,8
+ 4cc:	02f71c63          	bne	a4,a5,504 <main+0xa4>
+ 4d0:	0406b7b7          	lui	a5,0x406b
+ 4d4:	00478793          	addi	a5,a5,4 # 406b004 <FUNKY_TILE_INDEX+0x1f004>
+ 4d8:	0007c783          	lbu	a5,0(a5)
+ 4dc:	0ff7f793          	zext.b	a5,a5
+ 4e0:	fef42023          	sw	a5,-32(s0)
+ 4e4:	fe042783          	lw	a5,-32(s0)
+ 4e8:	0ff7f793          	zext.b	a5,a5
+ 4ec:	0406b737          	lui	a4,0x406b
+ 4f0:	00470713          	addi	a4,a4,4 # 406b004 <FUNKY_TILE_INDEX+0x1f004>
+ 4f4:	00178793          	addi	a5,a5,1
+ 4f8:	0ff7f793          	zext.b	a5,a5
+ 4fc:	00f70023          	sb	a5,0(a4)
+ 500:	0400006f          	j	540 <main+0xe0>
+ 504:	fe442703          	lw	a4,-28(s0)
+ 508:	00200793          	li	a5,2
+ 50c:	02f71a63          	bne	a4,a5,540 <main+0xe0>
+ 510:	0406b7b7          	lui	a5,0x406b
+ 514:	00478793          	addi	a5,a5,4 # 406b004 <FUNKY_TILE_INDEX+0x1f004>
+ 518:	0007c783          	lbu	a5,0(a5)
+ 51c:	0ff7f793          	zext.b	a5,a5
+ 520:	fef42023          	sw	a5,-32(s0)
+ 524:	fe042783          	lw	a5,-32(s0)
+ 528:	0ff7f793          	zext.b	a5,a5
+ 52c:	0406b737          	lui	a4,0x406b
+ 530:	00470713          	addi	a4,a4,4 # 406b004 <FUNKY_TILE_INDEX+0x1f004>
+ 534:	fff78793          	addi	a5,a5,-1
+ 538:	0ff7f793          	zext.b	a5,a5
+ 53c:	00f70023          	sb	a5,0(a4)
+ 540:	0404b797          	auipc	a5,0x404b
+ 544:	cc478793          	addi	a5,a5,-828 # 404b204 <JOYPAD_0>
+ 548:	0007a783          	lw	a5,0(a5)
+ 54c:	0007c783          	lbu	a5,0(a5)
+ 550:	0ff7f793          	zext.b	a5,a5
+ 554:	0406b737          	lui	a4,0x406b
+ 558:	00270713          	addi	a4,a4,2 # 406b002 <FUNKY_TILE_INDEX+0x1f002>
+ 55c:	0017f793          	andi	a5,a5,1
+ 560:	0ff7f793          	zext.b	a5,a5
+ 564:	00f70023          	sb	a5,0(a4)
+ 568:	f1dff06f          	j	484 <main+0x24>
 
 ============================
 
@@ -330,37 +372,37 @@ oam/oam.elf:     format de fichier elf32-littleriscv
 
 SYMBOL TABLE:
 00000000 l    d  .text	00000000 .text
-000004c4 l    d  .rodata	00000000 .rodata
+0000056c l    d  .rodata	00000000 .rodata
 0404b000 l    d  .data	00000000 .data
 0404c000 l    d  .bss	00000000 .bss
 00000000 l    d  .riscv.attributes	00000000 .riscv.attributes
 00000000 l    d  .comment	00000000 .comment
 00000000 l    df *ABS*	00000000 boot.o
 00000000 l    df *ABS*	00000000 oam.c
-000004c4 l     O .rodata	00000004 FRAME_COUNTER
-000004c8 l     O .rodata	00000004 OAM_ADDR
-000004cc l     O .rodata	00000004 OBJ_SIZE
-000004d0 l     O .rodata	00000004 OBJ_NUMBER
-000004d4 l     O .rodata	00000004 FB_ADDR
-000004d8 l     O .rodata	00000004 SCROLL_X
-000004dc l     O .rodata	00000004 SCROLL_Y
-000004e0 l     O .rodata	00000004 TILESET_ADDR
-000004e4 l     O .rodata	00000004 MAP_INDEX
-000004e8 l     O .rodata	00000004 MAP_0_ADDR
-000004ec l     O .rodata	00004000 MAP_0
-000044ec l     O .rodata	00004000 MAP_1
-000084ec l     O .rodata	00000004 MAP_1_ADDR
+0000056c l     O .rodata	00000004 FRAME_COUNTER
+00000570 l     O .rodata	00000004 OAM_ADDR
+00000574 l     O .rodata	00000004 OBJ_SIZE
+00000578 l     O .rodata	00000004 OBJ_NUMBER
+0000057c l     O .rodata	00000004 FB_ADDR
+00000580 l     O .rodata	00000004 SCROLL_X
+00000584 l     O .rodata	00000004 SCROLL_Y
+00000588 l     O .rodata	00000004 TILESET_ADDR
+0000058c l     O .rodata	00000004 MAP_INDEX
+00000590 l     O .rodata	00000004 MAP_0_ADDR
+00000594 l     O .rodata	00004000 MAP_0
+00004594 l     O .rodata	00004000 MAP_1
+00008594 l     O .rodata	00000004 MAP_1_ADDR
 0404c000 l     O .bss	00000004 FUNKY_TILE_INDEX
 0404b000 l     O .data	00000100 FUNKY_TILE
 0404b100 l     O .data	00000004 BLANK_TILE_INDEX
 0404b104 l     O .data	00000100 BLANK_TILE
 0404b204 l     O .data	00000004 JOYPAD_0
-0000032c g     F .text	0000008c init_objects
+000002cc g     F .text	00000194 init_objects
 00000000 g       .text	00000000 _boot
-00000288 g     F .text	000000a4 store_object
-00000238 g     F .text	00000050 store_sixteenth
-000003b8 g     F .text	0000010c main
-000000d8 g     F .text	00000160 init_maps
+00000228 g     F .text	000000a4 store_object
+000001d8 g     F .text	00000050 store_sixteenth
+00000460 g     F .text	0000010c main
+000000d8 g     F .text	00000100 init_maps
 00000014 g     F .text	000000c4 init_tileset
 
 
