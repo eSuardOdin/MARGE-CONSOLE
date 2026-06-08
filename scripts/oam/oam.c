@@ -42,7 +42,6 @@ static int BLANK_TILE[64] = {
 };
 
 
-// Tile at index 1
 static int RED_TILE_INDEX = 2;
 static int RED_TILE[64] = {
     0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC,
@@ -55,22 +54,157 @@ static int RED_TILE[64] = {
     0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC
 };
 
+
+static int PINK_TILE_INDEX = 3;
+static int PINK_TILE[64] = {
+    0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB,
+    0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB,
+    0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB,
+    0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB,
+    0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB,
+    0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB,
+    0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB,
+    0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB
+};
+
+static int BLACK_TILE_INDEX = 4;
+static int BLACK_TILE[64] = {
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0
+};
+
+
+static int BLUE_TILE_INDEX = 5;
+static int BLUE_TILE[64] = {
+    0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4,
+    0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4,
+    0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4,
+    0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4,
+    0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4,
+    0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4,
+    0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4,
+    0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4
+};
+
+static int GREEN_TILE_INDEX = 6;
+static int GREEN_TILE[64] = {
+    0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11,
+    0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11,
+    0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11,
+    0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11,
+    0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11,
+    0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11,
+    0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11,
+    0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11
+};
 static int JOYPAD_0 = 0x0406B000;
 
 
 void init_tileset()
 {
+    int offset = 0;
     for(int i = 0; i < 64; i++)
     {
-        *(volatile unsigned char*)(TILESET_ADDR + i) = FUNKY_TILE[i];
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = FUNKY_TILE[i];
     }
+    offset+=64;
     for(int i = 0; i < 64; i++)
     {
-        *(volatile unsigned char*)(TILESET_ADDR + i + 64) = BLANK_TILE[i];
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = BLANK_TILE[i];
     }
+    offset+=64;
     for(int i = 0; i < 64; i++)
     {
-        *(volatile unsigned char*)(TILESET_ADDR + i + 128) = RED_TILE[i];
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = RED_TILE[i];
+    }
+    offset+=64;
+
+
+
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = PINK_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = BLACK_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = BLUE_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = GREEN_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = PINK_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = BLACK_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = BLUE_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = GREEN_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = PINK_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = BLACK_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = BLUE_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = GREEN_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = PINK_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = BLACK_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = BLUE_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = GREEN_TILE[i];
     }
 }
 
@@ -136,25 +270,44 @@ void init_objects()
     //     base_addr = new_addr;
     // }
 
-    new_addr = store_object(36, 36, 0, 0, 0, base_addr);
-    base_addr = new_addr;
-    new_addr = store_object(128, 74, 1, 2, 0x4, base_addr);
-    base_addr = new_addr;
-    new_addr = store_object(128, 74, 1, 2, 0x8, base_addr);
+    // 8x8 char
+    new_addr = store_object(36, 33, FUNKY_TILE_INDEX, 0, 0x0, base_addr);
     base_addr = new_addr;
 
-    new_addr = store_object(128, 74, 1, 2, 0xC, base_addr);
-    base_addr = new_addr;
-    new_addr = store_object(128, 74, 1, 2, 0x10, base_addr);
-    base_addr = new_addr;
-    new_addr = store_object(128, 74, 1, 2, 0x14, base_addr);
+    // 8x16 char
+    new_addr = store_object(128, 33, BLACK_TILE_INDEX, 0, 0x4, base_addr);
     base_addr = new_addr;
 
-    new_addr = store_object(128, 74, 1, 2, 0x18, base_addr);
+    // 8x32 char
+    new_addr = store_object(200, 33, BLACK_TILE_INDEX, 0, 0x8, base_addr);
     base_addr = new_addr;
-    new_addr = store_object(128, 74, 1, 2, 0x1C, base_addr);
+
+
+
+    // 16x8 char
+    new_addr = store_object(36, 75, BLACK_TILE_INDEX, 0, 0xC, base_addr);
     base_addr = new_addr;
-    new_addr = store_object(128, 74, 1, 2, 0x20, base_addr);
+
+    // 16x16 char
+    new_addr = store_object(128, 75, BLACK_TILE_INDEX, 0, 0x10, base_addr);
+    base_addr = new_addr;
+
+    // 16x32 char
+    new_addr = store_object(200, 75, BLACK_TILE_INDEX, 0, 0x14, base_addr);
+    base_addr = new_addr;
+
+
+
+    // 32x8 char
+    new_addr = store_object(36, 130, BLACK_TILE_INDEX, 0, 0x18, base_addr);
+    base_addr = new_addr;
+
+    // 32x16 char
+    new_addr = store_object(128, 130, BLACK_TILE_INDEX, 0, 0x1C, base_addr);
+    base_addr = new_addr;
+
+    // 32x32 char
+    new_addr = store_object(200, 130, BLACK_TILE_INDEX, 0, 0x20, base_addr);
     base_addr = new_addr;
 
 }

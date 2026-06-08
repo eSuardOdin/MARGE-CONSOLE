@@ -48,7 +48,8 @@ void display_objects(bus_t* bus)
 {
     for(int object = 0; object < OBJECT_NUMBER; object++)
     {
-        if(object) break;
+        // if(object) break;
+        if(object == 9) break;
 
         // Copy the struct object from OAM
         object_t* obj = malloc(sizeof(object_t)); 
@@ -78,18 +79,18 @@ void display_objects(bus_t* bus)
         // --- Can make it better by checking the visibility before the loops --
 
         // Iterate on Y axis (tiles stored on X axis)
-        for (int y = 0; y < height; y++)
+        for (int y = 0; y < (1 << (height-1)); y++)
         {
             // Check if current tile appears on Y axis (too high)
-            if((posY + 8) + y * 8 < 0) continue;
+            if((posY + 8) + y * 8 < 0) {/*printf("Sprite of object %d too UP, CONTINUE.\n", object);*/ continue; }
             // Check if current tile is past screen Y (too low) - no need to continue
-            if(posY >= SCREEN_HEIGHT) break;
-            for (int x = 0; x < width; x++)
+            if(posY >= SCREEN_HEIGHT) {/*printf("Sprite of object %d too LOW, BREAK.\n", object);*/ break; }
+            for (int x = 0; x < (1 << (width-1)); x++)
             {
                 // Check if current tile appears on X axis (On left)
-                if((posX + 8) + x * 8 < 0) continue;
+                if((posX + 8) + x * 8 < 0) {/*printf("Sprite of object %d too LEFT, CONTINUE.\n", object); */continue; }
                 // Check if current tile is past screen X (On right) - no need to continue
-                if(posX >= SCREEN_HEIGHT) break;
+                if(posX >= SCREEN_WIDTH) {/*printf("Sprite of object %d too RIGHT, BREAK.\n", object); */break; }
 
 
                 // Displayable
