@@ -42,6 +42,19 @@ static int BLANK_TILE[64] = {
 };
 
 
+// Tile at index 1
+static int RED_TILE_INDEX = 2;
+static int RED_TILE[64] = {
+    0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC,
+    0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC,
+    0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC,
+    0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC,
+    0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC,
+    0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC,
+    0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC,
+    0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC, 0xC
+};
+
 static int JOYPAD_0 = 0x0406B000;
 
 
@@ -55,6 +68,10 @@ void init_tileset()
     {
         *(volatile unsigned char*)(TILESET_ADDR + i + 64) = BLANK_TILE[i];
     }
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + 128) = RED_TILE[i];
+    }
 }
 
 
@@ -63,16 +80,16 @@ void init_maps()
 {
     for(int i = 0; i < 64*64*2; i+=2)
     {
-        // if(!(i % 8))
-        // {
-        //     *(volatile unsigned char*)(MAP_0_ADDR + i) =     FUNKY_TILE_INDEX & 0xFF;
-        //     *(volatile unsigned char*)(MAP_0_ADDR + i + 1) = (FUNKY_TILE_INDEX >> 8) & 0xFF;
-        // }
-        // else
-        // {
+        if(!(i % 8))
+        {
+            *(volatile unsigned char*)(MAP_0_ADDR + i) =     RED_TILE_INDEX & 0xFF;
+            *(volatile unsigned char*)(MAP_0_ADDR + i + 1) = (RED_TILE_INDEX >> 8) & 0xFF;
+        }
+        else
+        {
             *(volatile unsigned char*)(MAP_0_ADDR + i) = BLANK_TILE_INDEX & 0xFF;
             *(volatile unsigned char*)(MAP_0_ADDR + i + 1) = (BLANK_TILE_INDEX >> 8) & 0xFF;
-        // }
+        }
     }
 
     for(int i = 0; i < 64*64*2; i+=2)

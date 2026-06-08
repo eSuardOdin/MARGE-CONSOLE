@@ -107,13 +107,13 @@ void display_objects(bus_t* bus)
         }
 
 
-        printf("Object n°%d:\n\
-            X: %d\n\
-            Y: %d\n\
-            Tile index: %d\n\
-            Animation sprites: %d\n\
-            Resolution: %dx%d\n\
-            Flags: %d\n\n", object, obj->x_pos, obj->y_pos, obj->tile_index, obj->animation_sprites, width, height, obj->flags);
+        // printf("Object n°%d:\n\
+        //     X: %d\n\
+        //     Y: %d\n\
+        //     Tile index: %d\n\
+        //     Animation sprites: %d\n\
+        //     Resolution: %dx%d\n\
+        //     Flags: %d\n\n", object, obj->x_pos, obj->y_pos, obj->tile_index, obj->animation_sprites, width, height, obj->flags);
 
         free(obj);
 
@@ -129,10 +129,10 @@ void display_objects(bus_t* bus)
 
 void display_tile(bus_t* bus, int x, int y, int tile_address)
 {
-    printf("Tile located on (%d, %d)\n", x, y);
+    // printf("Tile located on (%d, %d)\n", x, y);
     for (int tile_y = 0; tile_y < 8; tile_y++)
     {
-        printf(" Y: %03d   ", y + tile_y);
+        // printf(" Y: %03d   ", y + tile_y);
         if(y + tile_y < 0) continue;
         if(y + tile_y >= SCREEN_HEIGHT) break;
         for(int tile_x = 0; tile_x < 8; tile_x++)
@@ -140,9 +140,9 @@ void display_tile(bus_t* bus, int x, int y, int tile_address)
             if(x + tile_x < 0) continue;
             if(x + tile_x >= SCREEN_WIDTH) break;
             uint8_t test = bus->tileset[tile_address + tile_y * 8 + tile_x];
-            printf(" %02X ", test);
+            // printf(" %02X ", test);
             bus->framebuffer[(x + tile_x) + ((y + tile_y) * 240)] = test;
         }
-        printf("\n");
+        // printf("\n");
     }
 }
