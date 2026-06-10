@@ -54,6 +54,7 @@ typedef struct object_t
  * 01:      is Y axis flipped
  * 02-05:   object resolution
  * 06-08:   object animation offset (current tile to display)
+ * 09:      if bit set, transparency is enabled (black color otherwise)
  * // Add if any need
  *
  */
@@ -86,7 +87,13 @@ char get_object_flip(int flag, char is_x_axis);
  */
 char get_object_frame(int flag);
 
-
+/**
+ * @brief Get the current object transparency enabling value
+ * 
+ * @param flag 
+ * @return char 
+ */
+char is_transparency_enabled(int flag);
 
 
 #endif

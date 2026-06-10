@@ -15,7 +15,7 @@ typedef struct bus_t
     cartridge_t*    cartridge;
     uint8_t*        vram;   // May need to remove this one, duplicate with framebuffer
     // Pixels that will be printed on screen each frame
-    uint8_t         framebuffer[0x4B000];
+    uint8_t         framebuffer[0x9600];
     // Console ram
     uint8_t         ram[0x2000];
     // --- IO memory region ---

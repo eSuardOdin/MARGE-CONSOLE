@@ -8,7 +8,7 @@ int init_bus(bus_t* bus, cartridge_t* cart)
 {
     bus->cartridge = cart;
     // Init framebuffer
-    for(int i = 0; i < 0x4B000; i++)
+    for(int i = 0; i < 0x9600; i++)
     {
         bus->framebuffer[i] = 0;
     }

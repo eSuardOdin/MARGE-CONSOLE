@@ -62,3 +62,9 @@ char get_object_frame(int flag)
 {
     return ((flag & 0x1C0) >> 6);
 }
+
+
+char is_transparency_enabled(int flag)
+{
+    return ((flag >> 9) & 0x1);
+}

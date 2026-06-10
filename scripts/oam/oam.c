@@ -271,7 +271,7 @@ void init_objects()
     // }
 
     // 8x8 char
-    new_addr = store_object(36, 33, FUNKY_TILE_INDEX, 0, 0x0, base_addr);
+    new_addr = store_object(36, 33, FUNKY_TILE_INDEX, 0, 0x200, base_addr);
     base_addr = new_addr;
 
     // 8x16 char

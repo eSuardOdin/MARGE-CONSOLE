@@ -38,5 +38,5 @@ void display_objects(bus_t* bus);
  * @param tile_address 
  * @param is_object 
  */
-void display_tile(bus_t* bus, int x, int y, int tile_address, char is_object);
+void display_tile(bus_t* bus, int x, int y, int tile_address, char is_transparent_enabled);
 #endif
