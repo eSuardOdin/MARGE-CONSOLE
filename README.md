@@ -65,10 +65,24 @@ Top Left, Top Right, Middle Left [...], Bottom Right
 
 ![display d'une tile](./img/tile_display.jpg)
 
-# To do
-- Some values stored in console's memory need more than 8 bit, define what to do with them: May need to implement functions in the custom lib to access/write these values (GetScrollX() -> Get the 16bit scrollX value)
-- 
 
+# IO
+The Input/Output is handled by registers located in this memory space.
+
+`0x0406B000 to 0x0407BFFF`
+
+## Joypad register(s?)
+The joypad is encoded on 8bits, when a key is pressed, the corresponding bits are **enabled** in the joypad register :
+- UP KEY:       bit 0 (0x1)
+- LEFT KEY:     bit 1 (0x2)
+- DOWN KEY:     bit 2 (0x4)
+- RIGHT KEY:    bit 3 (0x8)
+- A KEY:        bit 4 (0x10)
+- B KEY:        bit 5 (0x20)
+- START KEY:    bit 6 (0x40)
+- SELECT KEY:   bit 7 (0x80)
+
+`Joypad 0: 0x0406B000`
 
 
 ## Testing the CPU
