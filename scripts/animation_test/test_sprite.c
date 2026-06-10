@@ -21,6 +21,7 @@ static const int MAP_1_ADDR = 0x0407E000;
 
 static int MAX_ANIMATION_OFFSET = 3;
 static int CURRENT_ANIMATION_OFFSET = 0;
+static int FRAME_PACE = 20;
 
 // Tile at index 0
 static int BLANK_TILE_INDEX = 0;
@@ -352,11 +353,6 @@ void init_objects()
 {
     int base_addr = OAM_ADDR;
     int new_addr;
-    // for(int i = 0; i < OBJ_NUMBER; i++)
-    // {
-    //     new_addr = store_object(i+3, i*2, i+24, i%5, i, base_addr);
-    //     base_addr = new_addr;
-    // }
 
     // 8x8 char
     new_addr = store_object(36, 33, YELLOW_TILE_INDEX, 4, 0x7E020, base_addr);
@@ -367,6 +363,7 @@ void init_objects()
 
 void change_object_frame()
 {
+    // Change the displayed sprite depending on animation offset
     CURRENT_ANIMATION_OFFSET = CURRENT_ANIMATION_OFFSET == MAX_ANIMATION_OFFSET ? 0 : CURRENT_ANIMATION_OFFSET + 1;
     *(volatile unsigned char*)(OAM_ADDR + 4) = RED_TILE_INDEX + CURRENT_ANIMATION_OFFSET;
 }
@@ -383,12 +380,12 @@ int main() {
     int current_sy;
     int saved_frame = 0;
     int current_frame = 0;
-    int remaining_frames = 10;
+    int remaining_frames = FRAME_PACE;
 
     while(1)
     {
 
-        // Get frame
+        // Get frame count (8 bit)
         current_frame = *(volatile unsigned char*)(FRAME_COUNTER);
         
         if(saved_frame != current_frame)
@@ -401,7 +398,7 @@ int main() {
             if(remaining_frames < 0)
             {
                 change_object_frame();
-                remaining_frames = 10;
+                remaining_frames = FRAME_PACE;
             }
             
             joypad = *(volatile unsigned char*)(JOYPAD_0); 
