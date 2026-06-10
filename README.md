@@ -37,11 +37,15 @@ This is where the CPU's program counter is going to fetch instructions to execut
 This space is used mainly to save/load games to/from the cartridge.
 
 ### Framebuffer
-`0x04000000 to 0x0404B000`
+`0x04000000 to 0x04009600`
 
 This space contains the raw color indexes that are going to be displayed on the next frame
 
-**Attention, j'ai fait un 240 x 160 x 8 alors qu'un 240 x 160 suffit vu qu'on stock des char... Un espace de 0x9600 devrait suffire**
+
+### RAM
+`0x0404B000 to 0x0406AFFF`
+
+This space is mapped to the MARGE system RAM.
 
 
 # Tiles and Objects

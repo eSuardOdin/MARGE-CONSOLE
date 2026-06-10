@@ -55,6 +55,8 @@ typedef struct object_t
  * 02-05:   object resolution
  * 06-08:   object animation offset (current tile to display)
  * 09:      if bit set, transparency is enabled (black color otherwise)
+ * 10-14:   frame duration of an animation step
+ * 
  * // Add if any need
  *
  */
