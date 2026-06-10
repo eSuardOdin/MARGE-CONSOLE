@@ -59,7 +59,8 @@
 // --- Utility ---
 #define MAP_BYTES           0x80000   
 #define TILE_SIZE           0x40
-
+#define TRUE                1
+#define FALSE               0
 extern const int COLORSPAL[32];
 
 

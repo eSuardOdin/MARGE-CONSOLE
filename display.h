@@ -29,5 +29,14 @@ void display_map(bus_t* bus);
  */
 void display_objects(bus_t* bus);
 
-void display_tile(bus_t* bus, int x, int y, int tile_address);
+/**
+ * @brief Displays a tile on the framebuffer
+ * 
+ * @param bus 
+ * @param x 
+ * @param y 
+ * @param tile_address 
+ * @param is_object 
+ */
+void display_tile(bus_t* bus, int x, int y, int tile_address, char is_object);
 #endif

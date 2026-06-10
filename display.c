@@ -98,7 +98,8 @@ void display_objects(bus_t* bus)
                     bus, 
                     posX + (8 * x), 
                     posY + (8 * y),
-                    (tile_address + (y * TILE_SIZE * width) + (x * TILE_SIZE))
+                    (tile_address + (y * TILE_SIZE * width) + (x * TILE_SIZE)),
+                    TRUE
                 );
 
 
@@ -128,7 +129,7 @@ void display_objects(bus_t* bus)
 }
 
 
-void display_tile(bus_t* bus, int x, int y, int tile_address)
+void display_tile(bus_t* bus, int x, int y, int tile_address, char is_object)
 {
     // printf("Tile located on (%d, %d)\n", x, y);
     for (int tile_y = 0; tile_y < 8; tile_y++)
@@ -140,9 +141,12 @@ void display_tile(bus_t* bus, int x, int y, int tile_address)
         {
             if(x + tile_x < 0) continue;
             if(x + tile_x >= SCREEN_WIDTH) break;
-            uint8_t test = bus->tileset[tile_address + tile_y * 8 + tile_x];
-            // printf(" %02X ", test);
-            bus->framebuffer[(x + tile_x) + ((y + tile_y) * 240)] = test;
+            uint8_t color = bus->tileset[tile_address + tile_y * 8 + tile_x];
+            
+            if(!(is_object && color == 0))
+            {
+                bus->framebuffer[(x + tile_x) + ((y + tile_y) * 240)] = color;
+            }
         }
         // printf("\n");
     }

@@ -1,10 +1,65 @@
 # MARGE-CONSOLE
 
-# Tiles storage
+# Console
+The Marge Console is a fantasy console, as it's core, it is based on a RISC-V CPU architecture. The console accepts RISC V ROMs.
+
+We plan to create a custom C library to program ROMs and map it to a custom No-Code language.
+
+
+## Memory Map
+
+The Console use a Memory Mapping system, each read/write passes through an **MMU** (Memory Management Unit) *  
+
+**--Still called bus here - needs to change--*
+
+
+The MMU switches the address and route it to the "hardware" in charge of handling the read or write.
+
+Some of the reads or writes may have a behavior (writing to the **screen control register** may enable/disable the display for instance)
+
+*exemple:*
+![traitement du read write](./img/mmu.png)
+
+### Cartridge
+
+`0x00000000 to 0x04000000`
+
+This whole space represents the cartridge that will be loaded into the MARGE SYSTEM, it is composed of :
+
+#### ROM
+`0x00000000 to 0x03FDFFFF`
+
+This is where the CPU's program counter is going to fetch instructions to execute. Writing on this address space is forbidden.
+
+#### Cart RAM
+`0x03FE0000 to 0x03FFFFFF`
+
+This space is used mainly to save/load games to/from the cartridge.
+
+### Framebuffer
+`0x04000000 to 0x0404B000`
+
+This space contains the raw color indexes that are going to be displayed on the next frame
+
+**Attention, j'ai fait un 240 x 160 x 8 alors qu'un 240 x 160 suffit vu qu'on stock des char... Un espace de 0x9600 devrait suffire**
+
+
+# Tiles and Objects
+
+## Tiles
+Tiles are 8x8 indices of color palette that will be stored in the tileset (located at `0x0406C000`).
+
+1024 (0x400) tiles are stored in the tileset.
+
+## Objects
+Objects are a data structure located in OAM (Object Attribute Memory)
+
 The tiles are stored in the X axis first, the Y axis.
 If a tile is 16x32, we store the 8x8 tile like : 
 Top Left, Top Right, Middle Left [...], Bottom Right
 
+
+![display d'une tile](./img/tile_display.jpg)
 
 # To do
 - Some values stored in console's memory need more than 8 bit, define what to do with them: May need to implement functions in the custom lib to access/write these values (GetScrollX() -> Get the 16bit scrollX value)
@@ -17,7 +72,7 @@ Top Left, Top Right, Middle Left [...], Bottom Right
 ### R TYPE
 
 ADD: 
-![alt text](./img/add.png)
+![add instruction](./img/add.png)
 Test:
 - `ADD x1(1), x1(1), x2($FFFFFFFF) => x1 = -1`
 ```
