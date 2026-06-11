@@ -270,45 +270,57 @@ void init_objects()
     //     base_addr = new_addr;
     // }
 
-    // 8x8 char
-    new_addr = store_object(36, 33, FUNKY_TILE_INDEX, 0, 0x202, base_addr);
+    // 8x8 char Not flipped
+    new_addr = store_object(36, 33, FUNKY_TILE_INDEX, 0, 0x200, base_addr);
     base_addr = new_addr;
 
-    // 8x16 char
-    new_addr = store_object(128, 33, BLACK_TILE_INDEX, 0, 0x4, base_addr);
+    // 8x8 char Y flipped
+    new_addr = store_object(100, 33, FUNKY_TILE_INDEX, 0, 0x201, base_addr);
     base_addr = new_addr;
 
-    // 8x32 char
-    new_addr = store_object(200, 33, BLACK_TILE_INDEX, 0, 0x8, base_addr);
+    // 8x8 char X flipped
+    new_addr = store_object(170, 33, FUNKY_TILE_INDEX, 0, 0x202, base_addr);
     base_addr = new_addr;
 
-
-
-    // 16x8 char
-    new_addr = store_object(36, 75, BLACK_TILE_INDEX, 0, 0xC, base_addr);
+    // 8x8 char X & Y flipped
+    new_addr = store_object(200, 33, FUNKY_TILE_INDEX, 0, 0x203, base_addr);
     base_addr = new_addr;
 
-    // 16x16 char
-    new_addr = store_object(128, 75, BLACK_TILE_INDEX, 0, 0x10, base_addr);
-    base_addr = new_addr;
+    // // 8x16 char
+    // new_addr = store_object(128, 33, BLACK_TILE_INDEX, 0, 0x4, base_addr);
+    // base_addr = new_addr;
 
-    // 16x32 char
-    new_addr = store_object(200, 75, BLACK_TILE_INDEX, 0, 0x14, base_addr);
-    base_addr = new_addr;
+    // // 8x32 char
+    // new_addr = store_object(200, 33, BLACK_TILE_INDEX, 0, 0x8, base_addr);
+    // base_addr = new_addr;
 
 
 
-    // 32x8 char
-    new_addr = store_object(36, 130, BLACK_TILE_INDEX, 0, 0x18, base_addr);
-    base_addr = new_addr;
+    // // 16x8 char
+    // new_addr = store_object(36, 75, BLACK_TILE_INDEX, 0, 0xC, base_addr);
+    // base_addr = new_addr;
 
-    // 32x16 char
-    new_addr = store_object(128, 130, BLACK_TILE_INDEX, 0, 0x1C, base_addr);
-    base_addr = new_addr;
+    // // 16x16 char
+    // new_addr = store_object(128, 75, BLACK_TILE_INDEX, 0, 0x10, base_addr);
+    // base_addr = new_addr;
 
-    // 32x32 char
-    new_addr = store_object(200, 130, BLACK_TILE_INDEX, 0, 0x20, base_addr);
-    base_addr = new_addr;
+    // // 16x32 char
+    // new_addr = store_object(200, 75, BLACK_TILE_INDEX, 0, 0x14, base_addr);
+    // base_addr = new_addr;
+
+
+
+    // // 32x8 char
+    // new_addr = store_object(36, 130, BLACK_TILE_INDEX, 0, 0x18, base_addr);
+    // base_addr = new_addr;
+
+    // // 32x16 char
+    // new_addr = store_object(128, 130, BLACK_TILE_INDEX, 0, 0x1C, base_addr);
+    // base_addr = new_addr;
+
+    // // 32x32 char
+    // new_addr = store_object(200, 130, BLACK_TILE_INDEX, 0, 0x20, base_addr);
+    // base_addr = new_addr;
 
 }
 
