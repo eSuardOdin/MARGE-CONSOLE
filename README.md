@@ -10,7 +10,7 @@ We plan to create a custom C library to program ROMs and map it to a custom No-C
 
 The Console use a Memory Mapping system, each read/write passes through an **MMU** (Memory Management Unit) *  
 
-**--Still called bus here - needs to change--*
+\* *--Still called bus here - needs to change--*
 
 
 The MMU switches the address and route it to the "hardware" in charge of handling the read or write.
@@ -55,8 +55,48 @@ Tiles are 8x8 indices of color palette that will be stored in the tileset (locat
 
 1024 (0x400) tiles are stored in the tileset.
 
-## Objects
+The color palette for the reference :
+
+![palette](./img/palette.png)
+
+*if the first 4 bytes of a tile are `0x05 0x10 0x15 0x0B`, the first 4 pixels are going to be 'light blue, light brown, dark green, light purple'* 
+
+## Objects
+
 Objects are a data structure located in OAM (Object Attribute Memory)
+
+### Data structure
+
+An object is composed of:
+- X position: X position on the screen minus a 32 pixels offset
+- Y position: Y position on the screen minus a 32 pixels offset
+- tile index: The top left tile of the object
+- animation sprites: The number of tiles that the animation is composed of *need to think more about how legitimate this is*
+- flags : A 16 bits flag register
+
+
+### Flag register
+
+```
+[15][    14-10    ][09][  08-06  ][  05-02  ][01][00]
+
+
+[00]: If set, the X axis is flipped (tile object is displayed mirrored on the X axis)
+
+[01]: If set, the y axis is flipped (tile object is displayed mirrored on the y axis)
+
+[05-02]: Object resolution, 9 possible values (6 wasted possibilities), possible values are 8x8, 8x16, 8x32, 16x8, 16x16, 16x32, 32x8, 32x16, 32x32
+
+[08-06]: Object animation offset, this is added to the tile index in order to select the tile to display
+
+[09]: If set, the color index 00 is displayed as transparent, black otherwise
+
+[14-10]:  The duration of an animation sprite (0-31)
+
+[15]: TBD
+```
+
+### Object displaying
 
 The tiles are stored in the X axis first, the Y axis.
 If a tile is 16x32, we store the 8x8 tile like : 
@@ -65,6 +105,26 @@ Top Left, Top Right, Middle Left [...], Bottom Right
 
 ![display d'une tile](./img/tile_display.jpg)
 
+
+# Display
+
+The MARGE system displays a screen of 240x160
+
+
+## Map
+
+The Map layer displays a background that is selected from the Maps memory.
+
+A Map is composed of indices to tiles in the Tileset  
+
+![map](./img/maps.jpg)
+
+The MARGE console can address up to **NUMBER TO BE DEFINED** maps in the memory, the map that is going to be displayed is selected by the **Map index register**.
+
+![map selection](./img/map_selection.png)
+
+The map is 512x512 pixels, as the screen is 240x160 pixels wide, what part of the map that is going to be displayed depends on the **Scroll X and Scroll Y registers**
+![map display](./img/map_x_display.png)
 
 # IO
 The Input/Output is handled by registers located in this memory space.
@@ -84,6 +144,29 @@ The joypad is encoded on 8bits, when a key is pressed, the corresponding bits ar
 
 `Joypad 0: 0x0406B000`
 
+## System registers
+
+The registers that are going to influence the system's behavior
+
+| Name    | Address  | Behavior |
+| -------- | ------- | -------- |
+| Map index register  | 0x406B002    |    The index of the background pointed tthe backgroundo map, the console displays the background corresponding to the `base maps address offset + the maps size x the index`     |
+| Scroll X | 0x0406B004     |   Set the X axis offset from the left of the selected map that is going to be displayed       |
+| Scroll Y   | 0x0406B006    |    Set the Y axis offset from the top of the selected map that is going to be displayed      |
+
+
+
+
+
+
+
+
+---------
+------
+----
+----
+
+# OLD README
 
 ## Testing the CPU
 
