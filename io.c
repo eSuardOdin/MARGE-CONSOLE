@@ -43,5 +43,5 @@ void write_joypad(char is_pressed, int value_mask, bus_t *bus, int32_t joypad_ad
     }
 
     write_memory(bus, current_state, joypad_address);
-    printf("Value of joypad register: %08X\n", current_state);
+    // printf("Value of joypad register: %08X\n", current_state);
 }

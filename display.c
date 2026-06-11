@@ -48,9 +48,6 @@ void display_objects(bus_t* bus)
 {
     for(int object = 0; object < OBJECT_NUMBER; object++)
     {
-        // if(object) break;
-        //if(object == 9) break;
-
         // Copy the struct object from OAM
         object_t* obj = malloc(sizeof(object_t)); 
         if(!obj)
@@ -88,6 +85,7 @@ void display_objects(bus_t* bus)
         {
 
             y_tile = is_y_flipped ? (1 << (height-1)) - (y+1) : y;
+            
             // Check if current tile appears on Y axis (too high)
             if((posY + 8) + y_tile * 8 < 0) {/*printf("Sprite of object %d too UP, CONTINUE.\n", object);*/ continue; }
             // Check if current tile is past screen Y (too low) - no need to continue
@@ -104,8 +102,8 @@ void display_objects(bus_t* bus)
                 // Displayable
                 display_tile(
                     bus, 
-                    posX + (8 * x_tile), 
-                    posY + (8 * y_tile),
+                    posX + (8 * x), 
+                    posY + (8 * y),
                     (tile_address + (y_tile * TILE_SIZE * width) + (x_tile * TILE_SIZE)),
                     is_transparency_enabled(obj->flags),
                     is_x_flipped,
