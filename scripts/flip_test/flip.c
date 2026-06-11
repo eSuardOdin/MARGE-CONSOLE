@@ -103,6 +103,18 @@ static int GREEN_TILE[64] = {
     0x16, 0x16, 0x16, 0x16, 0x16, 0x16, 0x16, 0x16,
     0x16, 0x16, 0x16, 0x16, 0x16, 0x16, 0x16, 0x16
 };
+
+static int YELLOW_TILE_INDEX = 7;
+static int YELLOW_TILE[64] = {
+    0x14, 0x14, 0x14, 0x14, 0x14, 0x00, 0x00, 0x00,
+    0x14, 0x14, 0x14, 0x14, 0x14, 0x00, 0x00, 0x00,
+    0x14, 0x14, 0x14, 0x14, 0x14, 0x00, 0x00, 0x00,
+    0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14,
+    0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14,
+    0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14,
+    0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14,
+    0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14
+};
 static int JOYPAD_0 = 0x0406B000;
 
 
@@ -149,22 +161,7 @@ void init_tileset()
     offset+=64;
     for(int i = 0; i < 64; i++)
     {
-        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = PINK_TILE[i];
-    }
-    offset+=64;
-    for(int i = 0; i < 64; i++)
-    {
-        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = BLACK_TILE[i];
-    }
-    offset+=64;
-    for(int i = 0; i < 64; i++)
-    {
-        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = BLUE_TILE[i];
-    }
-    offset+=64;
-    for(int i = 0; i < 64; i++)
-    {
-        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = GREEN_TILE[i];
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = YELLOW_TILE[i];
     }
     offset+=64;
     for(int i = 0; i < 64; i++)
@@ -189,6 +186,11 @@ void init_tileset()
     offset+=64;
     for(int i = 0; i < 64; i++)
     {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = YELLOW_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
         *(volatile unsigned char*)(TILESET_ADDR + i + offset) = PINK_TILE[i];
     }
     offset+=64;
@@ -205,6 +207,36 @@ void init_tileset()
     for(int i = 0; i < 64; i++)
     {
         *(volatile unsigned char*)(TILESET_ADDR + i + offset) = GREEN_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = YELLOW_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = PINK_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = BLACK_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = BLUE_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = GREEN_TILE[i];
+    }
+    offset+=64;
+    for(int i = 0; i < 64; i++)
+    {
+        *(volatile unsigned char*)(TILESET_ADDR + i + offset) = YELLOW_TILE[i];
     }
 }
 
@@ -250,81 +282,172 @@ void init_objects()
 {
     int base_addr = OAM_ADDR;
     int new_addr;
-    // for(int i = 0; i < OBJ_NUMBER; i++)
-    // {
-    //     new_addr = store_object(i+3, i*2, i+24, i%5, i, base_addr);
-    //     base_addr = new_addr;
-    // }
 
     // 8x8 char Not flipped
-    new_addr = store_object(50, 70, FUNKY_TILE_INDEX, 0, 0x0, base_addr);
+    new_addr = store_object(50, 34, FUNKY_TILE_INDEX, 0, 0x0, base_addr);
     base_addr = new_addr;
 
     // 8x8 char Y flipped
-    new_addr = store_object(100, 70, FUNKY_TILE_INDEX, 0, 0x1, base_addr);
+    new_addr = store_object(60, 34, FUNKY_TILE_INDEX, 0, 0x1, base_addr);
     base_addr = new_addr;
 
     // 8x8 char X flipped
-    new_addr = store_object(150, 70, FUNKY_TILE_INDEX, 0, 0x2, base_addr);
+    new_addr = store_object(70, 34, FUNKY_TILE_INDEX, 0, 0x2, base_addr);
     base_addr = new_addr;
 
     // 8x8 char X & Y flipped
-    new_addr = store_object(200, 70, FUNKY_TILE_INDEX, 0, 0x3, base_addr);
+    new_addr = store_object(80, 34, FUNKY_TILE_INDEX, 0, 0x3, base_addr);
     base_addr = new_addr;
 
 
 
     // 8x16 char Not flipped
-    new_addr = store_object(50, 80, BLACK_TILE_INDEX, 0, 0x4, base_addr);
+    new_addr = store_object(90, 34, BLACK_TILE_INDEX, 0, 0x4, base_addr);
     base_addr = new_addr;
 
     // 8x16 char Y flipped
-    new_addr = store_object(100, 80, BLACK_TILE_INDEX, 0, 0x5, base_addr);
+    new_addr = store_object(100, 34, BLACK_TILE_INDEX, 0, 0x5, base_addr);
     base_addr = new_addr;
 
     // 8x16 char X flipped
-    new_addr = store_object(150, 80, BLACK_TILE_INDEX, 0, 0x6, base_addr);
+    new_addr = store_object(110, 34, BLACK_TILE_INDEX, 0, 0x6, base_addr);
     base_addr = new_addr;
 
     // 8x16 char X & Y flipped
-    new_addr = store_object(200, 80, BLACK_TILE_INDEX, 0, 0x7, base_addr);
+    new_addr = store_object(120, 34, BLACK_TILE_INDEX, 0, 0x7, base_addr);
     base_addr = new_addr;
 
-    // // 8x16 char
-    // new_addr = store_object(128, 33, BLACK_TILE_INDEX, 0, 0x4, base_addr);
-    // base_addr = new_addr;
+    
 
-    // // 8x32 char
-    // new_addr = store_object(200, 33, BLACK_TILE_INDEX, 0, 0x8, base_addr);
-    // base_addr = new_addr;
+    // 8x32 char Not flipped
+    new_addr = store_object(130, 34, BLACK_TILE_INDEX, 0, 0x8, base_addr);
+    base_addr = new_addr;
 
+    // 8x32 char Y flipped
+    new_addr = store_object(140, 34, BLACK_TILE_INDEX, 0, 0x9, base_addr);
+    base_addr = new_addr;
 
+    // 8x32 char X flipped
+    new_addr = store_object(150, 34, BLACK_TILE_INDEX, 0, 0xA, base_addr);
+    base_addr = new_addr;
 
-    // // 16x8 char
-    // new_addr = store_object(36, 75, BLACK_TILE_INDEX, 0, 0xC, base_addr);
-    // base_addr = new_addr;
-
-    // // 16x16 char
-    // new_addr = store_object(128, 75, BLACK_TILE_INDEX, 0, 0x10, base_addr);
-    // base_addr = new_addr;
-
-    // // 16x32 char
-    // new_addr = store_object(200, 75, BLACK_TILE_INDEX, 0, 0x14, base_addr);
-    // base_addr = new_addr;
+    // 8x32 char X & Y flipped
+    new_addr = store_object(160, 34, BLACK_TILE_INDEX, 0, 0xB, base_addr);
+    base_addr = new_addr;
 
 
 
-    // // 32x8 char
-    // new_addr = store_object(36, 130, BLACK_TILE_INDEX, 0, 0x18, base_addr);
-    // base_addr = new_addr;
+    // 16x8 char Not flipped
+    new_addr = store_object(50, 52, BLACK_TILE_INDEX, 0, 0xC, base_addr);
+    base_addr = new_addr;
 
-    // // 32x16 char
-    // new_addr = store_object(128, 130, BLACK_TILE_INDEX, 0, 0x1C, base_addr);
-    // base_addr = new_addr;
+    // 16x8 char Y flipped
+    new_addr = store_object(68, 52, BLACK_TILE_INDEX, 0, 0xD, base_addr);
+    base_addr = new_addr;
 
-    // // 32x32 char
-    // new_addr = store_object(200, 130, BLACK_TILE_INDEX, 0, 0x20, base_addr);
-    // base_addr = new_addr;
+    // 16x8 char X flipped
+    new_addr = store_object(86, 52, BLACK_TILE_INDEX, 0, 0xE, base_addr);
+    base_addr = new_addr;
+
+    // 16x8 char X & Y flipped
+    new_addr = store_object(104, 52, BLACK_TILE_INDEX, 0, 0xF, base_addr);
+    base_addr = new_addr;
+
+
+
+    // 16x16 char Not flipped
+    new_addr = store_object(50, 62, BLACK_TILE_INDEX, 0, 0x10, base_addr);
+    base_addr = new_addr;
+
+    // 16x16 char Y flipped
+    new_addr = store_object(68, 62, BLACK_TILE_INDEX, 0, 0x11, base_addr);
+    base_addr = new_addr;
+
+    // 16x16 char X flipped
+    new_addr = store_object(86, 62, BLACK_TILE_INDEX, 0, 0x12, base_addr);
+    base_addr = new_addr;
+
+    // 16x16 char X & Y flipped
+    new_addr = store_object(104, 62, BLACK_TILE_INDEX, 0, 0x13, base_addr);
+    base_addr = new_addr;
+
+
+
+
+    // 16x32 char Not flipped
+    new_addr = store_object(50, 80, BLACK_TILE_INDEX, 0, 0x14, base_addr);
+    base_addr = new_addr;
+
+    // 16x32 char Y flipped
+    new_addr = store_object(68, 80, BLACK_TILE_INDEX, 0, 0x15, base_addr);
+    base_addr = new_addr;
+
+    // 16x32 char X flipped
+    new_addr = store_object(86, 80, BLACK_TILE_INDEX, 0, 0x16, base_addr);
+    base_addr = new_addr;
+
+    // 16x32 char X & Y flipped
+    new_addr = store_object(104, 80, BLACK_TILE_INDEX, 0, 0x17, base_addr);
+    base_addr = new_addr;
+
+
+
+    // ----------- 32 --------------
+    // 32x8 char Not flipped
+    new_addr = store_object(50, 114, BLACK_TILE_INDEX, 0, 0x18, base_addr);
+    base_addr = new_addr;
+
+    // 32x8 char Y flipped
+    new_addr = store_object(84, 114, BLACK_TILE_INDEX, 0, 0x19, base_addr);
+    base_addr = new_addr;
+
+    // 32x8 char X flipped
+    new_addr = store_object(118, 114, BLACK_TILE_INDEX, 0, 0x1A, base_addr);
+    base_addr = new_addr;
+
+    // 32x8 char X & Y flipped
+    new_addr = store_object(152, 114, BLACK_TILE_INDEX, 0, 0x1B, base_addr);
+    base_addr = new_addr;
+
+
+    
+    // 32x16 char Not flipped
+    new_addr = store_object(50, 132, BLACK_TILE_INDEX, 0, 0x1C, base_addr);
+    base_addr = new_addr;
+
+    // 32x16 char Y flipped
+    new_addr = store_object(84, 132, BLACK_TILE_INDEX, 0, 0x1D, base_addr);
+    base_addr = new_addr;
+
+    // 32x16 char X flipped
+    new_addr = store_object(118, 132, BLACK_TILE_INDEX, 0, 0x1E, base_addr);
+    base_addr = new_addr;
+
+    // 32x16 char X & Y flipped
+    new_addr = store_object(152, 132, BLACK_TILE_INDEX, 0, 0x1F, base_addr);
+    base_addr = new_addr;
+
+
+
+
+
+    // 32x32 char Not flipped
+    new_addr = store_object(50, 160, BLACK_TILE_INDEX, 0, 0x20, base_addr);
+    base_addr = new_addr;
+
+    // 32x32 char Y flipped
+    new_addr = store_object(84, 160, BLACK_TILE_INDEX, 0, 0x21, base_addr);
+    base_addr = new_addr;
+
+    // 32x32 char X flipped
+    new_addr = store_object(118, 160, BLACK_TILE_INDEX, 0, 0x22, base_addr);
+    base_addr = new_addr;
+
+    // 32x32 char X & Y flipped
+    new_addr = store_object(152, 160, BLACK_TILE_INDEX, 0, 0x23, base_addr);
+    base_addr = new_addr;
+
+    
 
 }
 
