@@ -259,6 +259,13 @@ void store_sixteenth(int data, int addr)
     *(volatile unsigned char*)(addr+1) = (data & 0xFF00) >> 8;
 }
 
+int load_sixteenth(int addr)
+{
+    char lo = *(volatile unsigned char*)(addr); 
+    char hi = *(volatile unsigned char*)(addr+1);
+    return ((hi << 8) & 0xFF00) | (lo & 0xFF);
+}
+
 
 int store_object(int x, 
     int y, 
@@ -477,8 +484,8 @@ int main() {
                 // *(volatile unsigned char*)(SCROLL_X) = current_sx + 1;
                 
                 // Move object 0
-                current_sx = *(volatile unsigned char*)(OAM_ADDR);
-                *(volatile unsigned char*)(OAM_ADDR) = current_sx + 1;
+                current_sx = load_sixteenth(OAM_ADDR);
+                store_sixteenth(current_sx + 1, OAM_ADDR);
             }
             else if(joypad == 2)
             {
@@ -487,8 +494,8 @@ int main() {
                 // *(volatile unsigned char*)(SCROLL_X) = current_sx - 1;
                 
                 // Move object 0
-                current_sx = *(volatile unsigned char*)(OAM_ADDR);
-                *(volatile unsigned char*)(OAM_ADDR) = current_sx - 1;
+                current_sx = load_sixteenth(OAM_ADDR);
+                store_sixteenth(current_sx - 1, OAM_ADDR);
             }
             else if(joypad == 4)
             {
@@ -497,8 +504,8 @@ int main() {
                 // *(volatile unsigned char*)(SCROLL_Y) = current_sy + 1;
                 
                 // Move object 0
-                current_sy = *(volatile unsigned char*)(OAM_ADDR + 2);
-                *(volatile unsigned char*)(OAM_ADDR + 2) = current_sy + 1;
+                current_sy = load_sixteenth(OAM_ADDR + 2);
+                store_sixteenth(current_sy + 1, OAM_ADDR + 2);
             }
             else if(joypad == 1)
             {
@@ -507,8 +514,8 @@ int main() {
                 // *(volatile unsigned char*)(SCROLL_Y) = current_sy - 1;
                 
                 // Move object 0
-                current_sy = *(volatile unsigned char*)(OAM_ADDR + 2);
-                *(volatile unsigned char*)(OAM_ADDR + 2) = current_sy - 1;
+                current_sy = load_sixteenth(OAM_ADDR + 2);
+                store_sixteenth(current_sy - 1, OAM_ADDR + 2);
             }
             // *(volatile unsigned char*)(MAP_INDEX) = *(volatile unsigned char*)(JOYPAD_0) % 2; 
         }

@@ -67,14 +67,15 @@ void display_objects(bus_t* bus)
         int height = 0;
         e_object_resolution res = get_object_resolution(obj->flags, &width, &height);
         
-
+        // Get the current animation tile
         char current_anim_tile = get_object_frame(obj->flags);
         int tile_full_size = TILE_SIZE * width * height;
+
         // Get tile address in memory, the animation offset (mul by size of total sprite) + index of the first tile
         int tile_address = (current_anim_tile * tile_full_size) + (obj->tile_index * TILE_SIZE);
         
-        // --- Can make it better by checking the visibility before the loops --
-
+        
+        // Check if a flip flag is set on the object to display
         char is_x_flipped = get_object_flip(obj->flags,TRUE);
         char x_tile;
         char is_y_flipped = get_object_flip(obj->flags, FALSE);
@@ -84,22 +85,23 @@ void display_objects(bus_t* bus)
         for (int y = 0; y < (1 << (height-1)); y++)
         {
 
+            // Begin on first or last Y tile depending on Y axis flip value
             y_tile = is_y_flipped ? (1 << (height-1)) - (y+1) : y;
             
             // Check if current tile appears on Y axis (too high)
-            if((posY + 8) + y_tile * 8 < 0) {/*printf("Sprite of object %d too UP, CONTINUE.\n", object);*/ continue; }
+            if((posY + 8) + y_tile * 8 < 0) continue;
             // Check if current tile is past screen Y (too low) - no need to continue
-            if(posY >= SCREEN_HEIGHT) {/*printf("Sprite of object %d too LOW, BREAK.\n", object);*/ break; }
+            if(posY >= SCREEN_HEIGHT) break;
             for (int x = 0; x < (1 << (width-1)); x++)
             {
                 x_tile = is_x_flipped ? (1 << (width-1)) - (x+1) : x;
                 // Check if current tile appears on X axis (On left)
-                if((posX + 8) + x_tile * 8 < 0) {/*printf("Sprite of object %d too LEFT, CONTINUE.\n", object); */continue; }
+                if((posX + 8) + x_tile * 8 < 0) continue;
                 // Check if current tile is past screen X (On right) - no need to continue
-                if(posX >= SCREEN_WIDTH) {/*printf("Sprite of object %d too RIGHT, BREAK.\n", object); */break; }
+                if(posX >= SCREEN_WIDTH) break;
 
 
-                // Displayable
+                // Display the 8x8 tile
                 display_tile(
                     bus, 
                     posX + (8 * x), 
@@ -115,8 +117,6 @@ void display_objects(bus_t* bus)
 
 
         }
-
-
         // printf("Object n°%d:\n\
         //     X: %d\n\
         //     Y: %d\n\
@@ -124,16 +124,9 @@ void display_objects(bus_t* bus)
         //     Animation sprites: %d\n\
         //     Resolution: %dx%d\n\
         //     Flags: %d\n\n", object, obj->x_pos, obj->y_pos, obj->tile_index, obj->animation_sprites, width, height, obj->flags);
-
         free(obj);
 
-
-
     }
-
-
-
-    
 }
 
 
@@ -141,15 +134,19 @@ void display_tile(bus_t* bus, int x, int y, int tile_address, char is_transparen
 {
     char tile_y;
     char tile_x;
-    // printf("Tile located on (%d, %d)\n", x, y);
+    
     for (int yy = 0; yy < 8; yy++)
     {
+        // If tile is Y flipped, begin on lower pixel.
         tile_y = is_y_flipped ? 7 - yy : yy;
-        // printf(" Y: %03d   ", y + tile_y);
+        
+        // Do not display if out of screen
         if(y + tile_y < 0) continue;
         if(y + tile_y >= SCREEN_HEIGHT) break;
+
         for(int xx = 0; xx < 8; xx++)
         {
+            // If tile is X flipped, begin on rightmost pixel
             tile_x = is_x_flipped ? 7 - xx : xx;
             if(x + tile_x < 0) continue;
             if(x + tile_x >= SCREEN_WIDTH) break;
