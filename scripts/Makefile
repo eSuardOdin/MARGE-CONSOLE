@@ -19,8 +19,12 @@
 #   in it's own directory
 #
 
+
+LIB_SRC := ../lib/rw.c
+LIB_OBJ := ../lib/rw.o
 SRCS := $(wildcard */*.c)
 BINS := $(SRCS:.c=.bin)	# Change all the */test_*.c into */test_*.bin
+
 
 all: compile_boot $(BINS)
 	@echo "All done !"
@@ -31,8 +35,12 @@ compile_boot:
 	@echo "### Boot script compiled !\n"
 
 
+# Compilation de la lib
+$(LIB_OBJ): $(LIB_SRC)
+	riscv64-linux-gnu-gcc -march=rv32im -mabi=ilp32 -nostdlib -ffreestanding -c $< -o $@
 
-%.o: %.c
+
+%.o: %.c $(LIB_OBJ)
 	@echo "############    $<    ############"
 	@echo "### Creating object file for $<..."
 	riscv64-linux-gnu-gcc -march=rv32im -mabi=ilp32 -nostdlib -ffreestanding -c $< -o $@
@@ -40,7 +48,7 @@ compile_boot:
 
 %.elf: %.o
 	@echo "### Linking $< to boot script..."
-	riscv64-linux-gnu-ld -m elf32lriscv -T global/linker.ld global/boot.o $< -o $@
+	riscv64-linux-gnu-ld -m elf32lriscv -T global/linker.ld global/boot.o $< $(LIB_OBJ) -o $@
 	@echo "### Done linking !\n"
 
 %.bin: %.elf
@@ -54,4 +62,4 @@ compile_boot:
 
 
 clean:
-	rm -f global/boot.o $(wildcard */*.o) $(wildcard */*.elf) $(BINS) $(wildcard */*.info)
+	rm -f global/boot.o $(wildcard */*.o) $(wildcard */*.elf) $(BINS) $(wildcard */*.info) $(LIB_OBJ)

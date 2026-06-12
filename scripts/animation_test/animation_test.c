@@ -16,6 +16,7 @@ static const int MAP_0[64*64];
 static const int MAP_1[64*64];
 static const int MAP_1_ADDR = 0x0407E000;
 
+#define TEST 2
 
 
 
@@ -371,7 +372,7 @@ void change_object_frame()
 
 
 int main() {
-
+    if(!TEST) return 0;
     init_tileset();
     init_map();
     init_objects();
