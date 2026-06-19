@@ -82,6 +82,14 @@ e_inst_type get_instruction_type(uint8_t opcode)
             return U_TYPE;
         case 0x6F:
             return J_TYPE;
+        case 0x4F:
+        case 0x43:
+        case 0x45:
+        case 0x47:
+        case 0x4B:
+        case 0x53:
+        case 0x55:
+
         default:
         return UNKNOWN_TYPE;
         

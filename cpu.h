@@ -32,6 +32,7 @@ typedef enum
     B_TYPE,
     U_TYPE,
     J_TYPE,
+    F_TYPE,
     UNKNOWN_TYPE
 } e_inst_type;
 
