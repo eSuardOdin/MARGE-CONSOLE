@@ -89,7 +89,7 @@ e_inst_type get_instruction_type(uint8_t opcode)
         case 0x4B:
         case 0x53:
         case 0x55:
-
+            return F_TYPE;
         default:
         return UNKNOWN_TYPE;
         
@@ -97,6 +97,48 @@ e_inst_type get_instruction_type(uint8_t opcode)
 }
 
 
+int f_type(cpu_t *cpu)
+{
+
+    // Decode the instruction
+    uint8_t opcode =    (cpu->ir & 0x0000007F);
+    uint8_t rd =        (cpu->ir & 0x00000F80) >> 7;
+    uint8_t rm =        (cpu->ir & 0x00007000) >> 12;
+    uint8_t rs1 =       (cpu->ir & 0x000F8000) >> 15;
+    uint8_t rs2 =       (cpu->ir & 0x01F00000) >> 20;
+    uint8_t fmt =       (cpu->ir & 0x06000000) >> 25;   // Used to check if float or double (not sure we implement doubles)
+    uint8_t rs3_f5 =    (cpu->ir & 0xF8000000) >> 27;   // May be used as rs3 or funct5 depending on opcode
+
+
+    // Switch opcode
+    switch(opcode)
+    {
+        case 0x43:
+            // FMADD: f[rd] = f[rs1]×f[rs2]+f[rs3]
+            cpu->x[rd] = (float)cpu->x[rs1] * (float)cpu->x[rs2] + (float)cpu->x[rs3_f5]; 
+            break;
+        case 0x47:
+            // FMSUB: f[rd] = f[rs1]×f[rs2]-f[rs3]
+            cpu->x[rd] = (float)cpu->x[rs1] * (float)cpu->x[rs2] - (float)cpu->x[rs3_f5]; 
+            break;
+        case 0x4B:
+            // FNMSUB: f[rd] = -f[rs1]×f[rs2]+f[rs3]
+            cpu->x[rd] = -((float)cpu->x[rs1]) * (float)cpu->x[rs2] + (float)cpu->x[rs3_f5]; 
+            break;
+        
+        case 0x53:
+
+            break;
+
+        default:
+
+            break;
+    }
+
+
+
+    return 0;
+}
 
 
 int r_type(cpu_t *cpu)

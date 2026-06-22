@@ -120,7 +120,7 @@ int s_type(cpu_t *cpu);
 int b_type(cpu_t *cpu);
 int u_type(cpu_t *cpu);
 int j_type(cpu_t *cpu);
-
+int f_type(cpu_t *cpu);
 
 void print_registers(cpu_t* cpu);
 
