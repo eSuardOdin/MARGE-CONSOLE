@@ -1,8 +1,11 @@
 #include "cpu.h"
 #include "bus.h"
 #include <stdint.h>
+#include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <sys/select.h>
+#include <string.h>
 
 
 int init_cpu(cpu_t* cpu, bus_t* bus)
@@ -55,6 +58,8 @@ int decode_execute_instruction(cpu_t* cpu)
             return u_type(cpu);
         case J_TYPE:
             return j_type(cpu);
+        case F_TYPE:
+            return f_type(cpu);
         case UNKNOWN_TYPE:
         return 0;
     }
@@ -82,6 +87,8 @@ e_inst_type get_instruction_type(uint8_t opcode)
             return U_TYPE;
         case 0x6F:
             return J_TYPE;
+        case 0x7:
+        case 0x27:
         case 0x4F:
         case 0x43:
         case 0x45:
@@ -94,6 +101,20 @@ e_inst_type get_instruction_type(uint8_t opcode)
         return UNKNOWN_TYPE;
         
     }
+}
+
+static inline float bits_to_float(int32_t bits)
+{
+    float f;
+    memcpy(&f, &bits, sizeof(float));
+    return f;
+}
+
+static inline int32_t float_to_bits(float f)
+{
+    int32_t bits;
+    memcpy(&bits, &f, sizeof(int32_t));
+    return bits;
 }
 
 
@@ -109,25 +130,211 @@ int f_type(cpu_t *cpu)
     uint8_t fmt =       (cpu->ir & 0x06000000) >> 25;   // Used to check if float or double (not sure we implement doubles)
     uint8_t rs3_f5 =    (cpu->ir & 0xF8000000) >> 27;   // May be used as rs3 or funct5 depending on opcode
 
+    // Offset used in flw and fsw instructions
+    int32_t imm =       (cpu->ir & 0xFFF00000) >> 20;
+    // Sign extend immediate value
+    int32_t sign_imm =  ((imm & 0x800) == 0x800) ? imm | 0xFFFFF000 : imm;
 
     // Switch opcode
     switch(opcode)
     {
+        case 0x7: // FLW
+        {
+            float val =  (read_memory(cpu->bus, cpu->x[rs1] + sign_imm + 3) << 24) |
+                                    (read_memory(cpu->bus, cpu->x[rs1] + sign_imm + 2) << 16) |
+                                    (read_memory(cpu->bus, cpu->x[rs1] + sign_imm + 1) << 8) |
+                                    read_memory(cpu->bus, cpu->x[rs1] + sign_imm); 
+                            
+
+            cpu->x[rd] = val;
+            printf("Loading %.2f from memory [%08X]\n", bits_to_float(cpu->x[rd]), cpu->x[rs1] + sign_imm);
+        }
+        break;
+
+        case 0x27: // FSW
+        {
+            uint8_t imm_1 = (cpu->ir & 0x00000F80) >> 7;          // imm[4:0]
+            int32_t imm_2 = (int32_t)(cpu->ir & 0xFE000000) >> 25; // imm[11:5], avec extension de signe via le shift arithmétique
+            int32_t s_imm = (imm_2 << 5) | imm_1;
+
+            int32_t val = cpu->x[rs2];
+            write_memory(cpu->bus, val & 0xFF, cpu->x[rs1] + s_imm);
+            write_memory(cpu->bus, (val & 0xFF00) >> 8, cpu->x[rs1] + s_imm + 1);
+            write_memory(cpu->bus, (val & 0xFF0000) >> 16, cpu->x[rs1] + s_imm + 2);
+            write_memory(cpu->bus, (val & 0xFF000000) >> 24, cpu->x[rs1] + s_imm + 3);
+
+            printf("Putting %.2f in memory [%08X]\n", bits_to_float(val), cpu->x[rs1] + s_imm);
+        }
+        break;
+
         case 0x43:
             // FMADD: f[rd] = f[rs1]×f[rs2]+f[rs3]
-            cpu->x[rd] = (float)cpu->x[rs1] * (float)cpu->x[rs2] + (float)cpu->x[rs3_f5]; 
+            cpu->x[rd] = float_to_bits(
+                bits_to_float(cpu->x[rs1]) * 
+                   bits_to_float(cpu->x[rs2]) +
+                      bits_to_float(cpu->x[rs3_f5])
+            ); 
             break;
         case 0x47:
             // FMSUB: f[rd] = f[rs1]×f[rs2]-f[rs3]
-            cpu->x[rd] = (float)cpu->x[rs1] * (float)cpu->x[rs2] - (float)cpu->x[rs3_f5]; 
+            cpu->x[rd] = float_to_bits(
+                bits_to_float(cpu->x[rs1]) * 
+                   bits_to_float(cpu->x[rs2]) -
+                      bits_to_float(cpu->x[rs3_f5])
+            );
             break;
         case 0x4B:
             // FNMSUB: f[rd] = -f[rs1]×f[rs2]+f[rs3]
-            cpu->x[rd] = -((float)cpu->x[rs1]) * (float)cpu->x[rs2] + (float)cpu->x[rs3_f5]; 
+            cpu->x[rd] = float_to_bits(
+                -bits_to_float(cpu->x[rs1]) * 
+                   bits_to_float(cpu->x[rs2]) +
+                      bits_to_float(cpu->x[rs3_f5])
+            ); 
             break;
-        
-        case 0x53:
 
+        case 0x4F:
+            // FNMADD: f[rd] = -f[rs1]×f[rs2]-f[rs3]
+            cpu->x[rd] = float_to_bits(
+                -bits_to_float(cpu->x[rs1]) * 
+                   bits_to_float(cpu->x[rs2]) -
+                      bits_to_float(cpu->x[rs3_f5])
+            ); 
+            break;        
+
+        case 0x53:
+            // Ignore double instructions
+            if(!fmt)
+            {
+                switch(rs3_f5)
+                {
+                    case 0x0:
+                        // FADD: f[rd] = f[rs1] + f[rs2]
+                        printf("Adding %.2f to %.2f, result: ", bits_to_float(cpu->x[rs1]), bits_to_float(cpu->x[rs2]));
+                        cpu->x[rd] = float_to_bits( bits_to_float(cpu->x[rs1]) + bits_to_float(cpu->x[rs2]));
+                        printf("%.2f\n", bits_to_float(cpu->x[rd]));
+                        break;
+                    case 0x1:
+                        // FSUB: f[rd] = f[rs1] - f[rs2]
+                        cpu->x[rd] = float_to_bits( bits_to_float(cpu->x[rs1]) - bits_to_float(cpu->x[rs2]));
+                        break;
+                    case 0x2:
+                        // FMUL: f[rd] = f[rs1] * f[rs2]
+                        cpu->x[rd] = float_to_bits( bits_to_float(cpu->x[rs1]) * bits_to_float(cpu->x[rs2]));
+                        break;
+                    case 0x3:
+                        // FDIV: f[rd] = f[rs1] / f[rs2]
+                        cpu->x[rd] = float_to_bits( bits_to_float(cpu->x[rs1]) / bits_to_float(cpu->x[rs2]));
+                        break;
+                    case 0x4:
+                        switch(rm)
+                        {
+                            case 0x0:
+                                // FSGNJ: f[rd] = {f[rs2][31], f[rs1][30:0]}
+                                cpu->x[rd] = (cpu->x[rs2] & 0x80000000) | (cpu->x[rs1] & 0x7FFFFFFF);
+                                break;
+                            case 0x1:
+                                // FSGNJN: f[rd] = {~f[rs2][31], f[rs1][30:0]}
+                                cpu->x[rd] = ~(cpu->x[rs2] & 0x80000000) | (cpu->x[rs1] & 0x7FFFFFFF);
+                                break;
+                            case 0x2:
+                                // FSGNJX: f[rd] = {f[rs2][31] ^ f[rs1][30:0]}
+                                cpu->x[rd] = (cpu->x[rs2] & 0x80000000) ^ (cpu->x[rs1] & 0x7FFFFFFF);
+                                break;
+                        }
+                        break;
+                    case 0x5:
+                        switch(rm)
+                        {
+                            case 0x0:
+                            {
+                                // FMIN: f[rd] = min(f[rs1], f[rs2])
+                                float a = bits_to_float(cpu->x[rs1]);
+                                float b = bits_to_float(cpu->x[rs2]);
+                                cpu->x[rd] = a < b ? float_to_bits(a) : float_to_bits(b);
+                                break;
+                            }
+                            case 0x1:
+                            {
+                                // FMAX: f[rd] = max(f[rs1], f[rs2])
+                                float a = bits_to_float(cpu->x[rs1]);
+                                float b = bits_to_float(cpu->x[rs2]);
+                                cpu->x[rd] = a > b ? float_to_bits(a) : float_to_bits(b);
+                                break;
+                            }
+                        }
+                        break;
+                    
+                    case 0xB:
+                        // FSQRT: f[rd] = sqrt(f[rs1])
+                        cpu->x[rd] = float_to_bits(sqrtf(bits_to_float(cpu->x[rs1])));
+                        break;
+                    case 0x18:
+                        switch (rs2) 
+                        {
+                            case 0x0:
+                            {
+                                // FCVT.W.S: x[rd] = sext(f32->s32(f[rs1]))
+                                float val = bits_to_float(cpu->x[rs1]);
+                                int32_t res = (int32_t)val;
+                                cpu->x[rd] = res;
+                                break;
+                            }
+                            case 0x1:
+                            {
+                                // FCVT.WU.: x[rd] = sext(f32->u32(f[rs1]))
+                                float val = bits_to_float(cpu->x[rs1]);
+                                uint32_t res = (uint32_t)val;
+                                cpu->x[rd] = (int32_t)res;
+                                break;
+                            }
+                        }
+                        break;
+                    case 0x1C:
+                        switch(rm)
+                        {
+                            case 0x0:
+                                // FMV.X.W: x[rd] = sext(f[rs1][31:0])
+                                cpu->x[rd] = float_to_bits(cpu->x[rs1]);
+                                break;
+                            case 0x1:
+                                // FCLASS: not implemented - check if relevent
+                                break;
+                        }
+                        break;
+                    case 0x14:
+                        switch(rm)
+                        {
+                            case 0x0:
+                                // FLE: x[rd] = f[rs1] <= f[rs2]
+                                cpu->x[rd] = float_to_bits(cpu->x[rs1]) <= float_to_bits(cpu->x[rs2]) ? 1 : 0;
+                                break;
+                            case 0x1:
+                                // FLT: x[rd] = f[rs1] < f[rs2]
+                                cpu->x[rd] = float_to_bits(cpu->x[rs1]) < float_to_bits(cpu->x[rs2]) ? 1 : 0;
+                                break;
+                            case 0x2:
+                                // FEQ: x[rd] = f[rs1] == f[rs2]
+                                cpu->x[rd] = float_to_bits(cpu->x[rs1]) == float_to_bits(cpu->x[rs2]) ? 1 : 0;
+                                break;
+                        }
+                        break;
+                    case 0x1A:
+                        switch(rs2)
+                        {
+                            case 0x0:
+                                // FCVT.S.W: f[rd] = f32_{s32}(x[rs1])
+                                cpu->x[rd] = float_to_bits((float)(int32_t)cpu->x[rs1]);
+                                break;
+                            case 0x1:
+                                // FCVT.S.WU: f[rd] = f32_{u32}(x[rs1])
+                                cpu->x[rd] = float_to_bits((float)(uint32_t)cpu->x[rs1]);
+                                break;
+                        }
+                        break;
+                        
+                }
+            }
+            
             break;
 
         default:

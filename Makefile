@@ -3,7 +3,7 @@ BUILD := build/cpu.x
 
 all: $(SRCS)
 	@echo "Compiling..."
-	gcc $(SRCS) -o $(BUILD) $$(sdl2-config --cflags --libs)
+	gcc $(SRCS) -o $(BUILD) $$(sdl2-config --cflags --libs) -lm
 	@echo "Done !"
 	cd scripts && make
 clean:

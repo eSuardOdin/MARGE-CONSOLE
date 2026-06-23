@@ -31,19 +31,19 @@ all: compile_boot $(BINS)
 
 compile_boot:
 	@echo "### Compiling boot assembly script..."
-	riscv64-linux-gnu-gcc -march=rv32im -mabi=ilp32 -nostdlib -ffreestanding -c global/boot.s -o global/boot.o
+	riscv64-linux-gnu-gcc -march=rv32imf -mabi=ilp32f -nostdlib -ffreestanding -c global/boot.s -o global/boot.o
 	@echo "### Boot script compiled !\n"
 
 
 # Compilation de la lib
 $(LIB_OBJ): $(LIB_SRC)
-	riscv64-linux-gnu-gcc -march=rv32im -mabi=ilp32 -nostdlib -ffreestanding -c $< -o $@
+	riscv64-linux-gnu-gcc -march=rv32imf -mabi=ilp32f -nostdlib -ffreestanding -c $< -o $@
 
 
 %.o: %.c $(LIB_OBJ)
 	@echo "############    $<    ############"
 	@echo "### Creating object file for $<..."
-	riscv64-linux-gnu-gcc -march=rv32im -mabi=ilp32 -nostdlib -ffreestanding -c $< -o $@
+	riscv64-linux-gnu-gcc -march=rv32imf -mabi=ilp32f -nostdlib -ffreestanding -c $< -o $@
 	@echo "### $@ created !\n"
 
 %.elf: %.o
