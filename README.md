@@ -241,6 +241,7 @@ Controller state is stored on a single byte, bit 6 and 7 are selectors in order 
 
 ![alt text](./img/palette.png)
 
+
 ## Miniaudio
 
 We use miniaudio to handle audio in the console.
