@@ -242,26 +242,48 @@ Controller state is stored on a single byte, bit 6 and 7 are selectors in order 
 ![alt text](./img/palette.png)
 
 
-## Miniaudio / Console audio
+## Console audio
 
-We use miniaudio to handle audio in the console.
-The different waveform channels are linked to a `ma_sound` struct and binded as data source to the engine's nodegraph.
-In device's callback linked to the engine, the `ma_engine_read_pcm_frames()` is calling the `ma_node_graph_read_pcm_frames()` who finally calls `ma_node_read_pcm_frames()` with the pNodeGraph->endpoint (so endpoint is the node ?)
 
 *Check if a process is using a device:* `fuser -v /dev/snd/*`
 
 
 **The console audio**
+
 The console will have 4 square wave audio channels + a noise generator channel
 We are way less limited than the DMG's APU in terms of registers available but need to keep in mind some sort of using sparingly memory.
 
-Naming convention : Channel X reg N -> CxRn 
-8192 Hz seems like a fine maximum frequency so it need one full 8bit register + 5 bit of another one, leaving 3 bits.
-We could use those 3 bits as a decimal approximation ? (Like, one bit = 0.14 Hz)
+Naming convention : 
+For the general audio registers : Audio reg n -> ARn
+
+For the individuals channels registers : Channel x reg n -> CxRn
+
+**General audio registers**
+
+General enable register `[AR0]` : Used to enable/disable the full APU (bit0) or individuals channels. Enable == 1
+
+Master volume control register `[AR1]` : Used to set Left and Right volume
+
+| Register | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+|------|---|---|---|---|---|---|---|---|
+|   `[AR0]`   |  TBD |  Enable C5 |  Enable C4 |  Enable C3 |  Enable C2 |  Enable C1 |  Enable C0 |  APU enable |
+|    `[AR1]`  | [x]  |  [x] |  [x] | LEFT Volume  |  [x] | [x]  | [x]  | RIGHT Volume  |
+*When a bit value is [x] it means it is the same purpose as previous bit*
+
+
+**Channels registers**
+
+*8192 Hz seems like a fine maximum frequency so it need one full 8bit register + 5 bit of another one, leaving 3 bits.
+We could use those 3 bits as a decimal approximation (Like, one bit = 0.14 Hz)? Not sure if it is usefull at high frequencies but sure helps with pitch accuracy at lower freq*
+
+| Register | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+|------|---|---|---|---|---|---|---|---|
+|   `[C0R0]`   |  TBD |  Enable C5 |  Enable C4 |  Enable C3 |  Enable C2 |  Enable C1 |  [x] |  Freq LSB |
+|    `[AR1]`  | [x]  |  [x] |  [x] | LEFT Volume  |  [x] | [x]  | [x]  | RIGHT Volume  |
 ```
-f: Frequency -> 5 MSB on C0R1 + 8 LSB on C0R0
-d: Frequency fractionnal part approximation (value * 10/7)
 [C0R0]: [ffffffff]
 [C0R1]: [dddfffff]
+f: Frequency -> 5 MSB on C0R1 + 8 LSB on C0R0
+d: Frequency fractionnal part approximation (value * 10/7)
 ```
 Each channel should have a master volume 
