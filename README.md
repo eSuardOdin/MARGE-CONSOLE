@@ -242,10 +242,26 @@ Controller state is stored on a single byte, bit 6 and 7 are selectors in order 
 ![alt text](./img/palette.png)
 
 
-## Miniaudio
+## Miniaudio / Console audio
 
 We use miniaudio to handle audio in the console.
 The different waveform channels are linked to a `ma_sound` struct and binded as data source to the engine's nodegraph.
 In device's callback linked to the engine, the `ma_engine_read_pcm_frames()` is calling the `ma_node_graph_read_pcm_frames()` who finally calls `ma_node_read_pcm_frames()` with the pNodeGraph->endpoint (so endpoint is the node ?)
 
 *Check if a process is using a device:* `fuser -v /dev/snd/*`
+
+
+**The console audio**
+The console will have 4 square wave audio channels + a noise generator channel
+We are way less limited than the DMG's APU in terms of registers available but need to keep in mind some sort of using sparingly memory.
+
+Naming convention : Channel X reg N -> CxRn 
+8192 Hz seems like a fine maximum frequency so it need one full 8bit register + 5 bit of another one, leaving 3 bits.
+We could use those 3 bits as a decimal approximation ? (Like, one bit = 0.14 Hz)
+```
+f: Frequency -> 5 MSB on C0R1 + 8 LSB on C0R0
+d: Frequency fractionnal part approximation (value * 10/7)
+[C0R0]: [ffffffff]
+[C0R1]: [dddfffff]
+```
+Each channel should have a master volume 

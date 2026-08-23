@@ -32,7 +32,9 @@
 #define TILESET_OFST        0x0406C000
 #define MAPS_OFST           0x0407C000
 
-#define OAM_OFST            0x040FC000
+#define OAM_OFST            0x040FC000 // Size : 0x1400
+#define AUDIO_OFST          0x040FD400
+
 #define STACK_OFST          0x0FFFFFFF // To be defined
 
 
