@@ -100,7 +100,10 @@ int main(int argc, char** argv)
     int gFrameBuffer[width*height];
 
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_AUDIO))
+    {
+        fprintf(stderr, "Error while initializing SDL : %s\n", SDL_GetError());
         return EXIT_FAILURE;
+    }
     // Create Window
     window = SDL_CreateWindow("MARGE", 
         SDL_WINDOWPOS_CENTERED, 

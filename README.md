@@ -1,5 +1,12 @@
 # MARGE-CONSOLE
 
+# Install
+You need 2 dependencies in order for make to compile console and games : 
+- RiscV compiler : sudo apt install gcc-riscv64-linux-gnu
+- SDL2 : https://wiki.libsdl.org/SDL2/Installation
+*Todo: Maybe work with CMake to make it cross platform and packageable*
+
+
 # Console
 The Marge Console is a fantasy console, as it's core, it is based on a RISC-V CPU architecture. The console accepts RISC V ROMs.
 
@@ -233,3 +240,11 @@ Controller state is stored on a single byte, bit 6 and 7 are selectors in order 
 ## Palette
 
 ![alt text](./img/palette.png)
+
+## Miniaudio
+
+We use miniaudio to handle audio in the console.
+The different waveform channels are linked to a `ma_sound` struct and binded as data source to the engine's nodegraph.
+In device's callback linked to the engine, the `ma_engine_read_pcm_frames()` is calling the `ma_node_graph_read_pcm_frames()` who finally calls `ma_node_read_pcm_frames()` with the pNodeGraph->endpoint (so endpoint is the node ?)
+
+*Check if a process is using a device:* `fuser -v /dev/snd/*`
