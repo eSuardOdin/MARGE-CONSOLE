@@ -1,11 +1,11 @@
-SRCS := $(wildcard *.c)
+SRCS := $(wildcard src/*.c)
 BUILD := build/cpu.x
 
 all: $(SRCS)
 	@echo "Compiling..."
-	gcc $(SRCS) -o $(BUILD) $$(sdl2-config --cflags --libs) -lm
+	gcc $(SRCS) -o $(BUILD) $$(sdl2-config --cflags --libs) -lm -I./include
 	@echo "Done !"
-	cd scripts && make
+	cd games && make
 clean:
 	@echo "Cleaning $(BUILD)"
 	rm -f $(BUILD)

@@ -1,0 +1,452 @@
+
+test_sprite/test_sprite.elf:     format de fichier elf32-littleriscv
+test_sprite/test_sprite.elf
+architecture: riscv:rv32, fanions 0x00000112:
+EXEC_P, HAS_SYMS, D_PAGED
+adresse de départ 0x00000000
+
+En-tête de programme:
+0x70000003 off    0x0000a208 vaddr 0x00000000 paddr 0x00000000 align 2**0
+         filesz 0x00000038 memsz 0x00000000 flags r--
+    LOAD off    0x00001000 vaddr 0x00000000 paddr 0x00000000 align 2**12
+         filesz 0x00008648 memsz 0x00008648 flags r-x
+    LOAD off    0x0000a000 vaddr 0x0404b000 paddr 0x0404b000 align 2**12
+         filesz 0x00000208 memsz 0x00001004 flags rw-
+   STACK off    0x00000000 vaddr 0x00000000 paddr 0x00000000 align 2**4
+         filesz 0x00000000 memsz 0x00000000 flags rw-
+
+Sections :
+Idx Name          Taille    VMA       LMA       Off fich  Algn
+  0 .text         00000500  00000000  00000000  00001000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .rodata       00008020  00000500  00000500  00001500  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  2 .eh_frame     00000128  00008520  00008520  00009520  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  3 .data         00000208  0404b000  0404b000  0000a000  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+  4 .bss          00000004  0404c000  0404c000  0000a208  2**2
+                  ALLOC
+  5 .riscv.attributes 00000038  00000000  00000000  0000a208  2**0
+                  CONTENTS, READONLY
+  6 .comment      0000001f  00000000  00000000  0000a240  2**0
+                  CONTENTS, READONLY
+SYMBOL TABLE:
+00000000 l    d  .text	00000000 .text
+00000500 l    d  .rodata	00000000 .rodata
+00008520 l    d  .eh_frame	00000000 .eh_frame
+0404b000 l    d  .data	00000000 .data
+0404c000 l    d  .bss	00000000 .bss
+00000000 l    d  .riscv.attributes	00000000 .riscv.attributes
+00000000 l    d  .comment	00000000 .comment
+00000000 l    df *ABS*	00000000 boot.o
+00000000 l    df *ABS*	00000000 test_sprite.c
+00000500 l     O .rodata	00000004 FRAME_COUNTER
+00000504 l     O .rodata	00000004 FB_ADDR
+00000508 l     O .rodata	00000004 SCROLL_X
+0000050c l     O .rodata	00000004 SCROLL_Y
+00000510 l     O .rodata	00000004 TILESET_ADDR
+00000514 l     O .rodata	00000004 MAP_INDEX
+00000518 l     O .rodata	00000004 MAP_0_ADDR
+0000051c l     O .rodata	00004000 MAP_0
+0000451c l     O .rodata	00004000 MAP_1
+0000851c l     O .rodata	00000004 MAP_1_ADDR
+0404c000 l     O .bss	00000004 FUNKY_TILE_INDEX
+0404b000 l     O .data	00000100 FUNKY_TILE
+0404b100 l     O .data	00000004 BLANK_TILE_INDEX
+0404b104 l     O .data	00000100 BLANK_TILE
+0404b204 l     O .data	00000004 JOYPAD_0
+00000000 l    df *ABS*	00000000 rw.c
+00000000 g       .text	00000000 _boot
+000003e0 g     F .text	00000058 store_16
+00000248 g     F .text	00000108 main
+00000438 g     F .text	0000007c load_32
+000000e0 g     F .text	00000168 init_maps
+00000350 g     F .text	00000090 store_32
+00000014 g     F .text	000000cc init_tileset
+000004b4 g     F .text	0000004c load_16
+
+
+
+test_sprite/test_sprite.elf:     format de fichier elf32-littleriscv
+
+
+Déassemblage de la section .text :
+
+00000000 <_boot>:
+   0:	03ff0137          	lui	sp,0x3ff0
+   4:	fff10113          	addi	sp,sp,-1 # 3feffff <MAP_1_ADDR+0x3fe7ae3>
+   8:	240000ef          	jal	248 <main>
+   c:	00100073          	ebreak
+  10:	0000006f          	j	10 <_boot+0x10>
+
+00000014 <init_tileset>:
+  14:	fe010113          	addi	sp,sp,-32
+  18:	00112e23          	sw	ra,28(sp)
+  1c:	00812c23          	sw	s0,24(sp)
+  20:	02010413          	addi	s0,sp,32
+  24:	fe042623          	sw	zero,-20(s0)
+  28:	0400006f          	j	68 <init_tileset+0x54>
+  2c:	0404b717          	auipc	a4,0x404b
+  30:	fd470713          	addi	a4,a4,-44 # 404b000 <FUNKY_TILE>
+  34:	fec42783          	lw	a5,-20(s0)
+  38:	00279793          	slli	a5,a5,0x2
+  3c:	00f707b3          	add	a5,a4,a5
+  40:	0007a683          	lw	a3,0(a5)
+  44:	0406c737          	lui	a4,0x406c
+  48:	fec42783          	lw	a5,-20(s0)
+  4c:	00f707b3          	add	a5,a4,a5
+  50:	00078713          	mv	a4,a5
+  54:	0ff6f793          	zext.b	a5,a3
+  58:	00f70023          	sb	a5,0(a4) # 406c000 <FUNKY_TILE_INDEX+0x20000>
+  5c:	fec42783          	lw	a5,-20(s0)
+  60:	00178793          	addi	a5,a5,1
+  64:	fef42623          	sw	a5,-20(s0)
+  68:	fec42703          	lw	a4,-20(s0)
+  6c:	03f00793          	li	a5,63
+  70:	fae7dee3          	bge	a5,a4,2c <init_tileset+0x18>
+  74:	fe042423          	sw	zero,-24(s0)
+  78:	0440006f          	j	bc <init_tileset+0xa8>
+  7c:	0404b717          	auipc	a4,0x404b
+  80:	08870713          	addi	a4,a4,136 # 404b104 <BLANK_TILE>
+  84:	fe842783          	lw	a5,-24(s0)
+  88:	00279793          	slli	a5,a5,0x2
+  8c:	00f707b3          	add	a5,a4,a5
+  90:	0007a683          	lw	a3,0(a5)
+  94:	0406c737          	lui	a4,0x406c
+  98:	fe842783          	lw	a5,-24(s0)
+  9c:	00f707b3          	add	a5,a4,a5
+  a0:	04078793          	addi	a5,a5,64
+  a4:	00078713          	mv	a4,a5
+  a8:	0ff6f793          	zext.b	a5,a3
+  ac:	00f70023          	sb	a5,0(a4) # 406c000 <FUNKY_TILE_INDEX+0x20000>
+  b0:	fe842783          	lw	a5,-24(s0)
+  b4:	00178793          	addi	a5,a5,1
+  b8:	fef42423          	sw	a5,-24(s0)
+  bc:	fe842703          	lw	a4,-24(s0)
+  c0:	03f00793          	li	a5,63
+  c4:	fae7dce3          	bge	a5,a4,7c <init_tileset+0x68>
+  c8:	00000013          	nop
+  cc:	00000013          	nop
+  d0:	01c12083          	lw	ra,28(sp)
+  d4:	01812403          	lw	s0,24(sp)
+  d8:	02010113          	addi	sp,sp,32
+  dc:	00008067          	ret
+
+000000e0 <init_maps>:
+  e0:	fe010113          	addi	sp,sp,-32
+  e4:	00112e23          	sw	ra,28(sp)
+  e8:	00812c23          	sw	s0,24(sp)
+  ec:	02010413          	addi	s0,sp,32
+  f0:	fe042623          	sw	zero,-20(s0)
+  f4:	0c00006f          	j	1b4 <init_maps+0xd4>
+  f8:	fec42783          	lw	a5,-20(s0)
+  fc:	0077f793          	andi	a5,a5,7
+ 100:	04079c63          	bnez	a5,158 <init_maps+0x78>
+ 104:	0404c797          	auipc	a5,0x404c
+ 108:	efc78793          	addi	a5,a5,-260 # 404c000 <FUNKY_TILE_INDEX>
+ 10c:	0007a683          	lw	a3,0(a5)
+ 110:	0407c737          	lui	a4,0x407c
+ 114:	fec42783          	lw	a5,-20(s0)
+ 118:	00f707b3          	add	a5,a4,a5
+ 11c:	00078713          	mv	a4,a5
+ 120:	0ff6f793          	zext.b	a5,a3
+ 124:	00f70023          	sb	a5,0(a4) # 407c000 <FUNKY_TILE_INDEX+0x30000>
+ 128:	0404c797          	auipc	a5,0x404c
+ 12c:	ed878793          	addi	a5,a5,-296 # 404c000 <FUNKY_TILE_INDEX>
+ 130:	0007a783          	lw	a5,0(a5)
+ 134:	4087d693          	srai	a3,a5,0x8
+ 138:	0407c737          	lui	a4,0x407c
+ 13c:	fec42783          	lw	a5,-20(s0)
+ 140:	00f707b3          	add	a5,a4,a5
+ 144:	00178793          	addi	a5,a5,1
+ 148:	00078713          	mv	a4,a5
+ 14c:	0ff6f793          	zext.b	a5,a3
+ 150:	00f70023          	sb	a5,0(a4) # 407c000 <FUNKY_TILE_INDEX+0x30000>
+ 154:	0540006f          	j	1a8 <init_maps+0xc8>
+ 158:	0404b797          	auipc	a5,0x404b
+ 15c:	fa878793          	addi	a5,a5,-88 # 404b100 <BLANK_TILE_INDEX>
+ 160:	0007a683          	lw	a3,0(a5)
+ 164:	0407c737          	lui	a4,0x407c
+ 168:	fec42783          	lw	a5,-20(s0)
+ 16c:	00f707b3          	add	a5,a4,a5
+ 170:	00078713          	mv	a4,a5
+ 174:	0ff6f793          	zext.b	a5,a3
+ 178:	00f70023          	sb	a5,0(a4) # 407c000 <FUNKY_TILE_INDEX+0x30000>
+ 17c:	0404b797          	auipc	a5,0x404b
+ 180:	f8478793          	addi	a5,a5,-124 # 404b100 <BLANK_TILE_INDEX>
+ 184:	0007a783          	lw	a5,0(a5)
+ 188:	4087d693          	srai	a3,a5,0x8
+ 18c:	0407c737          	lui	a4,0x407c
+ 190:	fec42783          	lw	a5,-20(s0)
+ 194:	00f707b3          	add	a5,a4,a5
+ 198:	00178793          	addi	a5,a5,1
+ 19c:	00078713          	mv	a4,a5
+ 1a0:	0ff6f793          	zext.b	a5,a3
+ 1a4:	00f70023          	sb	a5,0(a4) # 407c000 <FUNKY_TILE_INDEX+0x30000>
+ 1a8:	fec42783          	lw	a5,-20(s0)
+ 1ac:	00278793          	addi	a5,a5,2
+ 1b0:	fef42623          	sw	a5,-20(s0)
+ 1b4:	fec42703          	lw	a4,-20(s0)
+ 1b8:	000027b7          	lui	a5,0x2
+ 1bc:	f2f74ee3          	blt	a4,a5,f8 <init_maps+0x18>
+ 1c0:	fe042423          	sw	zero,-24(s0)
+ 1c4:	0600006f          	j	224 <init_maps+0x144>
+ 1c8:	0404b797          	auipc	a5,0x404b
+ 1cc:	f3878793          	addi	a5,a5,-200 # 404b100 <BLANK_TILE_INDEX>
+ 1d0:	0007a683          	lw	a3,0(a5)
+ 1d4:	0407e737          	lui	a4,0x407e
+ 1d8:	fe842783          	lw	a5,-24(s0)
+ 1dc:	00f707b3          	add	a5,a4,a5
+ 1e0:	00078713          	mv	a4,a5
+ 1e4:	0ff6f793          	zext.b	a5,a3
+ 1e8:	00f70023          	sb	a5,0(a4) # 407e000 <FUNKY_TILE_INDEX+0x32000>
+ 1ec:	0404b797          	auipc	a5,0x404b
+ 1f0:	f1478793          	addi	a5,a5,-236 # 404b100 <BLANK_TILE_INDEX>
+ 1f4:	0007a783          	lw	a5,0(a5)
+ 1f8:	4087d693          	srai	a3,a5,0x8
+ 1fc:	0407e737          	lui	a4,0x407e
+ 200:	fe842783          	lw	a5,-24(s0)
+ 204:	00f707b3          	add	a5,a4,a5
+ 208:	00178793          	addi	a5,a5,1
+ 20c:	00078713          	mv	a4,a5
+ 210:	0ff6f793          	zext.b	a5,a3
+ 214:	00f70023          	sb	a5,0(a4) # 407e000 <FUNKY_TILE_INDEX+0x32000>
+ 218:	fe842783          	lw	a5,-24(s0)
+ 21c:	00278793          	addi	a5,a5,2
+ 220:	fef42423          	sw	a5,-24(s0)
+ 224:	fe842703          	lw	a4,-24(s0)
+ 228:	000027b7          	lui	a5,0x2
+ 22c:	f8f74ee3          	blt	a4,a5,1c8 <init_maps+0xe8>
+ 230:	00000013          	nop
+ 234:	00000013          	nop
+ 238:	01c12083          	lw	ra,28(sp)
+ 23c:	01812403          	lw	s0,24(sp)
+ 240:	02010113          	addi	sp,sp,32
+ 244:	00008067          	ret
+
+00000248 <main>:
+ 248:	fe010113          	addi	sp,sp,-32
+ 24c:	00112e23          	sw	ra,28(sp)
+ 250:	00812c23          	sw	s0,24(sp)
+ 254:	02010413          	addi	s0,sp,32
+ 258:	dbdff0ef          	jal	14 <init_tileset>
+ 25c:	e85ff0ef          	jal	e0 <init_maps>
+ 260:	fe042623          	sw	zero,-20(s0)
+ 264:	fe042423          	sw	zero,-24(s0)
+ 268:	0406b7b7          	lui	a5,0x406b
+ 26c:	0f078793          	addi	a5,a5,240 # 406b0f0 <FUNKY_TILE_INDEX+0x1f0f0>
+ 270:	0007c783          	lbu	a5,0(a5)
+ 274:	0ff7f793          	zext.b	a5,a5
+ 278:	fef42423          	sw	a5,-24(s0)
+ 27c:	fec42703          	lw	a4,-20(s0)
+ 280:	fe842783          	lw	a5,-24(s0)
+ 284:	fef702e3          	beq	a4,a5,268 <main+0x20>
+ 288:	fe842783          	lw	a5,-24(s0)
+ 28c:	fef42623          	sw	a5,-20(s0)
+ 290:	0404b797          	auipc	a5,0x404b
+ 294:	f7478793          	addi	a5,a5,-140 # 404b204 <JOYPAD_0>
+ 298:	0007a783          	lw	a5,0(a5)
+ 29c:	0007c783          	lbu	a5,0(a5)
+ 2a0:	0ff7f793          	zext.b	a5,a5
+ 2a4:	fef42223          	sw	a5,-28(s0)
+ 2a8:	fe442703          	lw	a4,-28(s0)
+ 2ac:	00800793          	li	a5,8
+ 2b0:	02f71c63          	bne	a4,a5,2e8 <main+0xa0>
+ 2b4:	0406b7b7          	lui	a5,0x406b
+ 2b8:	00478793          	addi	a5,a5,4 # 406b004 <FUNKY_TILE_INDEX+0x1f004>
+ 2bc:	0007c783          	lbu	a5,0(a5)
+ 2c0:	0ff7f793          	zext.b	a5,a5
+ 2c4:	fef42023          	sw	a5,-32(s0)
+ 2c8:	fe042783          	lw	a5,-32(s0)
+ 2cc:	0ff7f793          	zext.b	a5,a5
+ 2d0:	0406b737          	lui	a4,0x406b
+ 2d4:	00470713          	addi	a4,a4,4 # 406b004 <FUNKY_TILE_INDEX+0x1f004>
+ 2d8:	00178793          	addi	a5,a5,1
+ 2dc:	0ff7f793          	zext.b	a5,a5
+ 2e0:	00f70023          	sb	a5,0(a4)
+ 2e4:	0400006f          	j	324 <main+0xdc>
+ 2e8:	fe442703          	lw	a4,-28(s0)
+ 2ec:	00200793          	li	a5,2
+ 2f0:	02f71a63          	bne	a4,a5,324 <main+0xdc>
+ 2f4:	0406b7b7          	lui	a5,0x406b
+ 2f8:	00478793          	addi	a5,a5,4 # 406b004 <FUNKY_TILE_INDEX+0x1f004>
+ 2fc:	0007c783          	lbu	a5,0(a5)
+ 300:	0ff7f793          	zext.b	a5,a5
+ 304:	fef42023          	sw	a5,-32(s0)
+ 308:	fe042783          	lw	a5,-32(s0)
+ 30c:	0ff7f793          	zext.b	a5,a5
+ 310:	0406b737          	lui	a4,0x406b
+ 314:	00470713          	addi	a4,a4,4 # 406b004 <FUNKY_TILE_INDEX+0x1f004>
+ 318:	fff78793          	addi	a5,a5,-1
+ 31c:	0ff7f793          	zext.b	a5,a5
+ 320:	00f70023          	sb	a5,0(a4)
+ 324:	0404b797          	auipc	a5,0x404b
+ 328:	ee078793          	addi	a5,a5,-288 # 404b204 <JOYPAD_0>
+ 32c:	0007a783          	lw	a5,0(a5)
+ 330:	0007c783          	lbu	a5,0(a5)
+ 334:	0ff7f793          	zext.b	a5,a5
+ 338:	0406b737          	lui	a4,0x406b
+ 33c:	00270713          	addi	a4,a4,2 # 406b002 <FUNKY_TILE_INDEX+0x1f002>
+ 340:	0017f793          	andi	a5,a5,1
+ 344:	0ff7f793          	zext.b	a5,a5
+ 348:	00f70023          	sb	a5,0(a4)
+ 34c:	f1dff06f          	j	268 <main+0x20>
+
+00000350 <store_32>:
+ 350:	fe010113          	addi	sp,sp,-32
+ 354:	00112e23          	sw	ra,28(sp)
+ 358:	00812c23          	sw	s0,24(sp)
+ 35c:	02010413          	addi	s0,sp,32
+ 360:	fea42623          	sw	a0,-20(s0)
+ 364:	feb42423          	sw	a1,-24(s0)
+ 368:	fe842783          	lw	a5,-24(s0)
+ 36c:	fec42703          	lw	a4,-20(s0)
+ 370:	0ff77713          	zext.b	a4,a4
+ 374:	00e78023          	sb	a4,0(a5)
+ 378:	fec42783          	lw	a5,-20(s0)
+ 37c:	4087d693          	srai	a3,a5,0x8
+ 380:	fe842783          	lw	a5,-24(s0)
+ 384:	00178793          	addi	a5,a5,1
+ 388:	00078713          	mv	a4,a5
+ 38c:	0ff6f793          	zext.b	a5,a3
+ 390:	00f70023          	sb	a5,0(a4)
+ 394:	fec42783          	lw	a5,-20(s0)
+ 398:	4107d693          	srai	a3,a5,0x10
+ 39c:	fe842783          	lw	a5,-24(s0)
+ 3a0:	00278793          	addi	a5,a5,2
+ 3a4:	00078713          	mv	a4,a5
+ 3a8:	0ff6f793          	zext.b	a5,a3
+ 3ac:	00f70023          	sb	a5,0(a4)
+ 3b0:	fec42783          	lw	a5,-20(s0)
+ 3b4:	0187d693          	srli	a3,a5,0x18
+ 3b8:	fe842783          	lw	a5,-24(s0)
+ 3bc:	00378793          	addi	a5,a5,3
+ 3c0:	00078713          	mv	a4,a5
+ 3c4:	0ff6f793          	zext.b	a5,a3
+ 3c8:	00f70023          	sb	a5,0(a4)
+ 3cc:	00000013          	nop
+ 3d0:	01c12083          	lw	ra,28(sp)
+ 3d4:	01812403          	lw	s0,24(sp)
+ 3d8:	02010113          	addi	sp,sp,32
+ 3dc:	00008067          	ret
+
+000003e0 <store_16>:
+ 3e0:	fe010113          	addi	sp,sp,-32
+ 3e4:	00112e23          	sw	ra,28(sp)
+ 3e8:	00812c23          	sw	s0,24(sp)
+ 3ec:	02010413          	addi	s0,sp,32
+ 3f0:	fea42623          	sw	a0,-20(s0)
+ 3f4:	feb42423          	sw	a1,-24(s0)
+ 3f8:	fe842783          	lw	a5,-24(s0)
+ 3fc:	fec42703          	lw	a4,-20(s0)
+ 400:	0ff77713          	zext.b	a4,a4
+ 404:	00e78023          	sb	a4,0(a5)
+ 408:	fec42783          	lw	a5,-20(s0)
+ 40c:	4087d693          	srai	a3,a5,0x8
+ 410:	fe842783          	lw	a5,-24(s0)
+ 414:	00178793          	addi	a5,a5,1
+ 418:	00078713          	mv	a4,a5
+ 41c:	0ff6f793          	zext.b	a5,a3
+ 420:	00f70023          	sb	a5,0(a4)
+ 424:	00000013          	nop
+ 428:	01c12083          	lw	ra,28(sp)
+ 42c:	01812403          	lw	s0,24(sp)
+ 430:	02010113          	addi	sp,sp,32
+ 434:	00008067          	ret
+
+00000438 <load_32>:
+ 438:	fe010113          	addi	sp,sp,-32
+ 43c:	00112e23          	sw	ra,28(sp)
+ 440:	00812c23          	sw	s0,24(sp)
+ 444:	02010413          	addi	s0,sp,32
+ 448:	fea42623          	sw	a0,-20(s0)
+ 44c:	fec42783          	lw	a5,-20(s0)
+ 450:	0007c783          	lbu	a5,0(a5)
+ 454:	0ff7f713          	zext.b	a4,a5
+ 458:	fec42783          	lw	a5,-20(s0)
+ 45c:	00178793          	addi	a5,a5,1
+ 460:	0007c783          	lbu	a5,0(a5)
+ 464:	0ff7f793          	zext.b	a5,a5
+ 468:	00f767b3          	or	a5,a4,a5
+ 46c:	0ff7f713          	zext.b	a4,a5
+ 470:	fec42783          	lw	a5,-20(s0)
+ 474:	00278793          	addi	a5,a5,2
+ 478:	0007c783          	lbu	a5,0(a5)
+ 47c:	0ff7f793          	zext.b	a5,a5
+ 480:	00f767b3          	or	a5,a4,a5
+ 484:	0ff7f713          	zext.b	a4,a5
+ 488:	fec42783          	lw	a5,-20(s0)
+ 48c:	00378793          	addi	a5,a5,3
+ 490:	0007c783          	lbu	a5,0(a5)
+ 494:	0ff7f793          	zext.b	a5,a5
+ 498:	00f767b3          	or	a5,a4,a5
+ 49c:	0ff7f793          	zext.b	a5,a5
+ 4a0:	00078513          	mv	a0,a5
+ 4a4:	01c12083          	lw	ra,28(sp)
+ 4a8:	01812403          	lw	s0,24(sp)
+ 4ac:	02010113          	addi	sp,sp,32
+ 4b0:	00008067          	ret
+
+000004b4 <load_16>:
+ 4b4:	fe010113          	addi	sp,sp,-32
+ 4b8:	00112e23          	sw	ra,28(sp)
+ 4bc:	00812c23          	sw	s0,24(sp)
+ 4c0:	02010413          	addi	s0,sp,32
+ 4c4:	fea42623          	sw	a0,-20(s0)
+ 4c8:	fec42783          	lw	a5,-20(s0)
+ 4cc:	0007c783          	lbu	a5,0(a5)
+ 4d0:	0ff7f713          	zext.b	a4,a5
+ 4d4:	fec42783          	lw	a5,-20(s0)
+ 4d8:	00178793          	addi	a5,a5,1
+ 4dc:	0007c783          	lbu	a5,0(a5)
+ 4e0:	0ff7f793          	zext.b	a5,a5
+ 4e4:	00f767b3          	or	a5,a4,a5
+ 4e8:	0ff7f793          	zext.b	a5,a5
+ 4ec:	00078513          	mv	a0,a5
+ 4f0:	01c12083          	lw	ra,28(sp)
+ 4f4:	01812403          	lw	s0,24(sp)
+ 4f8:	02010113          	addi	sp,sp,32
+ 4fc:	00008067          	ret
+
+test_sprite/test_sprite.elf:     format de fichier elf32-littleriscv
+
+SYMBOL TABLE:
+00000000 l    d  .text	00000000 .text
+00000500 l    d  .rodata	00000000 .rodata
+00008520 l    d  .eh_frame	00000000 .eh_frame
+0404b000 l    d  .data	00000000 .data
+0404c000 l    d  .bss	00000000 .bss
+00000000 l    d  .riscv.attributes	00000000 .riscv.attributes
+00000000 l    d  .comment	00000000 .comment
+00000000 l    df *ABS*	00000000 boot.o
+00000000 l    df *ABS*	00000000 test_sprite.c
+00000500 l     O .rodata	00000004 FRAME_COUNTER
+00000504 l     O .rodata	00000004 FB_ADDR
+00000508 l     O .rodata	00000004 SCROLL_X
+0000050c l     O .rodata	00000004 SCROLL_Y
+00000510 l     O .rodata	00000004 TILESET_ADDR
+00000514 l     O .rodata	00000004 MAP_INDEX
+00000518 l     O .rodata	00000004 MAP_0_ADDR
+0000051c l     O .rodata	00004000 MAP_0
+0000451c l     O .rodata	00004000 MAP_1
+0000851c l     O .rodata	00000004 MAP_1_ADDR
+0404c000 l     O .bss	00000004 FUNKY_TILE_INDEX
+0404b000 l     O .data	00000100 FUNKY_TILE
+0404b100 l     O .data	00000004 BLANK_TILE_INDEX
+0404b104 l     O .data	00000100 BLANK_TILE
+0404b204 l     O .data	00000004 JOYPAD_0
+00000000 l    df *ABS*	00000000 rw.c
+00000000 g       .text	00000000 _boot
+000003e0 g     F .text	00000058 store_16
+00000248 g     F .text	00000108 main
+00000438 g     F .text	0000007c load_32
+000000e0 g     F .text	00000168 init_maps
+00000350 g     F .text	00000090 store_32
+00000014 g     F .text	000000cc init_tileset
+000004b4 g     F .text	0000004c load_16
+
+
+
+test_sprite/test_sprite.elf:     format de fichier elf32-littleriscv
+

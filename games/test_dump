@@ -1,0 +1,95 @@
+En-tête ELF:
+  Magique:   7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00 
+  Classe:                            ELF32
+  Données:                          complément à 2, système à octets de poids faible d'abord (little endian)
+  Version:                           1 (actuelle)
+  OS/ABI:                            UNIX - System V
+  Version ABI:                       0
+  Type:                              EXEC (fichier exécutable)
+  Machine:                           RISC-V
+  Version:                           0x1
+  Adresse du point d'entrée:         0x0
+  Début des en-têtes de programme :  52 (octets dans le fichier)
+  Début des en-têtes de section :    8932 (octets dans le fichier)
+  Fanions:                           0x2, single-float ABI
+  Taille de cet en-tête:             52 (octets)
+  Taille de l'en-tête du programme:  32 (octets)
+  Nombre d'en-tête du programme:     4
+  Taille des en-têtes de section:    40 (octets)
+  Nombre d'en-têtes de section:      11
+  Table d'index des chaînes d'en-tête de section: 10
+
+En-têtes de section :
+  [Nr] Nom               Type            Adr      Décala.Taille ES Fan LN Inf Al
+  [ 0]                   NULL            00000000 000000 000000 00      0   0  0
+  [ 1] .text             PROGBITS        00000000 001000 000240 00  AX  0   0  4
+  [ 2] .rodata           PROGBITS        00000240 001240 000004 00   A  0   0  4
+  [ 3] .eh_frame         PROGBITS        00000244 001244 0000dc 00   A  0   0  4
+  [ 4] .data             PROGBITS        0404b000 002000 00000c 00  WA  0   0  4
+  [ 5] .bss              NOBITS          0404c000 00200c 000004 00  WA  0   0  4
+  [ 6] .riscv.attributes RISCV_ATTRIBUTE 00000000 00200c 000038 00      0   0  1
+  [ 7] .comment          PROGBITS        00000000 002044 00001f 01  MS  0   0  1
+  [ 8] .symtab           SYMTAB          00000000 002064 000190 10      9  19  4
+  [ 9] .strtab           STRTAB          00000000 0021f4 000095 00      0   0  1
+  [10] .shstrtab         STRTAB          00000000 002289 000059 00      0   0  1
+Clé des fanions :
+  W (écriture), A (allocation), X (exécution), M (fusion), S (chaînes), I (info),
+  L (ordre des liens), O (traitement supplémentaire par l'OS requis), G (groupe),
+  T (TLS), C (compressé), x (inconnu), o (spécifique à l'OS), E (exclu),
+  D (mbind), p (processor specific)
+
+Il n'y a pas de groupe de section dans ce fichier.
+
+En-têtes de programme :
+  Type           Décalage Adr. vir.  Adr.phys.  T.Fich. T.Mém.  Fan Alignement
+  RISCV_ATTRIBUT 0x00200c 0x00000000 0x00000000 0x00038 0x00000 R   0x1
+  LOAD           0x001000 0x00000000 0x00000000 0x00320 0x00320 R E 0x1000
+  LOAD           0x002000 0x0404b000 0x0404b000 0x0000c 0x01004 RW  0x1000
+  GNU_STACK      0x000000 0x00000000 0x00000000 0x00000 0x00000 RW  0x10
+
+ Correspondance section/segment :
+  Sections de segment...
+   00     .riscv.attributes 
+   01     .text .rodata .eh_frame 
+   02     .data .bss 
+   03     
+
+Il n'y a pas de section dynamique dans ce fichier.
+
+Il n'y a pas de réadressages dans ce fichier.
+
+Le décodage de la section de déroulement pour le type de machine RISC-V n'est pas actuellement supporté.
+
+La table de symboles « .symtab » contient 25 entrées :
+   Num:    Valeur Tail Type    Lien   Vis      Ndx Nom
+     0: 00000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 00000000     0 SECTION LOCAL  DEFAULT    1 .text
+     2: 00000240     0 SECTION LOCAL  DEFAULT    2 .rodata
+     3: 00000244     0 SECTION LOCAL  DEFAULT    3 .eh_frame
+     4: 0404b000     0 SECTION LOCAL  DEFAULT    4 .data
+     5: 0404c000     0 SECTION LOCAL  DEFAULT    5 .bss
+     6: 00000000     0 SECTION LOCAL  DEFAULT    6 .riscv.attributes
+     7: 00000000     0 SECTION LOCAL  DEFAULT    7 .comment
+     8: 00000000     0 FILE    LOCAL  DEFAULT  ABS boot.o
+     9: 00000000     0 NOTYPE  LOCAL  DEFAULT    1 $xrv32i2p1_m2p0_[...]
+    10: 00000000     0 FILE    LOCAL  DEFAULT  ABS test2.c
+    11: 0404b000     4 OBJECT  LOCAL  DEFAULT    4 FB_ADDR
+    12: 0404b004     4 OBJECT  LOCAL  DEFAULT    4 FB_SIZE
+    13: 0404c000     4 OBJECT  LOCAL  DEFAULT    5 TIME
+    14: 0404b008     4 OBJECT  LOCAL  DEFAULT    4 color
+    15: 00000240     4 OBJECT  LOCAL  DEFAULT    2 hello_ma_couille
+    16: 00000014     0 NOTYPE  LOCAL  DEFAULT    1 $xrv32i2p1_m2p0_[...]
+    17: 00000000     0 FILE    LOCAL  DEFAULT  ABS rw.c
+    18: 00000090     0 NOTYPE  LOCAL  DEFAULT    1 $xrv32i2p1_m2p0_[...]
+    19: 00000000     0 NOTYPE  GLOBAL DEFAULT    1 _boot
+    20: 00000120    88 FUNC    GLOBAL DEFAULT    1 store_16
+    21: 00000014   124 FUNC    GLOBAL DEFAULT    1 main
+    22: 00000178   124 FUNC    GLOBAL DEFAULT    1 load_32
+    23: 00000090   144 FUNC    GLOBAL DEFAULT    1 store_32
+    24: 000001f4    76 FUNC    GLOBAL DEFAULT    1 load_16
+
+Aucune information de version repérée dans ce fichier.
+Section d'Attribut: riscv
+Attributs du fichier
+  Tag_RISCV_stack_align: 16 octets
+  Tag_RISCV_arch: "rv32i2p1_m2p0_f2p2_zicsr2p0_zmmul1p0"
