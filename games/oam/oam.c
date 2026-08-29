@@ -1,4 +1,4 @@
-#include "../../lib/rw.h"
+#include "../../gamelib/rw.h"
 
 
 static const int  FRAME_COUNTER = 0x0406B0F0;

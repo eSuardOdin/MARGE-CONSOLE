@@ -5,3 +5,5 @@ test_roms
 *.bin
 apu/miniaudio.h
 *.o
+*.info
+*.elf
