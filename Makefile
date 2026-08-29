@@ -10,3 +10,4 @@ clean:
 	@echo "Cleaning $(BUILD)"
 	rm -f $(BUILD)
 	@echo "Done !"
+	cd games && make clean
