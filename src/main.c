@@ -4,6 +4,7 @@
 #include "common.h"
 #include "display.h"
 #include "io.h"
+#include "loader.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
@@ -31,6 +32,11 @@ int main(int argc, char** argv)
     {
         fprintf(stderr, "Usage: riscv_emu <executable_filepath>\n");
     }
+
+
+    // Load cartridge
+    FILE* rom_file = get_elf_file(argv[1]);
+    exit(EXIT_SUCCESS);
 
     // Read instruction and data
     uint8_t* ROM;

@@ -5,14 +5,16 @@
 #include "cartridge.h"
 #include "bus.h"
 
+#include <elf.h>
+
 /**
  * @brief Checks if the file is a valid ELF (and an executable elf type), returns a pointer to
  * the elf header 
  * 
- * @param fp - a pointer to the file provided as program argument.
- * @return Elf64_Ehdr* - a pointer to the ELF header, NULL if invalid.
+ * @param filepath - a path to the file provided as program argument.
+ * @return FILE* - a pointer to the FILE pointer when identified as a valid ELF, NULL if invalid.
  */
-Elf64_Ehdr* get_elf_from_file(FILE* fp);
+FILE* get_elf_file(char* filepath);
 
 /**
  * @brief Loads the defined sections from the ELF file to the console and cartridge.

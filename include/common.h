@@ -37,7 +37,8 @@
 #define OAM_OFST            0x040FC000 // Size : 0x1400
 #define AUDIO_OFST          0x040FD400
 
-#define STACK_OFST          0x0FFFFFFF // To be defined
+#define STACK_OFST          0x05FF8000
+#define STACK_END           0x06000000 // 32Kb
 
 
 // --- JOYPAD ---
@@ -48,7 +49,6 @@
 #define JOYPAD_LEFT         0x2
 #define JOYPAD_DOWN         0x4 
 #define JOYPAD_RIGHT        0x8
-
 
 // --- System Registers ---
 // Defines wich map is to be printed

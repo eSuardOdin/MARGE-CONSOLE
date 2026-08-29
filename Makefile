@@ -1,5 +1,5 @@
 SRCS := $(wildcard src/*.c)
-BUILD := build/cpu.x
+BUILD := build/oupinaiz
 
 all: $(SRCS)
 	@echo "Compiling..."

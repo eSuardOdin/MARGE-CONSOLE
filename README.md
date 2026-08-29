@@ -33,6 +33,18 @@ Some of the reads or writes may have a behavior (writing to the **screen control
 
 This whole space represents the cartridge that will be loaded into the MARGE SYSTEM, it is composed of :
 
+#### Cart HEADER
+TBD `0x00000000 to 0x03FDFFFF`
+
+This space is used in order to verify that the loaded ELF is indeed targetting our architecture.
+It is composed of :
+- A 9 bytes magic number : `0x4D` `0x61` `0x72` `0x67` `0x65` `0x5F` `0x53` `0x79` `0x73` "Marge_Sys"
+- A 32 bytes title string
+- A 32 bytes author string
+- A major version byte
+- A minor version byte
+- A revision version byte
+
 #### ROM
 `0x00000000 to 0x03FDFFFF`
 
@@ -41,7 +53,7 @@ This is where the CPU's program counter is going to fetch instructions to execut
 #### Cart RAM
 `0x03FE0000 to 0x03FFFFFF`
 
-This space is used mainly to save/load games to/from the cartridge.
+This external RAM "chip" is where data is going to be saved. 128Kb are available. 
 
 ### Framebuffer
 `0x04000000 to 0x04009600`

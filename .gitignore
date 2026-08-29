@@ -1,4 +1,4 @@
-*.x
+build/*
 *.txt
 .vscode
 test_roms
