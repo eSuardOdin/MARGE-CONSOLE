@@ -68,6 +68,16 @@
 extern const int COLORSPAL[32];
 
 
+typedef struct {
+    char magic_number[10];
+    char title[32];
+    char author[32];
+    char maj_version;
+    char min_version;
+    char rev_version;
+} marge_header;
+
+
 /**
  * @brief Loads the cartridge into rom pointer
  *  

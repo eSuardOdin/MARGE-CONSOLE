@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "loader.h"
+#include "common.h"
 
 
 FILE* get_elf_file(char* filepath)
@@ -102,11 +103,41 @@ FILE* get_elf_file(char* filepath)
         }
         if(section_header.sh_type && string_table_section_header.sh_name)
         {
-            fprintf(stdout, "Section n°%d: %s\n", i , str_tab + section_header.sh_name);
+            if(!strcmp(str_tab + section_header.sh_name, ".marge_header"))
+            {
+                if((err = fseek(fp, section_header.sh_offset, SEEK_SET)) < 0)
+                {
+                    fprintf(stderr, "get_elf_file() - Unable to get marge header section : [Code:%d] - %s\n", errno, strerror(errno));
+                    exit(errno);
+                }
+                marge_header m_header;
+                errno = 0;
+                bytes_read = fread(&m_header, sizeof(m_header), 1, fp);
+                if(bytes_read != 1)
+                {
+                    err = ferror(fp);
+                    fprintf(stderr, "get_elf_file() - Error when reading the file for marge header : [Code:%d]\n", err);
+                    exit(err);
+                }
+                printf("Magic number: %s\nROM Title: %s\nAuthor: %s\nVersion: %d.%d.%d\n", 
+                    m_header.magic_number,
+                    m_header.title,
+                    m_header.author,
+                    m_header.maj_version,
+                    m_header.min_version,
+                    m_header.rev_version
+                );
+                if((err = fseek(fp, 0L, SEEK_SET)) < 0)
+                {
+                    fprintf(stderr, "get_elf_file() - Unable to rewind ELF file\n", errno, strerror(errno));
+                    exit(errno);
+                }
+                return fp;
+            }
         }
     }
 
-    fprintf(stdout, "File successfully loaded.\n");
+    fprintf(stderr, "This file is not a MARGE executable.\n");
     return fp;
 
 }
