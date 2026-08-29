@@ -50,12 +50,12 @@ $(LIB_OBJ): $(LIB_SRC)
 %.elf: %.o
 	@echo "### Linking $< to boot script..."
 	riscv64-linux-gnu-ld -m elf32lriscv -T global/linker.ld global/boot.o $< $(LIB_OBJ) -o $@
-	echo '\n============================ readelf ============================\n' > $*.info
+	printf '\n============================ readelf ============================\n' > $*.info
 	readelf -a $@     >> $*.info
-	echo '\n============================ disassembly ============================\n' >> $*.info
+	printf '\n============================ disassembly ============================\n' >> $*.info
 	riscv64-linux-gnu-objdump -d $@     >> $*.info
-	echo '\n============================ old dump ============================\n' >> $*.info
-	riscv64-linux-gnu-objdump -x $@     > $*.info
+	printf '\n============================ old dump ============================\n' >> $*.info
+	riscv64-linux-gnu-objdump -x $@    >> $*.info
 	riscv64-linux-gnu-objdump -t  $@   >> $*.info
 	riscv64-linux-gnu-objdump -r  $@   >> $*.info
 	@echo "### $@ compiled !\n"
