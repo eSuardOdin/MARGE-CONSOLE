@@ -11,6 +11,6 @@ typedef struct
     int         rom_size;
 } cartridge_t;
 
-int init_cartridge(cartridge_t* cart, uint8_t* rom);
+int init_cartridge(cartridge_t* cart, uint8_t* rom, size_t rom_size);
 
 #endif

@@ -36,15 +36,25 @@ int main(int argc, char** argv)
 
     // Load cartridge
     FILE* rom_file = get_elf_file(argv[1]);
-    exit(EXIT_SUCCESS);
+    cartridge_t cartridge;
+    if(load_cartridge(&cartridge, rom_file))
+    {
+        printf("Error when loading the cartridge\n");
+        exit(EXIT_FAILURE);
+    }
+    else
+    {
+        printf("Cartrige loaded successfully, size : %.8Xb\n", cartridge.rom_size);
+        exit(EXIT_SUCCESS);
+    }
 
     // Read instruction and data
     uint8_t* ROM;
     size_t rom_size = get_ptr_to_romdata(argv[1], &ROM);
     
     // Load cartridge
-    cartridge_t cartridge;
-    init_cartridge(&cartridge, ROM);
+    //cartridge_t cartridge;
+    init_cartridge(&cartridge, ROM, 0xFF);
     
     // Link to bus
     bus bus;

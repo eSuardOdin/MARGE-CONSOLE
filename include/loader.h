@@ -42,18 +42,22 @@ Elf32_Shdr* get_section_header_by_name(FILE* executable, Elf32_Ehdr* elf_header,
  */
 void* extract_from_elf(FILE* executable, long offset, size_t size, int n_size);
 
-/**
- * @brief Loads the defined sections from the ELF file to the console and cartridge.
- * We copy the .data, .rodata in console's RAM but a section is defined to go into
- * cartridge's RAM (which needs to be defined as writable obviously)
- * 
- * @param p_elf_header The header we get sections/segments info
- * @param fp The pointer to the actual ELF file
- * @param p_bus The console's BUS - it IS holding the console's whole IO map
- * @param p_cart Cart we load ROM and RAM to.
- * @return int 0 if no errors - TODO define error codes
- */
-int load_elf(Elf64_Ehdr* p_elf_header, FILE* fp, bus *p_bus, cartridge_t *p_cart);
+// /**
+//  * @brief Loads the defined sections from the ELF file to the console and cartridge.
+//  * We copy the .data, .rodata in console's RAM but a section is defined to go into
+//  * cartridge's RAM (which needs to be defined as writable obviously)
+//  * 
+//  * @param p_elf_header The header we get sections/segments info
+//  * @param fp The pointer to the actual ELF file
+//  * @param p_bus The console's BUS - it IS holding the console's whole IO map
+//  * @param p_cart Cart we load ROM and RAM to.
+//  * @return int 0 if no errors - TODO define error codes
+//  */
+// int load_elf(Elf64_Ehdr* p_elf_header, FILE* fp, bus *p_bus, cartridge_t *p_cart);
+
+
+
+int load_cartridge(cartridge_t* cart, FILE* executable);
 
 
 #endif

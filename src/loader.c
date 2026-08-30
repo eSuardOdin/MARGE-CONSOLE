@@ -144,6 +144,7 @@ Elf32_Shdr* get_section_header_by_name(FILE* executable, Elf32_Ehdr* elf_header,
 
 
 
+
 void* extract_from_elf(FILE* executable, long offset, size_t size, int n_size)
 {
     int err;
@@ -167,4 +168,46 @@ void* extract_from_elf(FILE* executable, long offset, size_t size, int n_size)
     }
 
     return return_pointer;
+}
+
+
+
+
+int load_cartridge(cartridge_t* cart, FILE* executable)
+{
+    Elf32_Ehdr elf_header;
+    int err;
+    size_t bytes_read = fread(&elf_header, sizeof(Elf32_Ehdr), 1, executable);
+    if(bytes_read != 1)
+    {
+        err = ferror(executable);
+        fprintf(stderr, "Error when reading the file : [Code:%d]\n", err);
+        exit(err);
+    }
+
+    size_t rom_size = 0;
+    // Get all headers and the full size of ROM sections (.marge_header, .text, .rodata)
+    Elf32_Shdr* marge_header = get_section_header_by_name(executable, &elf_header, ".marge_header");
+    Elf32_Shdr* text = get_section_header_by_name(executable, &elf_header, ".text");
+    Elf32_Shdr* rodata = get_section_header_by_name(executable, &elf_header, ".rodata");
+
+    rom_size += marge_header->sh_size + text->sh_size + rodata->sh_size;
+    errno = 0;
+    uint8_t* rom = malloc(rom_size);
+    if(rom == NULL)
+    {
+        fprintf(stderr, "load_cartridge() - Unable to allocate rom : [Code:%d] - %s\n", errno, strerror(errno));
+        exit(errno);
+    }
+
+    // Memcopy all sections
+    uint8_t* src = extract_from_elf(executable, marge_header->sh_offset, marge_header->sh_size, 1);
+    memcpy(rom, src, marge_header->sh_size);
+    src = extract_from_elf(executable, text->sh_offset, text->sh_size, 1);
+    memcpy(rom + marge_header->sh_size, src, text->sh_size);
+    src = extract_from_elf(executable, rodata->sh_offset, rodata->sh_size, 1);
+    memcpy(rom + marge_header->sh_size + text->sh_size, src, rodata->sh_size);
+
+    init_cartridge(cart, rom, rom_size);
+    return 0;
 }
