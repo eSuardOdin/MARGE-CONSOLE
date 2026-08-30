@@ -4,6 +4,7 @@
 #include "common.h"
 #include "cartridge.h"
 #include "bus.h"
+#include "cpu.h"
 
 #include <elf.h>
 
@@ -15,6 +16,22 @@
  * @return FILE* - a pointer to the FILE pointer when identified as a valid ELF, NULL if invalid.
  */
 FILE* get_elf_file(char* filepath);
+
+
+int init_console(FILE* executable, cartridge_t* cart, cpu_t* cpu, bus* bus);
+
+
+/**
+ * @brief Get the section by a string, returns NULL if not found
+ * 
+ * @param executable The file pointer to ELF
+ * @param section_name The name of the section to find
+ * @return Elf32_Shdr* A pointer to 
+ */
+Elf32_Shdr* get_section_header_by_name(FILE* executable, Elf32_Ehdr* elf_header, char* section_name);
+
+
+void* extract_from_elf(FILE* executable, long offset, size_t size, int n_size);
 
 /**
  * @brief Loads the defined sections from the ELF file to the console and cartridge.
