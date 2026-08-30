@@ -52,9 +52,11 @@ typedef struct
  * @brief Initialize the CPU state
  * 
  * @param cpu The cpu to init
+ * @param bus Pointer to the bus linked to cpu
+ * @param entrypoint The program entry address
  * @return int Status code
  */
-int init_cpu(cpu_t* cpu, bus* bus);
+int init_cpu(cpu_t* cpu, bus* bus, int entrypoint);
 
 /**
  * @brief Get the instruction pointed to by program counter

@@ -142,6 +142,16 @@ static int WHITE_TILE[64] = {
 
 static int JOYPAD_0 = 0x0406B000;
 
+__attribute__((section(".marge_header"))) const struct marge_header {
+    char magic_number[10];
+    char title[32];
+    char author[32];
+    char maj_version;
+    char min_version;
+    char rev_version;
+} header = {"Marge_Sys\0", "ANIMATION TESTING ROM", "Marge Corp", 0, 2, 55};
+
+
 
 void init_tileset()
 {

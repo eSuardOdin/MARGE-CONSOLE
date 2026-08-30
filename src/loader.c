@@ -112,6 +112,7 @@ FILE* get_elf_file(char* filepath)
 
 Elf32_Shdr* get_section_header_by_name(FILE* executable, Elf32_Ehdr* elf_header, char* section_name)
 {
+    fseek(executable, 0, SEEK_SET);
     // Get the string table header
     long offset = elf_header->e_shoff + elf_header->e_shstrndx * elf_header->e_shentsize;
     Elf32_Shdr* string_table_section_header = (Elf32_Shdr*)extract_from_elf(executable, offset, sizeof(Elf32_Shdr), 1);
@@ -147,6 +148,7 @@ Elf32_Shdr* get_section_header_by_name(FILE* executable, Elf32_Ehdr* elf_header,
 
 void* extract_from_elf(FILE* executable, long offset, size_t size, int n_size)
 {
+    fseek(executable, 0, SEEK_SET);
     int err;
     size_t bytes_read;
     errno = 0;
@@ -177,6 +179,7 @@ int load_cartridge(cartridge_t* cart, FILE* executable)
 {
     Elf32_Ehdr elf_header;
     int err;
+    fseek(executable, 0, SEEK_SET);
     size_t bytes_read = fread(&elf_header, sizeof(Elf32_Ehdr), 1, executable);
     if(bytes_read != 1)
     {
@@ -201,13 +204,49 @@ int load_cartridge(cartridge_t* cart, FILE* executable)
     }
 
     // Memcopy all sections
-    uint8_t* src = extract_from_elf(executable, marge_header->sh_offset, marge_header->sh_size, 1);
+    // Check Marge sh_size vs alignement
+    printf("MARGE HEADER SIZE : %.3X\nMARGE HEADER ALIGNMENT : %.3X\n", marge_header->sh_size, marge_header->sh_addralign);
+    uint8_t* src = (uint8_t*)extract_from_elf(executable, marge_header->sh_offset, marge_header->sh_size, 1);
     memcpy(rom, src, marge_header->sh_size);
     src = extract_from_elf(executable, text->sh_offset, text->sh_size, 1);
-    memcpy(rom + marge_header->sh_size, src, text->sh_size);
+    memcpy(rom + (text->sh_addr - marge_header->sh_addr), src, text->sh_size);
     src = extract_from_elf(executable, rodata->sh_offset, rodata->sh_size, 1);
-    memcpy(rom + marge_header->sh_size + text->sh_size, src, rodata->sh_size);
+    memcpy(rom + (rodata->sh_addr - marge_header->sh_addr), src, rodata->sh_size);
 
     init_cartridge(cart, rom, rom_size);
+    return 0;
+}
+
+
+
+
+int load_data_in_ram(bus* bus, FILE* executable)
+{
+    Elf32_Ehdr elf_header;
+    int err;
+    fseek(executable, 0, SEEK_SET);
+    size_t bytes_read = fread(&elf_header, sizeof(Elf32_Ehdr), 1, executable);
+    if(bytes_read != 1)
+    {
+        err = ferror(executable);
+        fprintf(stderr, "Error when reading the file : [Code:%d]\n", err);
+        exit(err);
+    }
+
+    size_t ram_size = 0;
+    // Get all headers and the full size of RAM sections (.data, .bss)
+    Elf32_Shdr* data = get_section_header_by_name(executable, &elf_header, ".data");
+    Elf32_Shdr* bss = get_section_header_by_name(executable, &elf_header, ".bss");
+
+    ram_size += data->sh_size + bss->sh_size;
+    errno = 0;
+
+    // Memcopy all sections
+    uint8_t* src = extract_from_elf(executable, data->sh_offset, data->sh_size, 1);
+    memcpy(bus->ram, src, data->sh_size);
+    src = extract_from_elf(executable, bss->sh_offset, bss->sh_size, 1);
+    memcpy(bus->ram + data->sh_size, src, bss->sh_size);
+
+    printf("Ram is %4.Xb\n", ram_size);
     return 0;
 }

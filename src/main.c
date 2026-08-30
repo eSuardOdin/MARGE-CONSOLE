@@ -45,29 +45,41 @@ int main(int argc, char** argv)
     else
     {
         printf("Cartrige loaded successfully, size : %.8Xb\n", cartridge.rom_size);
-        exit(EXIT_SUCCESS);
+        //exit(EXIT_SUCCESS);
     }
 
     // Read instruction and data
-    uint8_t* ROM;
-    size_t rom_size = get_ptr_to_romdata(argv[1], &ROM);
+    // uint8_t* ROM;
+    // size_t rom_size = get_ptr_to_romdata(argv[1], &ROM);
     
-    // Load cartridge
-    //cartridge_t cartridge;
-    init_cartridge(&cartridge, ROM, 0xFF);
+    // // Load cartridge
+    // //cartridge_t cartridge;
+    // init_cartridge(&cartridge, ROM, 0xFF);
     
     // Link to bus
     bus bus;
     init_bus(&bus, &cartridge);
     
     cpu_t cpu;
-    init_cpu(&cpu, &bus);
-
     // Put .data in memory
-    for(int i = 0; i < 0x1000 && (RAM_OFST + i) < rom_size; i++)    // 1000 is arbitrary .data size, need a constant
-    {                                                               // to be checked at compile time with lib
-        cpu.bus->ram[i] = ROM[RAM_OFST + i];
+    if(load_data_in_ram(&bus, rom_file))
+    {
+        printf("Error when loading the data in RAM\n");
+        exit(EXIT_FAILURE);
     }
+    else
+    {
+        printf("RAM loaded in RAM\n");
+        //exit(EXIT_SUCCESS);
+    }
+
+    // init_cpu(&cpu, &bus, 0x4D);
+    init_cpu(&cpu, &bus, 0x50);
+
+    // for(int i = 0; i < 0x1000 && (RAM_OFST + i) < rom_size; i++)    // 1000 is arbitrary .data size, need a constant
+    // {                                                               // to be checked at compile time with lib
+    //     cpu.bus->ram[i] = ROM[RAM_OFST + i];
+    // }
     int res;
 
 
@@ -134,12 +146,13 @@ int main(int argc, char** argv)
         // Execute instructions while not in 1/60 sec - Full useless
         for (int i = 0; i < INST_PER_FRAME && !is_ebreak; i++)
         {
-            fetch_instruction(&cpu, ROM);
+            fetch_instruction(&cpu, cartridge.rom);
             res = decode_execute_instruction(&cpu);
             if(res == 1)    // If EBREAK called ( see cpu.c )
             {
                 is_ebreak = 1;
             }
+            //if(i == 4) exit(EXIT_SUCCESS);
         }
 
         // *** rendering logic ***  TODO: MOVE IN DISPLAY

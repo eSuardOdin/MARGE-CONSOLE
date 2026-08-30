@@ -8,10 +8,10 @@
 #include <string.h>
 
 
-int init_cpu(cpu_t* cpu, bus* bus)
+int init_cpu(cpu_t* cpu, bus* bus, int entrypoint)
 {
     cpu->bus = bus;
-    cpu->pc = 0;
+    cpu->pc = entrypoint;
     cpu->ir = 0;
     return 0;
 }
@@ -20,7 +20,7 @@ int init_cpu(cpu_t* cpu, bus* bus)
 int fetch_instruction(cpu_t* cpu, uint8_t* rom)
 {
     cpu->x[0] = 0;
-    // printf("[PC: 0x%08X] ", cpu->pc);
+    //printf("[PC: 0x%08X] ", cpu->pc);
     
     
     // Get current pointed to instruction
@@ -31,7 +31,7 @@ int fetch_instruction(cpu_t* cpu, uint8_t* rom)
     
     // Put instruction in instruction register + increment program counter
     cpu->ir = inst;
-    // printf(" FETCHED [%08X] \n", cpu->ir);
+    //printf(" FETCHED [%08X] \n", cpu->ir);
     cpu->pc += 4;
     return 0;
 }

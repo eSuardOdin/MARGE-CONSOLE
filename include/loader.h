@@ -56,8 +56,22 @@ void* extract_from_elf(FILE* executable, long offset, size_t size, int n_size);
 // int load_elf(Elf64_Ehdr* p_elf_header, FILE* fp, bus *p_bus, cartridge_t *p_cart);
 
 
-
+/**
+ * @brief Loads all the ELF file ROM data into cartridge 
+ * 
+ * @param cart Pointer to the cartridge struct to populate
+ * @param executable ELF file to read from
+ * @return int 0 if success
+ */
 int load_cartridge(cartridge_t* cart, FILE* executable);
 
+/**
+ * @brief Loads .data and .bss into bus RAM
+ * 
+ * @param bus Pointer to the bus structure to populate
+ * @param executable ELF file to read from
+ * @return int 0 if success
+ */
+int load_data_in_ram(bus* bus, FILE* executable);
 
 #endif
