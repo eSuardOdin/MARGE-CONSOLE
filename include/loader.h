@@ -31,6 +31,15 @@ int init_console(FILE* executable, cartridge_t* cart, cpu_t* cpu, bus* bus);
 Elf32_Shdr* get_section_header_by_name(FILE* executable, Elf32_Ehdr* elf_header, char* section_name);
 
 
+/**
+ * @brief Just an fseek()/fread() wrapper, the pointer needs to be casted to the wanted type
+ * 
+ * @param executable The ELF file to read from
+ * @param offset The offset to fseek() to
+ * @param size The size of the struct we read to
+ * @param n_size The number of contiguous structs we read to
+ * @return void* A pointer to cast as the intended return type (eg. marge_header struct pointer) - WARNING: The struct pointer must be freed when not used anymore.
+ */
 void* extract_from_elf(FILE* executable, long offset, size_t size, int n_size);
 
 /**
