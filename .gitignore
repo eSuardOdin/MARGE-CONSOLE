@@ -6,4 +6,4 @@ test_roms
 apu/miniaudio.h
 *.o
 *.info
-*.elf
+*.mrg

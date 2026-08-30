@@ -24,7 +24,7 @@ LIB_SRC := ../gamelib/rw.c
 LIB_OBJ := ../gamelib/rw.o
 SRCS := $(wildcard */*.c)
 # BINS := $(SRCS:.c=.bin)	# Change all the */test_*.c into */test_*.bin
-BINS := $(SRCS:.c=.elf)	# Change all the */test_*.c into */test_*.elf
+BINS := $(SRCS:.c=.mrg)	# Change all the */test_*.c into */test_*.mrg
 
 
 all: compile_boot $(BINS)
@@ -47,7 +47,7 @@ $(LIB_OBJ): $(LIB_SRC)
 	riscv64-linux-gnu-gcc -march=rv32imf -mabi=ilp32f -nostdlib -ffreestanding -c $< -o $@
 	@echo "### $@ created !\n"
 
-%.elf: %.o
+%.mrg: %.o
 	@echo "### Linking $< to boot script..."
 	riscv64-linux-gnu-ld -m elf32lriscv -T global/linker.ld global/boot.o $< $(LIB_OBJ) -o $@
 	printf '\n============================ readelf ============================\n' > $*.info
@@ -72,4 +72,4 @@ $(LIB_OBJ): $(LIB_SRC)
 
 
 clean:
-	rm -f global/boot.o $(wildcard */*.o) $(wildcard */*.elf) $(BINS) $(wildcard */*.info) $(LIB_OBJ)
+	rm -f global/boot.o $(wildcard */*.o) $(wildcard */*.mrg) $(BINS) $(wildcard */*.info) $(LIB_OBJ)
