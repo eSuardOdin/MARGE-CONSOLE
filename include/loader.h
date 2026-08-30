@@ -26,7 +26,7 @@ int init_console(FILE* executable, cartridge_t* cart, cpu_t* cpu, bus* bus);
  * 
  * @param executable The file pointer to ELF
  * @param section_name The name of the section to find
- * @return Elf32_Shdr* A pointer to 
+ * @return Elf32_Shdr* A pointer to the section header requested
  */
 Elf32_Shdr* get_section_header_by_name(FILE* executable, Elf32_Ehdr* elf_header, char* section_name);
 

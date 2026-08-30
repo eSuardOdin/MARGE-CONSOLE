@@ -1,4 +1,4 @@
-build/*
+build
 *.txt
 .vscode
 test_roms
@@ -7,3 +7,4 @@ apu/miniaudio.h
 *.o
 *.info
 *.mrg
+doc
