@@ -18,7 +18,9 @@ typedef struct
     // Pixels that will be printed on screen each frame
     uint8_t         framebuffer[0x9600];
     // Console ram
-    uint8_t         ram[0x2000];
+    uint8_t         ram[0x20000]; // 128 Kb
+    // Console stack
+    uint8_t         stack[0x8000];// 32 Kb
     // --- IO memory region ---
     // The console -first?- controller
     uint8_t         controller;

@@ -74,4 +74,8 @@ int load_cartridge(cartridge_t* cart, FILE* executable);
  */
 int load_data_in_ram(bus* bus, FILE* executable);
 
+
+
+int load_segments(FILE* executable);
+
 #endif

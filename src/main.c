@@ -31,11 +31,13 @@ int main(int argc, char** argv)
     if(argc != 2)
     {
         fprintf(stderr, "Usage: riscv_emu <executable_filepath>\n");
+        exit(EXIT_FAILURE);
     }
 
 
     // Load cartridge
     FILE* rom_file = get_elf_file(argv[1]);
+    load_segments(rom_file);
     cartridge_t cartridge;
     if(load_cartridge(&cartridge, rom_file))
     {
@@ -152,7 +154,6 @@ int main(int argc, char** argv)
             {
                 is_ebreak = 1;
             }
-            if(i == 0x100) exit(EXIT_SUCCESS);
         }
 
         // *** rendering logic ***  TODO: MOVE IN DISPLAY

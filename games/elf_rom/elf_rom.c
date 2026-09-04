@@ -3,6 +3,11 @@ static const int  FRAME_COUNTER = 0x0406B0F0;
 static int num = 1;
 static int saved_frame = 0;
 static int current_frame = 0;
+static int a = 78235;
+static int b = 0;
+static int c = 0;
+static int d = 0;
+static int e = 0;
 /* Goes in .rodata */
 static const int static_constant_a = 0x1;
 static const char static_constant_b = 'c';

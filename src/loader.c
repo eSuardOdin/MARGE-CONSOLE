@@ -110,6 +110,73 @@ FILE* get_elf_file(char* filepath)
 
 
 
+
+int load_segments(FILE* executable)
+{
+    int err;
+    errno = 0;
+    if(fseek(executable, 0, SEEK_SET) < 0)
+    {
+        fprintf(stderr, "load_segments() - Unable to rewind : [Code:%d] - %s\n", errno, strerror(errno));
+        exit(errno);
+    }
+
+    // Get the elf header - WARNING : This function must be called after get_elf_file so no elf format verification is done here
+    Elf32_Ehdr elf_header;
+    size_t bytes_read = fread(&elf_header, sizeof(Elf32_Ehdr), 1, executable);
+    if(bytes_read != 1)
+    {
+        err = ferror(executable);
+        fprintf(stderr, "load_segments() - Error when reading the file to get ELF header : [Code:%d]\n", err);
+        exit(err);
+    }
+
+    printf("Number of segments: [%d]\n", elf_header.e_phnum);
+
+    printf("******** LOAD SEGMENTS ********\n");
+    printf("Offset\t\tVirt. Addr\tPhys. Addr\tFile size\tTotal size\tFlags\tPadding\n");
+    // Check all LOAD type segments
+    Elf32_Phdr seg_header;
+    long seg_offset;
+    for(int i = 0; i < elf_header.e_phnum; i++)
+    {
+        // fseek() the header offset
+        seg_offset = elf_header.e_phoff + (elf_header.e_phentsize * i);
+        errno = 0;
+        if(fseek(executable, seg_offset, SEEK_SET) < 0)
+        {
+            fprintf(stderr, "load_segments() - Unable to fseek to segment header offset : [Code:%d] - %s\n", errno, strerror(errno));
+            exit(errno);
+        }
+        // fread() the segment header 
+        bytes_read = fread(&seg_header, sizeof(Elf32_Phdr), 1, executable);
+        if(bytes_read != 1)
+        {
+            err = ferror(executable);
+            fprintf(stderr, "Error when reading the file : [Code:%d]\n", err);
+            exit(err);
+        }
+
+        if(seg_header.p_type != PT_LOAD) continue;
+        printf("0x%08X\t0x%08X\t0x%08X\t0x%08X\t0x%08X\t[%c%c%c]\t0x%08X\n", 
+            seg_header.p_offset, 
+            seg_header.p_vaddr, 
+            seg_header.p_paddr, 
+            seg_header.p_filesz, 
+            seg_header.p_memsz,
+            seg_header.p_flags & PF_R ? 'r' : '-',
+            seg_header.p_flags & PF_W ? 'w' : '-',
+            seg_header.p_flags & PF_X ? 'x' : '-',
+            seg_header.p_align
+        );
+    }
+
+    //exit(EXIT_FAILURE);
+    return 0;
+}
+
+
+
 Elf32_Shdr* get_section_header_by_name(FILE* executable, Elf32_Ehdr* elf_header, char* section_name)
 {
     fseek(executable, 0, SEEK_SET);

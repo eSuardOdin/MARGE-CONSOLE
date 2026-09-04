@@ -57,7 +57,6 @@ uint8_t read_memory(bus* bus, int32_t addr)
     // Reading from in console RAM
     else if (addr >= RAM_OFST && addr < IO_OFST)
     {
-        printf("RD RAM (%08X) - [%02X]\n", addr, bus->ram[addr - RAM_OFST]);
         return bus->ram[addr - RAM_OFST];
     }
 
@@ -101,15 +100,26 @@ uint8_t read_memory(bus* bus, int32_t addr)
     }
 
     // If reading from tilemap memory
-    else if (addr >= MAPS_OFST && addr < STACK_OFST)
+    else if (addr >= MAPS_OFST && addr < OAM_OFST)
     {
         return bus->maps[addr - MAPS_OFST];
     }
 
     // Reading from OAM memory
-    else if(addr >= OAM_OFST && addr < STACK_OFST)
+    else if(addr >= OAM_OFST && addr < AUDIO_OFST)
     {
         return bus->oam[addr - OAM_OFST];
+    }
+
+    else if(addr >= AUDIO_OFST && addr < STACK_OFST)
+    {
+        printf("RD from audio registers\n");
+        return 0xFF;
+    }
+
+    else if(addr >= STACK_OFST && addr <= STACK_END)
+    {
+        return bus->stack[addr - STACK_OFST];
     }
     
     // If data could not be retreived, send garbage.
@@ -144,7 +154,6 @@ void write_memory(bus* bus, uint8_t data, int32_t addr)
     // If writing in RAM
     else if (addr >= RAM_OFST && addr < IO_OFST)
     {
-        printf("WT RAM (%08X) - [%02X]\n", addr, data);
         bus->ram[addr - RAM_OFST] = data;
     }
 
@@ -184,14 +193,24 @@ void write_memory(bus* bus, uint8_t data, int32_t addr)
     }
 
     // If writing in tilemap memory
-    else if (addr >= MAPS_OFST && addr < STACK_OFST)
+    else if (addr >= MAPS_OFST && addr < OAM_OFST)
     {
         bus->maps[addr - MAPS_OFST] = data;
     }
     // Writing in OAM memory
-    else if(addr >= OAM_OFST && addr < STACK_OFST)
+    else if(addr >= OAM_OFST && addr < AUDIO_OFST)
     {
         bus->oam[addr - OAM_OFST] = data;
+    }
+
+    else if(addr >= AUDIO_OFST && addr < STACK_OFST)
+    {
+        printf("WT in audio registers\n");
+    }
+
+    else if(addr >= STACK_OFST && addr <= STACK_END)
+    {
+        bus->stack[addr - STACK_OFST] = data;
     }
 
 }
