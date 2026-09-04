@@ -6,6 +6,19 @@
 #include "bus.h"
 
 
+/**
+ * @file cpu.h 
+ * 
+ *
+ * @brief Abstraction of the MARGE system's Risc V cpu.
+ * 
+ */
+
+ /**
+  * @brief Represents the 32 "general purpose" *(not so much because of calling conventions)*
+  * Risc V registers
+  * 
+  */
 typedef enum
 {
     x0,x1,x2,x3,
@@ -42,9 +55,13 @@ typedef enum
  */
 typedef struct
 {
+    /// Program counter, address where the next 32 bit encoded instruction is going to be fetched.
 	uint32_t 	pc;
-	int32_t 	x[32];		        // Registers
-    uint32_t    ir;                 // Fetched instruction register
+    /// 32 general purpose 32 bit registers
+	int32_t 	x[32];
+    /// Instruction register, populated by the fetched instruction
+    uint32_t    ir;
+    /// Pointer to the bus granting READ/WRITE operations
     bus_t*      bus;
 } cpu_t;
 

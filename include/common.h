@@ -14,6 +14,11 @@
 #include <errno.h>
 #include <elf.h>
 
+/**
+ * @file common.h
+ * @brief Common constants and data structures. Helps documenting memory map and common structures (like marge_header)
+ */
+
 #define SCREEN_WIDTH        240
 #define SCREEN_HEIGHT       160
 #define SCALE               3
@@ -69,25 +74,19 @@ extern const int COLORSPAL[32];
 
 
 typedef struct {
+    /// Magic number used to ensure the ROM is ok. Needs to be "Marge_Sys\0" (null terminated important)
     char magic_number[10];
+    /// ASCII encoded 32 char title
     char title[32];
+    /// ASCII encoded 32 char authors
     char author[32];
+    /// Major version identifier 0-255
     char maj_version;
+    /// Minor version identifier 0-255
     char min_version;
+    /// Revision version identifier 0-255
     char rev_version;
 } marge_header;
-
-
-/**
- * @brief Loads the cartridge into rom pointer
- *  
- * WARNING: rom is allocated inside, do not forget to free
- * 
- * @param path 
- * @param rom 
- * @return int 
- */
-int get_ptr_to_romdata(char *path, uint8_t **rom);
 
 
 
