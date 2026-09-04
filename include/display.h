@@ -19,7 +19,7 @@
  * 
  * @param bus 
  */
-void display_map(bus* bus);
+void display_map(bus_t* bus);
 
 
 /**
@@ -27,7 +27,7 @@ void display_map(bus* bus);
  * 
  * @param bus 
  */
-void display_objects(bus* bus);
+void display_objects(bus_t* bus);
 
 /**
  * @brief Displays a tile on the framebuffer
@@ -38,5 +38,5 @@ void display_objects(bus* bus);
  * @param tile_address 
  * @param is_object 
  */
-void display_tile(bus* bus, int x, int y, int tile_address, char is_transparent_enabled, char is_x_flipped, char is_y_flipped);
+void display_tile(bus_t* bus, int x, int y, int tile_address, char is_transparent_enabled, char is_x_flipped, char is_y_flipped);
 #endif

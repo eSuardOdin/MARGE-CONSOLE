@@ -18,7 +18,7 @@
 FILE* get_elf_file(char* filepath);
 
 
-int init_console(FILE* executable, cartridge_t* cart, cpu_t* cpu, bus* bus);
+int init_console(FILE* executable, cartridge_t* cart, cpu_t* cpu, bus_t* bus);
 
 
 /**
@@ -72,7 +72,7 @@ int load_cartridge(cartridge_t* cart, FILE* executable);
  * @param executable ELF file to read from
  * @return int 0 if success
  */
-int load_data_in_ram(bus* bus, FILE* executable);
+int load_data_in_ram(bus_t* bus, FILE* executable);
 
 
 

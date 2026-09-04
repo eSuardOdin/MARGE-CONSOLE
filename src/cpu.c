@@ -8,7 +8,7 @@
 #include <string.h>
 
 
-int init_cpu(cpu_t* cpu, bus* bus, int entrypoint)
+int init_cpu(cpu_t* cpu, bus_t* bus, int entrypoint)
 {
     cpu->bus = bus;
     cpu->pc = entrypoint;
@@ -549,10 +549,6 @@ int r_type(cpu_t *cpu)
             break;
     }
 
-    // printf(" x%d, x%d, x%d\n", rd, rs1, rs2);
-    // printf("** VALUES AFTER **\n");
-    // printf("[rd - x%d] %8X\n[rs1 - x%d] %8X\n[rs2 - x%d] %8X\n", 
-        // rd, cpu->x[rd], rs1, cpu->x[rs1], rs2, cpu->x[rs2]);
     return 0;
 }
 
@@ -577,8 +573,6 @@ int i_type(cpu_t *cpu)
     // Sign extend immediate value
     int32_t sign_imm =  ((imm & 0x800) == 0x800) ? imm | 0xFFFFF000 : imm;
     
-    // printf("| imm %d | rs1 %d | funct3 %d | rd %d | opcode %d |\n", imm, rs1, funct3, rd, (uint8_t) cpu->ir & 0xFF);
- 
 
     switch (opcode)
     {

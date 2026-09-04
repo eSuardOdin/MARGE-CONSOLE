@@ -8,7 +8,7 @@
 
 
 
-void display_map(bus* bus)
+void display_map(bus_t* bus)
 {
     int scroll_y = read_memory(bus, SCROLL_Y);
     int scroll_x = read_memory(bus, SCROLL_X);
@@ -44,7 +44,7 @@ void display_map(bus* bus)
 }
 
 
-void display_objects(bus* bus)
+void display_objects(bus_t* bus)
 {
     for(int object = 0; object < OBJECT_NUMBER; object++)
     {
@@ -130,7 +130,7 @@ void display_objects(bus* bus)
 }
 
 
-void display_tile(bus* bus, int x, int y, int tile_address, char is_transparent_enabled, char is_x_flipped, char is_y_flipped)
+void display_tile(bus_t* bus, int x, int y, int tile_address, char is_transparent_enabled, char is_x_flipped, char is_y_flipped)
 {
     char tile_y;
     char tile_x;
@@ -151,13 +151,10 @@ void display_tile(bus* bus, int x, int y, int tile_address, char is_transparent_
             if(x + tile_x < 0) continue;
             if(x + tile_x >= SCREEN_WIDTH) break;
             uint8_t color = bus->tileset[tile_address + tile_y * 8 + tile_x];
-            //printf("(X: %d, Y: %d) -> Color: %02X\n", tile_x, tile_y)
             if(!(is_transparent_enabled && color == 0))
             {
                 bus->framebuffer[(x + xx) + ((y + yy) * 240)] = color;
             }
         }
-        // printf("\n");
     }
-    //exit(EXIT_SUCCESS);
 }

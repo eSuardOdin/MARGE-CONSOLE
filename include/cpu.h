@@ -45,7 +45,7 @@ typedef struct
 	uint32_t 	pc;
 	int32_t 	x[32];		        // Registers
     uint32_t    ir;                 // Fetched instruction register
-    bus*      bus;
+    bus_t*      bus;
 } cpu_t;
 
 /**
@@ -56,7 +56,7 @@ typedef struct
  * @param entrypoint The program entry address
  * @return int Status code
  */
-int init_cpu(cpu_t* cpu, bus* bus, int entrypoint);
+int init_cpu(cpu_t* cpu, bus_t* bus, int entrypoint);
 
 /**
  * @brief Get the instruction pointed to by program counter

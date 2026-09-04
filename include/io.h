@@ -17,7 +17,7 @@
  * keyup or keydown
  * @param event Pointer to the event 
  */
-void handle_key_event(SDL_Event* event, bus* bus);
+void handle_key_event(SDL_Event* event, bus_t* bus);
 
 /**
  * @brief 
@@ -27,5 +27,5 @@ void handle_key_event(SDL_Event* event, bus* bus);
  * @param bus 
  * @param joypad_address 
  */
-void write_joypad(char is_pressed, int value_mask, bus *bus, int32_t joypad_address);
+void write_joypad(char is_pressed, int value_mask, bus_t* bus, int32_t joypad_address);
 #endif

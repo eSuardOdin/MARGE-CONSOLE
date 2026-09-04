@@ -4,7 +4,7 @@
 #include "object.h"
 
 
-int init_bus(bus* bus, cartridge_t* cart)
+int init_bus(bus_t* bus, cartridge_t* cart)
 {
     bus->cartridge = cart;
     // Init framebuffer
@@ -32,7 +32,7 @@ int init_bus(bus* bus, cartridge_t* cart)
 }
 
 
-uint8_t read_memory(bus* bus, int32_t addr)
+uint8_t read_memory(bus_t* bus, int32_t addr)
 {
     // Reading from cartridge
     if(addr < VRAM_OFST)
@@ -127,7 +127,7 @@ uint8_t read_memory(bus* bus, int32_t addr)
 }
 
 
-void write_memory(bus* bus, uint8_t data, int32_t addr)
+void write_memory(bus_t* bus, uint8_t data, int32_t addr)
 {
     //printf("WR to [%08X] - DATA : [%02X]\n", addr, data);
     
@@ -214,21 +214,3 @@ void write_memory(bus* bus, uint8_t data, int32_t addr)
     }
 
 }
-
-
-
-
-// int dump_memory(bus* bus, int start, int size)
-// {
-//     for(int i = start; i < start + size; i += 4)
-//     {
-//         printf("[0x%08X] %02X %02X %02X %02X\n",
-//             i,
-//             read_memory(bus, i),
-//             read_memory(bus, i+1),
-//             read_memory(bus, i+2),
-//             read_memory(bus, i+3));
-//     }
-
-//     return 0;
-// }

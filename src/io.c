@@ -4,7 +4,7 @@
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_keycode.h>
 
-void handle_key_event(SDL_Event* event, bus* bus)
+void handle_key_event(SDL_Event* event, bus_t* bus)
 {
     // Check if key is pressed or released
     char is_pressed = (event->type == SDL_KEYDOWN) ? 1 : 0; 
@@ -28,7 +28,7 @@ void handle_key_event(SDL_Event* event, bus* bus)
 
 
 
-void write_joypad(char is_pressed, int value_mask, bus* bus, int32_t joypad_address)
+void write_joypad(char is_pressed, int value_mask, bus_t* bus, int32_t joypad_address)
 {
     uint current_state = read_memory(bus, IO_OFST);
     if(is_pressed)
