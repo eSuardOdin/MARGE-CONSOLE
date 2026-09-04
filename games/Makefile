@@ -19,12 +19,12 @@
 #   in it's own directory
 #
 
-
+.PRECIOUS: %.mrg
 LIB_SRC := ../gamelib/rw.c
 LIB_OBJ := ../gamelib/rw.o
 SRCS := $(wildcard */*.c)
-# BINS := $(SRCS:.c=.bin)	# Change all the */test_*.c into */test_*.bin
-BINS := $(SRCS:.c=.mrg)	# Change all the */test_*.c into */test_*.mrg
+BINS := $(SRCS:.c=.bin)	# Change all the */test_*.c into */test_*.bin
+# BINS := $(SRCS:.c=.mrg)	# Change all the */test_*.c into */test_*.mrg
 
 
 all: compile_boot $(BINS)
@@ -61,14 +61,11 @@ $(LIB_OBJ): $(LIB_SRC)
 	@echo "### $@ compiled !\n"
 	@echo "####################################################\n\n"
 
-# %.bin: %.elf
-# 	@echo "### Generating $@ from $<..."
-# 	riscv64-linux-gnu-objcopy -O binary $< $@
-# 	riscv64-linux-gnu-objdump -d $<     > $*.info
-# 	@echo "\n============================\n" >> $*.info
-# 	riscv64-linux-gnu-objdump -t  $<   >> $*.info
-# 	@echo "### $@ compiled !"
-# 	@echo "####################################################\n\n"
+%.bin: %.mrg
+	@echo "### Generating $@ from $<..."
+	riscv64-linux-gnu-objcopy -O binary $< $@
+	@echo "### $@ compiled !"
+	@echo "####################################################\n\n"
 
 
 clean:

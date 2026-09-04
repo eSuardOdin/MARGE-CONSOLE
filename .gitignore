@@ -8,3 +8,4 @@ apu/miniaudio.h
 *.info
 *.mrg
 doc
+*dump

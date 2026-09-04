@@ -1,10 +1,10 @@
 /* Goes in .data */
-static int FB_ADDR = 0x04000000;
-static int FB_SIZE = 0x4B000;
-static int TIME = 0;
-static int color = 13;
+static const int  FRAME_COUNTER = 0x0406B0F0;
+static int num = 1;
+static int saved_frame = 0;
+static int current_frame = 0;
 /* Goes in .rodata */
-static const int static_constant_a = 42;
+static const int static_constant_a = 0x1;
 static const char static_constant_b = 'c';
 /* Goes in .cartram */
 __attribute__((section(".cartram"))) char save_date[128*1024];
@@ -20,17 +20,14 @@ __attribute__((section(".marge_header"))) const struct marge_header {
 } header = {"Marge_Sys\0", "ELF TESTING ROM", "Marge Corp", 0, 2, 55};
 
 int main() {
-    // Everything enclosed in a function goes in stack
-    for(int i = 0; i < FB_SIZE; i++)
+    while(1) 
     {
-        *(volatile unsigned char*)(FB_ADDR + i) = (unsigned char)color;
-    }
-    int test;
-    int ok = 3;
-    for(int i = 0; i < 0x400; i++)
-    {
-        test += (i % 23) * 2;
-        ok = test - i;
+        current_frame = *(volatile unsigned char*)(FRAME_COUNTER);
+        if(current_frame != saved_frame)
+        {
+            //num += static_constant_a;
+            saved_frame = current_frame;
+        }
     }
     return 0;
 }

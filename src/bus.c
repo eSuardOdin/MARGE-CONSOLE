@@ -57,6 +57,7 @@ uint8_t read_memory(bus* bus, int32_t addr)
     // Reading from in console RAM
     else if (addr >= RAM_OFST && addr < IO_OFST)
     {
+        printf("RD RAM (%08X) - [%02X]\n", addr, bus->ram[addr - RAM_OFST]);
         return bus->ram[addr - RAM_OFST];
     }
 
@@ -71,6 +72,7 @@ uint8_t read_memory(bus* bus, int32_t addr)
         // Get map index
         else if(addr == MAP_INDEX)
         {
+            // printf("RD map index address [%08X], got [%02X]\n", addr, bus->map_index);
             return bus->map_index;
         }
         // Get scroll X register
@@ -117,7 +119,7 @@ uint8_t read_memory(bus* bus, int32_t addr)
 
 void write_memory(bus* bus, uint8_t data, int32_t addr)
 {
-    // printf("In write_memory, address is %08X\n", addr);
+    //printf("WR to [%08X] - DATA : [%02X]\n", addr, data);
     
     // If writing in cartridge
     if(addr < VRAM_OFST)
@@ -136,12 +138,13 @@ void write_memory(bus* bus, uint8_t data, int32_t addr)
     else if(addr >= FB_OFST && addr < RAM_OFST)
     {
         bus->framebuffer[addr - FB_OFST] = data;
-        // printf("Write on framebuffer: [%08X]: %08X\n", addr, data);
+        printf("Write on framebuffer: [%08X]: %08X\n", addr, data);
     }
 
     // If writing in RAM
     else if (addr >= RAM_OFST && addr < IO_OFST)
     {
+        printf("WT RAM (%08X) - [%02X]\n", addr, data);
         bus->ram[addr - RAM_OFST] = data;
     }
 
@@ -155,6 +158,7 @@ void write_memory(bus* bus, uint8_t data, int32_t addr)
         // Set map index
         else if(addr == MAP_INDEX)
         {
+            // printf("WT map index - [%02X]\n", data);
             bus->map_index = data;
         }
         // Set scroll X register

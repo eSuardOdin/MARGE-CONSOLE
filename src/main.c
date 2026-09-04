@@ -45,12 +45,11 @@ int main(int argc, char** argv)
     else
     {
         printf("Cartrige loaded successfully, size : %.8Xb\n", cartridge.rom_size);
-        //exit(EXIT_SUCCESS);
     }
 
-    // Read instruction and data
+    // // Read instruction and data
     // uint8_t* ROM;
-    // size_t rom_size = get_ptr_to_romdata(argv[1], &ROM);
+    // size_t rom_size = get_ptr_to_romdata(argv[2], &ROM);
     
     // // Load cartridge
     // //cartridge_t cartridge;
@@ -69,17 +68,18 @@ int main(int argc, char** argv)
     }
     else
     {
-        printf("RAM loaded in RAM\n");
+        printf("data loaded in RAM\n");
         //exit(EXIT_SUCCESS);
     }
 
-    // init_cpu(&cpu, &bus, 0x4D);
-    init_cpu(&cpu, &bus, 0x50);
+    init_cpu(&cpu, &bus, 0x50); // TODO: Specify entrypoint
+    //printf("after init cpu\n");
 
-    // for(int i = 0; i < 0x1000 && (RAM_OFST + i) < rom_size; i++)    // 1000 is arbitrary .data size, need a constant
+    // for(int i = 0; i < 0x10; i++)    // 1000 is arbitrary .data size, need a constant
     // {                                                               // to be checked at compile time with lib
-    //     cpu.bus->ram[i] = ROM[RAM_OFST + i];
+    //     printf("OLD: %.2X | NEW : %.2X\n", ROM[RAM_OFST + i], bus.ram[i]);
     // }
+    //exit(EXIT_SUCCESS);
     int res;
 
 
@@ -152,7 +152,7 @@ int main(int argc, char** argv)
             {
                 is_ebreak = 1;
             }
-            //if(i == 4) exit(EXIT_SUCCESS);
+            if(i == 0x100) exit(EXIT_SUCCESS);
         }
 
         // *** rendering logic ***  TODO: MOVE IN DISPLAY
@@ -179,6 +179,7 @@ int main(int argc, char** argv)
             }
         }
 
+        //exit(EXIT_SUCCESS);
         SDL_UpdateTexture(texture, NULL, gFrameBuffer, width * sizeof(int));
         SDL_RenderCopy(renderer, texture, NULL, NULL);
         SDL_RenderPresent(renderer);

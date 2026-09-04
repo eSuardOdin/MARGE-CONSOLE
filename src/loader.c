@@ -238,6 +238,8 @@ int load_data_in_ram(bus* bus, FILE* executable)
     Elf32_Shdr* data = get_section_header_by_name(executable, &elf_header, ".data");
     Elf32_Shdr* bss = get_section_header_by_name(executable, &elf_header, ".bss");
 
+    printf(".data:\n\tLVA: %.16X\n\tVMA: %.16X\n", data->sh_offset, data->sh_addr);
+    printf(".bss:\n\tLVA: %.16X\n\tVMA: %.16X\n", bss->sh_offset, bss->sh_addr);
     ram_size += data->sh_size + bss->sh_size;
     errno = 0;
 
@@ -245,8 +247,12 @@ int load_data_in_ram(bus* bus, FILE* executable)
     uint8_t* src = extract_from_elf(executable, data->sh_offset, data->sh_size, 1);
     memcpy(bus->ram, src, data->sh_size);
     src = extract_from_elf(executable, bss->sh_offset, bss->sh_size, 1);
-    memcpy(bus->ram + data->sh_size, src, bss->sh_size);
+    memcpy(bus->ram + (bss->sh_addr - data->sh_addr), src, bss->sh_size);
 
+    // for(int i = 0; i < 0x10; i++)
+    // {
+    //     printf("%2.X\n", bus->ram[i]);    
+    // }
     printf("Ram is %4.Xb\n", ram_size);
     return 0;
 }
