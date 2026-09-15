@@ -13,9 +13,10 @@
  * the elf header 
  * 
  * @param filepath - a path to the file provided as program argument.
+ * @param entrypoint - Out pointer to get the rom program entrypoint
  * @return FILE* - a pointer to the FILE pointer when identified as a valid ELF, NULL if invalid.
  */
-FILE* get_elf_file(char* filepath);
+FILE* get_elf_file(char* filepath, uint32_t* entrypoint);
 
 
 int init_console(FILE* executable, cartridge_t* cart, cpu_t* cpu, bus_t* bus);
