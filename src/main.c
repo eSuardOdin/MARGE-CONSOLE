@@ -36,7 +36,8 @@ int main(int argc, char** argv)
 
 
     // Load cartridge
-    FILE* rom_file = get_elf_file(argv[1]);
+    uint32_t entrypoint = 0;
+    FILE* rom_file = get_elf_file(argv[1], &entrypoint);
     load_segments(rom_file);
     cartridge_t cartridge;
     if(load_cartridge(&cartridge, rom_file))
@@ -63,10 +64,10 @@ int main(int argc, char** argv)
     else
     {
         printf("data loaded in RAM\n");
-        //exit(EXIT_SUCCESS);
     }
 
-    init_cpu(&cpu, &bus, 0x50); // TODO: Specify entrypoint
+    printf("Entrypoint : %.2X\n", entrypoint);
+    init_cpu(&cpu, &bus, entrypoint);
 
     int res;
 

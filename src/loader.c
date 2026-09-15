@@ -8,7 +8,7 @@
 #include "common.h"
 
 
-FILE* get_elf_file(char* filepath)
+FILE* get_elf_file(char* filepath, uint32_t* entrypoint)
 {
     errno = 0;
     int err;
@@ -43,6 +43,9 @@ FILE* get_elf_file(char* filepath)
         fprintf(stderr, "File %s is not an executable ELF.\n", filepath);
         exit(EXIT_FAILURE);
     }
+
+    // Get entrypoint
+    *entrypoint = elf_header.e_entry;
 
     /* Checking the custom console header */
 
