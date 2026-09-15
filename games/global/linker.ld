@@ -9,7 +9,13 @@ MEMORY
 SECTIONS {
     /* Start address of the program */
     . = 0x0000;
-
+    /* The ISR vectors */
+    .interrupt_vectors : {
+        KEEP(*(.vector_reset))
+        . = 0x10;
+        KEEP(*(.vector_frame))
+        . = 0x20;
+    } > CARTROM
     /* Custom header to check if valid cartridge */
     .marge_header : {
         *(.marge_header)

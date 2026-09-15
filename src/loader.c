@@ -260,11 +260,12 @@ int load_cartridge(cartridge_t* cart, FILE* executable)
 
     size_t rom_size = 0;
     // Get all headers and the full size of ROM sections (.marge_header, .text, .rodata)
+    Elf32_Shdr* vectors = get_section_header_by_name(executable, &elf_header, ".interrupt_vectors");
     Elf32_Shdr* marge_header = get_section_header_by_name(executable, &elf_header, ".marge_header");
     Elf32_Shdr* text = get_section_header_by_name(executable, &elf_header, ".text");
     Elf32_Shdr* rodata = get_section_header_by_name(executable, &elf_header, ".rodata");
 
-    rom_size += marge_header->sh_size + text->sh_size + rodata->sh_size;
+    rom_size += vectors->sh_size + marge_header->sh_size + text->sh_size + rodata->sh_size;
     errno = 0;
     uint8_t* rom = malloc(rom_size);
     if(rom == NULL)
@@ -275,13 +276,14 @@ int load_cartridge(cartridge_t* cart, FILE* executable)
 
     // Memcopy all sections
     // Check Marge sh_size vs alignement
-    printf("MARGE HEADER SIZE : %.3X\nMARGE HEADER ALIGNMENT : %.3X\n", marge_header->sh_size, marge_header->sh_addralign);
-    uint8_t* src = (uint8_t*)extract_from_elf(executable, marge_header->sh_offset, marge_header->sh_size, 1);
-    memcpy(rom, src, marge_header->sh_size);
+    uint8_t* src = (uint8_t*)extract_from_elf(executable, vectors->sh_offset, vectors->sh_size, 1);
+    memcpy(rom, src, vectors->sh_size);
+    src = extract_from_elf(executable, marge_header->sh_offset, marge_header->sh_size, 1);
+    memcpy(rom + (marge_header->sh_addr - vectors->sh_addr), src, marge_header->sh_size);
     src = extract_from_elf(executable, text->sh_offset, text->sh_size, 1);
-    memcpy(rom + (text->sh_addr - marge_header->sh_addr), src, text->sh_size);
+    memcpy(rom + (text->sh_addr - vectors->sh_addr), src, text->sh_size);
     src = extract_from_elf(executable, rodata->sh_offset, rodata->sh_size, 1);
-    memcpy(rom + (rodata->sh_addr - marge_header->sh_addr), src, rodata->sh_size);
+    memcpy(rom + (rodata->sh_addr - vectors->sh_addr), src, rodata->sh_size);
 
     init_cartridge(cart, rom, rom_size);
     return 0;
