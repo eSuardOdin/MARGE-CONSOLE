@@ -60,9 +60,12 @@
 #define MAP_INDEX           0x0406B002
 #define SCROLL_X            0x0406B004 // Scroll of BG (X OFFSET)
 #define SCROLL_Y            0x0406B006 // Scroll of BG (Y OFFSET)
-
-
 #define FRAME_COUNTER       0x0406B0F0
+#define INTERRUPT_REGISTER  0x0406B100
+#define INTERRUPT_FLAGS     0x0406B102
+// Interrupt flags
+#define IRQ_RESET_F         0x1
+#define IRQ_FRAME_F         0x2
 
 
 // --- Utility ---

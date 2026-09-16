@@ -172,6 +172,8 @@ The registers that are going to influence the system's behavior
 | Map index register  | 0x406B002    |    The index of the background pointed tthe backgroundo map, the console displays the background corresponding to the `base maps address offset + the maps size x the index`     |
 | Scroll X | 0x0406B004     |   Set the X axis offset from the left of the selected map that is going to be displayed       |
 | Scroll Y   | 0x0406B006    |    Set the Y axis offset from the top of the selected map that is going to be displayed      |
+| Interrupt Master Register   | 0x0406B100    |    bit 0 : Interrupt enable      |
+| Interrupt Flags   | 0x0406B102    |    bit 0 : Reset flag, bit 1 : frame flag      |
 
 
 

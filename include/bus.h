@@ -41,6 +41,10 @@ typedef struct
     uint8_t         scroll_y;
     /// Register incremented by console after a frame had been displayed **needs to be replaced with interrupts** mapped at `0x0406B0F0`
     uint8_t         frame_counter;
+    /// Interrupt master enable register
+    uint8_t         ime;
+    /// Interrupt flag register
+    uint8_t         ifr;
     /// 8x8 tiles, each point is a color index. 1024 possible tiles, mapped at **`0x0406C000 - 0x0407C000`** **2 bits wasted as we have a 32 colors palette** 
     uint8_t         tileset[0x10000];
     /// Collection of 64 screen of 64 * 64 tiles indexes, mapped at **`0x0406C000`**

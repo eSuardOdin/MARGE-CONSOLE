@@ -89,7 +89,14 @@ uint8_t read_memory(bus_t* bus, int32_t addr)
         {
             return bus->frame_counter;
         }
-
+        else if(addr == INTERRUPT_REGISTER)
+        {
+            return bus->ime;
+        }
+        else if(addr == INTERRUPT_FLAGS)
+        {
+            return bus->ifr;
+        }
 
     }
 
@@ -183,6 +190,14 @@ void write_memory(bus_t* bus, uint8_t data, int32_t addr)
         else if(addr == FRAME_COUNTER)
         {
             bus->frame_counter = data;
+        }
+        else if(addr == INTERRUPT_REGISTER)
+        {
+            bus->ime = data;
+        }
+        else if(addr == INTERRUPT_FLAGS)
+        {
+            bus->ifr &= data;
         }
     }
 
