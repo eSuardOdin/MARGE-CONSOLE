@@ -137,6 +137,11 @@ int main(int argc, char** argv)
         {
             fetch_instruction(&cpu, cartridge.rom);
             res = decode_execute_instruction(&cpu);
+            if(bus.ime && bus.ifr)
+            {
+                uint8_t serviced_interrupt = handle_interrupt(&cpu);
+                if(!serviced_interrupt) exit(EXIT_FAILURE);
+            }
             if(res == 1)    // If EBREAK called ( see cpu.c )
             {
                 is_ebreak = 1;

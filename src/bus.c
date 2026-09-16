@@ -197,7 +197,7 @@ void write_memory(bus_t* bus, uint8_t data, int32_t addr)
         }
         else if(addr == INTERRUPT_FLAGS)
         {
-            bus->ifr &= data;
+            bus->ifr = data;
         }
     }
 

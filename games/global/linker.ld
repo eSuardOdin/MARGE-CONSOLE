@@ -11,10 +11,10 @@ SECTIONS {
     . = 0x0000;
     /* The ISR vectors */
     .interrupt_vectors : {
-        KEEP(*(.vector_reset))
-        . = 0x10;
+        KEEP(*(.text.boot))
+        . = 0x40;
         KEEP(*(.vector_frame))
-        . = 0x20;
+        . = 0x80;
     } > CARTROM
     /* Custom header to check if valid cartridge */
     .marge_header : {
@@ -23,6 +23,7 @@ SECTIONS {
 
     /* Program instructions in cartridge */
     .text : {
+        KEEP(*(.text.boot))
         *(.text)
     } > CARTROM
 

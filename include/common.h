@@ -66,6 +66,9 @@
 // Interrupt flags
 #define IRQ_RESET_F         0x1
 #define IRQ_FRAME_F         0x2
+// Interrupt Vectors
+#define ISR_RESET           0x00
+#define ISR_FRAME           0x40
 
 
 // --- Utility ---

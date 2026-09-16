@@ -934,3 +934,30 @@ void print_registers(cpu_t* cpu)
         i, cpu->x[i], i+1, cpu->x[i+1], i+2, cpu->x[i+2], i+3, cpu->x[i+3], i+4, cpu->x[i+4], i+5, cpu->x[i+5], i+6, cpu->x[i+6], i+7, cpu->x[i+7]);
     }
 }
+
+
+
+
+uint8_t handle_interrupt(cpu_t *cpu)
+{
+    uint32_t vector_address = 0;
+    for(int shift = 0; shift < 8; shift++)
+    {
+        printf("Checking shift %d vs IFR 0x%.2X\n", shift, cpu->bus->ifr);
+        if(cpu->bus->ifr & (1 << shift))
+        {
+            printf("Checked for interrupt at 0x%.2X\n", 1<<shift);
+            // Save next instruction address in mepc (pc already incremented in fetch_instruction())
+            cpu->mepc = cpu->pc;
+            // "jump" to ISR address
+            cpu->pc = 0x40 * shift;
+            // Remove flag from ifr and disable interrupts
+            cpu->bus->ime = 0;
+            cpu->bus->ifr &= ~(1 << shift);
+            // return serviced flag
+            return 1 << shift;
+        }
+    }
+
+    return 0; // Error
+}

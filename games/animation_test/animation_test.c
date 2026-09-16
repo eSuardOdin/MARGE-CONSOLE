@@ -6,6 +6,7 @@ static const int OBJ_NUMBER = 0x40;
 static const int FB_ADDR = 0x04000000;
 static const int SCROLL_X = 0x0406B004;
 static const int SCROLL_Y = 0x0406B006;
+static const int IME = 0x0406B100;
 static const int TILESET_ADDR = 0x0406C000;
 static const int  MAP_INDEX = 0x0406B002;
 
@@ -393,6 +394,9 @@ int main() {
     int current_frame = 0;
     int remaining_frames = FRAME_PACE;
 
+    // Setting the IME
+    *(volatile unsigned char*)(IME) = 1;
+
     while(1)
     {
 
@@ -444,4 +448,13 @@ int main() {
         }
     }
     return 0;
+}
+
+// ISR
+
+__attribute__((section(".vector_reset")))
+__attribute__((interrupt))
+void reset_handler()
+{
+    main();
 }

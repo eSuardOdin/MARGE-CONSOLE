@@ -61,6 +61,8 @@ typedef struct
 	int32_t 	x[32];
     /// Instruction register, populated by the fetched instruction
     uint32_t    ir;
+    /// Interrupt return address
+    uint32_t        mepc;
     /// Pointer to the bus granting READ/WRITE operations
     bus_t*      bus;
 } cpu_t;
@@ -140,6 +142,14 @@ int b_type(cpu_t *cpu);
 int u_type(cpu_t *cpu);
 int j_type(cpu_t *cpu);
 int f_type(cpu_t *cpu);
+
+/**
+ * @brief Checks the interrupt flags and changes CPU 
+ * 
+ * @param cpu Pointer to the CPU 
+ * @return uint8_t The flag just serviced
+ */
+uint8_t handle_interrupt(cpu_t *cpu);
 
 void print_registers(cpu_t* cpu);
 
