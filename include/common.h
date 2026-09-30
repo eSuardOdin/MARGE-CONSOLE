@@ -27,7 +27,8 @@
 // --- CPU SPECS ---
 #define FREQUENCY_MHZ       16800000
 #define INSTRUCTION_COST    1
-#define FPS_TARGET          60
+#define FPS_TARGET          30
+#define MS_TARGET           33 // 1/30 seconds as ms
 #define INST_PER_FRAME      (FREQUENCY_MHZ / INSTRUCTION_COST / FPS_TARGET)
 
 // --- MEMORY MAPPING OFFSETS AND STARTING POINT ---
@@ -42,6 +43,9 @@
 #define OAM_OFST            0x040FC000 // Size : 0x1400
 #define AUDIO_OFST          0x040FD400
 
+#define DEBUG_REG           0x05000000 // Size : (128 bytes)
+#define DEBUG_REG_END       0x05000080
+
 #define STACK_OFST          0x05FF8000
 #define STACK_END           0x06000000 // 32Kb
 
@@ -54,6 +58,10 @@
 #define JOYPAD_LEFT         0x2
 #define JOYPAD_DOWN         0x4 
 #define JOYPAD_RIGHT        0x8
+#define JOYPAD_A            0x10
+#define JOYPAD_B            0x20
+#define JOYPAD_START        0x40
+#define JOYPAD_SELECT       0x80
 
 // --- System Registers ---
 // Defines wich map is to be printed
@@ -63,12 +71,36 @@
 #define FRAME_COUNTER       0x0406B0F0
 #define INTERRUPT_REGISTER  0x0406B100
 #define INTERRUPT_FLAGS     0x0406B102
+#define DEBUG_REGISTER      0x0406B104
 // Interrupt flags
 #define IRQ_RESET_F         0x1
 #define IRQ_FRAME_F         0x2
 // Interrupt Vectors
 #define ISR_RESET           0x00
 #define ISR_FRAME           0x40
+
+
+// --- Audio ---
+#define AUDIO_GEN_ENABLE    0x040FD400
+#define AUDIO_GEN_VOLUME    0x040FD402
+
+#define C0R0                0x040FD404  // LSB
+#define C0R1                0x040FD406  // MSB + DECIMAL
+#define C0R2                0x040FD408  // LEN REGISTER
+#define C0R3                0x040FD40A
+#define C0R4                0x040FD40C
+
+#define C1R0                0x040FD40E // LSB 
+#define C1R1                0x040FD410 // MSB + DECIMAL
+#define C1R2                0x040FD412 // LEN REGISTER
+#define C1R3                0x040FD414
+#define C1R4                0x040FD416
+
+#define C2R0                0x040FD418 // LSB
+#define C2R1                0x040FD41A // MSB + DECIMAL
+#define C2R2                0x040FD41C // LEN REGISTER
+#define C2R3                0x040FD41E
+#define C2R4                0x040FD420
 
 
 // --- Utility ---
@@ -78,6 +110,25 @@
 #define FALSE               0
 extern const int COLORSPAL[32];
 
+// --- Music ---                 0.142   0.284 0.426  0.568 0.710  0.852  1~
+// Notes (Max: 0x1FFF - 8191) - 001=20 010=40 011=60 100=80 101=A0 110=C0 111=E0
+typedef enum {
+    NOTE_C = 0, NOTE_Cs, NOTE_D, NOTE_Ds, NOTE_E, NOTE_F,
+    NOTE_Fs, NOTE_G, NOTE_Gs, NOTE_A, NOTE_As, NOTE_B
+}e_notes;
+
+static const uint16_t NOTE_TABLE[108] = {
+    //  C       C#      D       D#      E       F       F#      G       G#      A       A#      B
+    0x0010, 0x0011, 0x0012, 0x0013, 0x0014, 0x0016, 0x0017, 0x0018, 0x001A, 0x001B, 0x001D, 0x001E, // Octave 0
+    0x0021, 0x0023, 0x0025, 0x0027, 0x0029, 0x002C, 0x002E, 0x0031, 0x0034, 0x0037, 0x003A, 0x003D, // Octave 1
+    0x0041, 0x0045, 0x0049, 0x004E, 0x0052, 0x0057, 0x005C, 0x0062, 0x0068, 0x006E, 0x0074, 0x007B, // Octave 2
+    0x0083, 0x008A, 0x0093, 0x009C, 0x00A5, 0x00AF, 0x00B9, 0x00C4, 0x00D0, 0x00DC, 0x00E9, 0x00F7, // Octave 3
+    0x0105, 0x0115, 0x0126, 0x0137, 0x014A, 0x015D, 0x0172, 0x0188, 0x019F, 0x01B8, 0x01D2, 0x01EE, // Octave 4
+    0x020B, 0x022A, 0x024B, 0x026E, 0x0293, 0x02BA, 0x02E4, 0x0310, 0x033F, 0x0370, 0x03A4, 0x03DC, // Octave 5
+    0x0416, 0x0455, 0x0496, 0x04DD, 0x0526, 0x0575, 0x05C8, 0x0620, 0x067D, 0x06E0, 0x073E, 0x07B7, // Octave 6
+    0x082D, 0x08A9, 0x092D, 0x09B9, 0x0A4D, 0x0AE9, 0x0B8F, 0x0C40, 0x0CFA, 0x0DC0, 0x0E91, 0x0F6F, // Octave 7
+    0x105A, 0x1153, 0x125A, 0x1372, 0x149A, 0x15D5, 0x171F, 0x187F, 0x19F4, 0x1B80, 0x1D22, 0x1EDE  // Octave 8
+};
 
 typedef struct {
     /// Magic number used to ensure the ROM is ok. Needs to be "Marge_Sys\0" (null terminated important)

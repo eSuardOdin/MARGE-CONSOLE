@@ -22,11 +22,22 @@ void handle_key_event(SDL_Event* event, bus_t* bus)
         case SDLK_DOWN:
             write_joypad(is_pressed, JOYPAD_DOWN, bus, JOYPAD_0);  
             break;
+        case SDLK_a:
+            write_joypad(is_pressed, JOYPAD_A, bus, JOYPAD_0);  
+            break;
+        case SDLK_b:
+            write_joypad(is_pressed, JOYPAD_B, bus, JOYPAD_0);  
+            break;
+        case SDLK_SPACE:
+            write_joypad(is_pressed, JOYPAD_START, bus, JOYPAD_0);  
+            break;
+        case SDLK_RETURN:
+            write_joypad(is_pressed, JOYPAD_SELECT, bus, JOYPAD_0);  
+            break;
         case SDLK_r:
             write_memory(bus, bus->ifr | IRQ_RESET_F, INTERRUPT_FLAGS); // Could modify bus.ifr but I would like to do this only in write_memory
             break;
     }
-    
 }
 
 

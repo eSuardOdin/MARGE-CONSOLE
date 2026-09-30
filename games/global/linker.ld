@@ -13,8 +13,10 @@ SECTIONS {
     .interrupt_vectors : {
         KEEP(*(.text.boot))
         . = 0x40;
-        KEEP(*(.vector_frame))
+        KEEP(*(.vector_reset))
         . = 0x80;
+        KEEP(*(.vector_frame))
+        . = 0xC0;
     } > CARTROM
     /* Custom header to check if valid cartridge */
     .marge_header : {
@@ -23,7 +25,6 @@ SECTIONS {
 
     /* Program instructions in cartridge */
     .text : {
-        KEEP(*(.text.boot))
         *(.text)
     } > CARTROM
 

@@ -1,3 +1,6 @@
+.extern reset_handler
+.extern frame_handler
+
 .section ".text.boot"
 .globl _boot
 _boot:
@@ -5,3 +8,14 @@ _boot:
     call main
     ebreak
     j .
+
+
+.section ".vector_reset"
+.globl vector_reset
+vector_reset:
+    j reset_handler
+
+.section ".vector_frame"
+.globl vector_frame
+vector_frame:
+    j frame_handler

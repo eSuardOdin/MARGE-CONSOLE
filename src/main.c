@@ -5,6 +5,7 @@
 #include "display.h"
 #include "io.h"
 #include "loader.h"
+#include "apu.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
@@ -50,9 +51,11 @@ int main(int argc, char** argv)
         printf("Cartrige loaded successfully, size : %.8Xb\n", cartridge.rom_size);
     }
     
+    // Init APU
+    apu_t* apu = init_apu();
     // Link to bus
     bus_t bus;
-    init_bus(&bus, &cartridge);
+    init_bus(&bus, &cartridge, apu);
     
     cpu_t cpu;
     // Put .data in memory
@@ -70,8 +73,6 @@ int main(int argc, char** argv)
     init_cpu(&cpu, &bus, entrypoint);
 
     int res;
-
-
 
 
     SDL_Renderer *renderer;
@@ -112,9 +113,14 @@ int main(int argc, char** argv)
     // State variables
     int is_ebreak = 0;          // Check if any instructions to execute
     int running = 1;            // Is program still running
+    Uint64 begin_ticks;
+    Uint64 end_ticks;
+    Uint32 ms_to_wait = 0;
+    Uint64 delta = 0;
     SDL_Event event;
     while(running)
     {
+        begin_ticks = SDL_GetTicks64();
         while(SDL_PollEvent(&event))
         {
             switch(event.type)
@@ -132,7 +138,7 @@ int main(int argc, char** argv)
 
 
         // *** Main execution ***
-        // Execute instructions while not in 1/60 sec - Full useless
+        // Execute instructions while not in 1/60 sec
         for (int i = 0; i < INST_PER_FRAME && !is_ebreak; i++)
         {
             fetch_instruction(&cpu, cartridge.rom);
@@ -145,6 +151,7 @@ int main(int argc, char** argv)
             if(res == 1)    // If EBREAK called ( see cpu.c )
             {
                 is_ebreak = 1;
+                exit(EXIT_SUCCESS);
             }
         }
 
@@ -164,21 +171,46 @@ int main(int argc, char** argv)
                     int srcY = i / SCREEN_WIDTH;
                     int destX = srcX * SCALE;
                     int destY = srcY * SCALE;
-                    // pixels[(destY + y) * Width * Scale + (destX+x)] = BGPalette[FrameBuffer[i]];
                     int c = COLORSPAL[cpu.bus->framebuffer[i] & 0x1F];
                     gFrameBuffer[( destY + y) * SCREEN_WIDTH * SCALE + (destX + x)] = (((c & 0xFF0000) << 8) | ((c & 0x00FF00) << 8) | ((c & 0x0000FF) << 8) | 0xFF);
-                    //(destY + y) * Width * Scale + (destX+x)
                 }
             }
         }
 
-        //exit(EXIT_SUCCESS);
         SDL_UpdateTexture(texture, NULL, gFrameBuffer, width * sizeof(int));
         SDL_RenderCopy(renderer, texture, NULL, NULL);
         SDL_RenderPresent(renderer);
-        // Increment frame counter - TODO : REPLACE WITH INTERRUPT
-        int current_frame = read_memory(&bus, FRAME_COUNTER);
-        write_memory(&bus, current_frame+1, FRAME_COUNTER);
+        write_memory(&bus, bus.ifr | IRQ_FRAME_F, INTERRUPT_FLAGS);
+        
+        // If frame was quicker than intended, wait or remove time from older delta. 
+        end_ticks = SDL_GetTicks64();
+        if(end_ticks - begin_ticks < MS_TARGET)
+        {
+            ms_to_wait = (Uint32)MS_TARGET - ((Uint32)end_ticks - (Uint32)begin_ticks);
+
+            if(delta)
+            {
+                if(ms_to_wait > delta)
+                {
+                    ms_to_wait -= delta;
+                    delta = 0;
+                }
+                else
+                {
+                    delta -= ms_to_wait;
+                    ms_to_wait = 0;
+                }
+            }
+            if(ms_to_wait)
+            {
+                SDL_Delay(ms_to_wait);
+            }
+        }
+        else    // If frame takes longer than intended, add to delta.
+        {
+            delta += (end_ticks - begin_ticks) - MS_TARGET;
+        }
+
     }
 
 

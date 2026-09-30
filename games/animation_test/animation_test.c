@@ -24,6 +24,12 @@ static const int MAP_1_ADDR = 0x0407E000;
 static int MAX_ANIMATION_OFFSET = 3;
 static int CURRENT_ANIMATION_OFFSET = 0;
 static int FRAME_PACE = 20;
+int joypad;
+int current_sx;
+int current_sy;
+int remaining_frames;
+
+
 
 // Tile at index 0
 static int BLANK_TILE_INDEX = 0;
@@ -367,7 +373,7 @@ void init_objects()
     int new_addr;
 
     // 8x8 char
-    new_addr = store_object(36, 33, YELLOW_TILE_INDEX, 4, 0x7E020, base_addr);
+    new_addr = store_object(36, 33, YELLOW_TILE_INDEX, 4, 0xE020, base_addr);
     base_addr = new_addr;
 
 }
@@ -387,74 +393,63 @@ int main() {
     init_tileset();
     init_map();
     init_objects();
-    int joypad;
-    int current_sx;
-    int current_sy;
-    int saved_frame = 0;
-    int current_frame = 0;
-    int remaining_frames = FRAME_PACE;
+    remaining_frames = FRAME_PACE;
 
     // Setting the IME
     *(volatile unsigned char*)(IME) = 1;
-
     while(1)
-    {
-
-        // Get frame count (8 bit)
-        current_frame = *(volatile unsigned char*)(FRAME_COUNTER);
-        
-        if(saved_frame != current_frame)
-        {
-
-            // Get remaining frame before animation and handle overflow on 8bit
-            remaining_frames -=  (current_frame < saved_frame) ? (256-saved_frame) + current_frame : current_frame - saved_frame;            
-            saved_frame = current_frame;
-
-            if(remaining_frames < 0)
-            {
-                change_object_frame();
-                remaining_frames = FRAME_PACE;
-            }
-            
-            joypad = *(volatile unsigned char*)(JOYPAD_0); 
-            if(joypad & 8)
-            {   
-                // Move object 0
-                current_sx = *(volatile unsigned char*)(OAM_ADDR);
-                *(volatile unsigned char*)(OAM_ADDR) = current_sx + 1;
-            }
-            if(joypad & 2)
-            {
-                // Move object 0
-                current_sx = *(volatile unsigned char*)(OAM_ADDR);
-                *(volatile unsigned char*)(OAM_ADDR) = current_sx - 1;
-            }
-            if(joypad & 4)
-            {
-                // Move BG
-                // current_sy = *(volatile unsigned char*)(SCROLL_Y);
-                // *(volatile unsigned char*)(SCROLL_Y) = current_sy + 1;
-                
-                // Move object 0
-                current_sy = *(volatile unsigned char*)(OAM_ADDR + 2);
-                *(volatile unsigned char*)(OAM_ADDR + 2) = current_sy + 1;
-            }
-            if(joypad & 1)
-            {
-                // Move object 0
-                current_sy = *(volatile unsigned char*)(OAM_ADDR + 2);
-                *(volatile unsigned char*)(OAM_ADDR + 2) = current_sy - 1;
-            }
-        }
-    }
+    { }
     return 0;
 }
 
-// ISR
 
-__attribute__((section(".vector_reset")))
+void update_object()
+{
+    remaining_frames--;
+    if(remaining_frames <= 0)
+    {
+        change_object_frame();
+        remaining_frames = FRAME_PACE;
+    }
+
+    joypad = *(volatile unsigned char*)(JOYPAD_0); 
+    if(joypad & 8)
+    {   
+        // Move object 0
+        current_sx = *(volatile unsigned char*)(OAM_ADDR);
+        *(volatile unsigned char*)(OAM_ADDR) = current_sx + 1;
+    }
+    if(joypad & 2)
+    {
+        // Move object 0
+        current_sx = *(volatile unsigned char*)(OAM_ADDR);
+        *(volatile unsigned char*)(OAM_ADDR) = current_sx - 1;
+    }
+    if(joypad & 4)
+    {
+        // Move object 0
+        current_sy = *(volatile unsigned char*)(OAM_ADDR + 2);
+        *(volatile unsigned char*)(OAM_ADDR + 2) = current_sy + 1;
+    }
+    if(joypad & 1)
+    {
+        // Move object 0
+        current_sy = *(volatile unsigned char*)(OAM_ADDR + 2);
+        *(volatile unsigned char*)(OAM_ADDR + 2) = current_sy - 1;
+    }
+
+    *(volatile unsigned char*)(IME) = 1;
+}
+
+// ISR
 __attribute__((interrupt))
 void reset_handler()
 {
     main();
+}
+
+__attribute__((interrupt))
+void frame_handler()
+{
+    update_object();
 }

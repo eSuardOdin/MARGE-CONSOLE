@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "cartridge.h"
+#include "apu.h"
 #include "object.h"
 #include <stdint.h>
 
@@ -45,12 +46,16 @@ typedef struct
     uint8_t         ime;
     /// Interrupt flag register
     uint8_t         ifr;
+    /// Used for various debugging purposes
+    uint8_t         dbg_register;
     /// 8x8 tiles, each point is a color index. 1024 possible tiles, mapped at **`0x0406C000 - 0x0407C000`** **2 bits wasted as we have a 32 colors palette** 
     uint8_t         tileset[0x10000];
     /// Collection of 64 screen of 64 * 64 tiles indexes, mapped at **`0x0406C000`**
     uint8_t         maps[MAP_BYTES];
     /// Object attribute memory, stores objects and there metadata. *(check `object_t` doc if needed)*
     uint8_t         oam[OBJECT_NUMBER * sizeof(object_t)];
+    /// APU of the console
+    apu_t*          apu;
 
 } bus_t;
 
@@ -61,7 +66,7 @@ typedef struct
  * @param cart Pointer to the cartridge struct to link - not allocated inside this function.
  * @return int Error code
  */
-int init_bus(bus_t* bus, cartridge_t* cart);
+int init_bus(bus_t* bus, cartridge_t* cart, apu_t* apu);
 
 /**
  * @brief Switches the address in order to read into the console memory space or device registers mapped to the requested address.

@@ -319,8 +319,7 @@ int load_data_in_ram(bus_t* bus, FILE* executable)
     uint8_t* src = extract_from_elf(executable, data->sh_offset, data->sh_size, 1);
     memcpy(bus->ram, src, data->sh_size);
     src = extract_from_elf(executable, bss->sh_offset, bss->sh_size, 1);
-    memcpy(bus->ram + (bss->sh_addr - data->sh_addr), src, bss->sh_size);
-
+    memset( bus->ram + (bss->sh_addr - data->sh_addr), 0, bss->sh_size );
     printf("Ram is %4.Xb\n", ram_size);
     return 0;
 }

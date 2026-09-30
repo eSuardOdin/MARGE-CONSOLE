@@ -1,12 +1,15 @@
 #include "bus.h"
+#include "apu.h"
 #include "cartridge.h"
 #include "common.h"
 #include "object.h"
+#include "debug.h"
+#include <stdatomic.h>
 
-
-int init_bus(bus_t* bus, cartridge_t* cart)
+int init_bus(bus_t* bus, cartridge_t* cart, apu_t* apu)
 {
     bus->cartridge = cart;
+    bus->apu = apu;
     // Init framebuffer
     for(int i = 0; i < 0x9600; i++)
     {
@@ -22,6 +25,8 @@ int init_bus(bus_t* bus, cartridge_t* cart)
 
     // Init frame counter
     bus->frame_counter = 0;
+
+    bus->dbg_register = 0;
 
     // Init OAM
     for(int i = 0; i < OBJECT_NUMBER * sizeof(object_t); i++)
@@ -45,6 +50,11 @@ uint8_t read_memory(bus_t* bus, int32_t addr)
         {
             return bus->cartridge->ram[addr - CART_RAM_OFST];
         }
+    }
+
+    else if(addr >= DEBUG_REG && addr < DEBUG_REG_END)
+    {
+        return bus->dbg_register;
     }
 
     // If reading from framebuffer memory ( --- why would I ? --- )
@@ -97,6 +107,10 @@ uint8_t read_memory(bus_t* bus, int32_t addr)
         {
             return bus->ifr;
         }
+        else if(addr == DEBUG_REGISTER)
+        {
+            return bus->dbg_register;
+        }
 
     }
 
@@ -120,13 +134,51 @@ uint8_t read_memory(bus_t* bus, int32_t addr)
 
     else if(addr >= AUDIO_OFST && addr < STACK_OFST)
     {
-        printf("RD from audio registers\n");
-        return 0xFF;
+        // General APU registers
+        if(addr == AUDIO_GEN_ENABLE)
+        {
+            return bus->apu->ar0;
+        }
+        else if(addr == AUDIO_GEN_VOLUME)
+        {
+            return bus->apu->ar1;
+        }
+        // Channel 0
+        else if(addr == C0R0)
+        {
+            return atomic_load(&bus->apu->c0->r0);
+        }
+        else if(addr == C0R1)
+        {
+            return  atomic_load(&bus->apu->c0->r1);
+        }
+
+        // Channel 1
+        else if(addr == C1R0)
+        {
+            return atomic_load(&bus->apu->c1->r0);
+        }
+        else if(addr == C1R1)
+        {
+            return  atomic_load(&bus->apu->c1->r1);
+        }
+
+        // Channel 2
+        else if(addr == C2R0)
+        {
+            return atomic_load(&bus->apu->c2->r0);
+        }
+        else if(addr == C2R1)
+        {
+            return  atomic_load(&bus->apu->c2->r1);
+        }
     }
 
     else if(addr >= STACK_OFST && addr <= STACK_END)
     {
         return bus->stack[addr - STACK_OFST];
+    } else if (addr == DEBUG_REG) {
+        return bus->dbg_register;
     }
     
     // If data could not be retreived, send garbage.
@@ -136,7 +188,7 @@ uint8_t read_memory(bus_t* bus, int32_t addr)
 
 void write_memory(bus_t* bus, uint8_t data, int32_t addr)
 {
-    //printf("WR to [%08X] - DATA : [%02X]\n", addr, data);
+    // printf("WR to [%08X] - DATA : [%02X]\n", addr, data);
     
     // If writing in cartridge
     if(addr < VRAM_OFST)
@@ -155,7 +207,6 @@ void write_memory(bus_t* bus, uint8_t data, int32_t addr)
     else if(addr >= FB_OFST && addr < RAM_OFST)
     {
         bus->framebuffer[addr - FB_OFST] = data;
-        printf("Write on framebuffer: [%08X]: %08X\n", addr, data);
     }
 
     // If writing in RAM
@@ -181,7 +232,7 @@ void write_memory(bus_t* bus, uint8_t data, int32_t addr)
         else if(addr == SCROLL_X)
         {
             bus->scroll_x = data;
-        }
+        }   
         // Set scroll Y register
         else if(addr == SCROLL_Y)
         {
@@ -199,6 +250,11 @@ void write_memory(bus_t* bus, uint8_t data, int32_t addr)
         {
             bus->ifr = data;
         }
+    }
+
+    else if(addr >= DEBUG_REG && addr <= DEBUG_REG_END)
+    {
+        print_debug_register(data);
     }
 
     // If writing in tileset memory
@@ -220,7 +276,27 @@ void write_memory(bus_t* bus, uint8_t data, int32_t addr)
 
     else if(addr >= AUDIO_OFST && addr < STACK_OFST)
     {
-        printf("WT in audio registers\n");
+        // General APU registers 
+        if(addr == AUDIO_GEN_ENABLE)
+        {
+            atomic_store(&bus->apu->ar0, data);
+            apu_set_register_enable(data);
+        }
+        else if(addr == AUDIO_GEN_VOLUME)
+        {
+            atomic_store(&bus->apu->ar1, data);
+        }
+        // Channel 0
+        else if(addr == C0R0)
+        {
+            atomic_store(&bus->apu->c0->r0, data);
+            apu_set_channel_freq(0);
+        }
+        else if(addr == C0R1)
+        {
+            atomic_store(&bus->apu->c0->r1, data);
+            apu_set_channel_freq(0);
+        }
     }
 
     else if(addr >= STACK_OFST && addr <= STACK_END)

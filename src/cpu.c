@@ -20,7 +20,7 @@ int init_cpu(cpu_t* cpu, bus_t* bus, int entrypoint)
 int fetch_instruction(cpu_t* cpu, uint8_t* rom)
 {
     cpu->x[0] = 0;
-    //printf("[PC: 0x%08X] ", cpu->pc);
+    // printf("[PC: 0x%08X] ", cpu->pc);
     
     
     // Get current pointed to instruction
@@ -31,7 +31,7 @@ int fetch_instruction(cpu_t* cpu, uint8_t* rom)
     
     // Put instruction in instruction register + increment program counter
     cpu->ir = inst;
-    //printf(" FETCHED [%08X] \n", cpu->ir);
+    // printf(" FETCHED [%08X] \n", cpu->ir);
     cpu->pc += 4;
     return 0;
 }
@@ -61,7 +61,9 @@ int decode_execute_instruction(cpu_t* cpu)
         case F_TYPE:
             return f_type(cpu);
         case UNKNOWN_TYPE:
-        return 0;
+            printf("Instruction [0x%.8X] unknown, exiting...\n", cpu->ir);
+            exit(EXIT_FAILURE);
+            return 0;
     }
     return 0;
 }
@@ -147,7 +149,7 @@ int f_type(cpu_t *cpu)
                             
 
             cpu->x[rd] = val;
-            printf("Loading %.2f from memory [%08X]\n", bits_to_float(cpu->x[rd]), cpu->x[rs1] + sign_imm);
+            //printf("Loading %.2f from memory [%08X]\n", bits_to_float(cpu->x[rd]), cpu->x[rs1] + sign_imm);
         }
         break;
 
@@ -163,7 +165,7 @@ int f_type(cpu_t *cpu)
             write_memory(cpu->bus, (val & 0xFF0000) >> 16, cpu->x[rs1] + s_imm + 2);
             write_memory(cpu->bus, (val & 0xFF000000) >> 24, cpu->x[rs1] + s_imm + 3);
 
-            printf("Putting %.2f in memory [%08X]\n", bits_to_float(val), cpu->x[rs1] + s_imm);
+            // printf("Putting %.2f in memory [%08X]\n", bits_to_float(val), cpu->x[rs1] + s_imm);
         }
         break;
 
@@ -562,7 +564,7 @@ int r_type(cpu_t *cpu)
 
 int i_type(cpu_t *cpu)
 {
-    // printf("[instruction: 0x%08X] ", cpu->ir);
+    //printf("[instruction: 0x%08X] ", cpu->ir);
     
     // Extract values from instruction
     uint8_t opcode =    (cpu->ir & 0x0000007F);
@@ -576,7 +578,16 @@ int i_type(cpu_t *cpu)
 
     switch (opcode)
     {
-        case 0x73:      // SBREAK / EBREAK
+        case 0x73:
+            if(cpu->ir == 0x003022F3 || cpu->ir == 0x00329073 || cpu->ir == 0x30200073) 
+            { 
+                if(cpu->ir == 0x30200073) // BASIC MRET
+                {
+                    cpu->pc = cpu->mepc;
+                }
+                return 0; // *** TODO: implement fscsr/frcsr ***
+            }
+            // SBREAK / EBREAK
             return 1;
         case 0x13:
         {
@@ -943,14 +954,13 @@ uint8_t handle_interrupt(cpu_t *cpu)
     uint32_t vector_address = 0;
     for(int shift = 0; shift < 8; shift++)
     {
-        printf("Checking shift %d vs IFR 0x%.2X\n", shift, cpu->bus->ifr);
+        //printf("Checking shift %d vs IFR 0x%.2X\n", shift, cpu->bus->ifr);
         if(cpu->bus->ifr & (1 << shift))
         {
-            printf("Checked for interrupt at 0x%.2X\n", 1<<shift);
             // Save next instruction address in mepc (pc already incremented in fetch_instruction())
             cpu->mepc = cpu->pc;
             // "jump" to ISR address
-            cpu->pc = 0x40 * shift;
+            cpu->pc = 0x40 * (shift+1);
             // Remove flag from ifr and disable interrupts
             cpu->bus->ime = 0;
             cpu->bus->ifr &= ~(1 << shift);

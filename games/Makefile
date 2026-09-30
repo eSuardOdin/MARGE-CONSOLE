@@ -23,8 +23,8 @@
 LIB_SRC := ../gamelib/rw.c
 LIB_OBJ := ../gamelib/rw.o
 SRCS := $(wildcard */*.c)
-BINS := $(SRCS:.c=.bin)	# Change all the */test_*.c into */test_*.bin
-# BINS := $(SRCS:.c=.mrg)	# Change all the */test_*.c into */test_*.mrg
+# BINS := $(SRCS:.c=.bin)	# Change all the */test_*.c into */test_*.bin
+BINS := $(SRCS:.c=.mrg)	# Change all the */test_*.c into */test_*.mrg
 
 
 all: compile_boot $(BINS)
@@ -44,7 +44,7 @@ $(LIB_OBJ): $(LIB_SRC)
 %.o: %.c $(LIB_OBJ)
 	@echo "############    $<    ############"
 	@echo "### Creating object file for $<..."
-	riscv64-linux-gnu-gcc -march=rv32imf -mabi=ilp32f -nostdlib -ffreestanding -c $< -o $@
+	riscv64-linux-gnu-gcc -march=rv32imf -mabi=ilp32f -nostdlib -ffreestanding -c $< -o $@ -I../../include
 	@echo "### $@ created !\n"
 
 %.mrg: %.o
@@ -61,11 +61,11 @@ $(LIB_OBJ): $(LIB_SRC)
 	@echo "### $@ compiled !\n"
 	@echo "####################################################\n\n"
 
-%.bin: %.mrg
-	@echo "### Generating $@ from $<..."
-	riscv64-linux-gnu-objcopy -O binary $< $@
-	@echo "### $@ compiled !"
-	@echo "####################################################\n\n"
+# %.bin: %.mrg
+# 	@echo "### Generating $@ from $<..."
+# 	riscv64-linux-gnu-objcopy -O binary $< $@
+# 	@echo "### $@ compiled !"
+# 	@echo "####################################################\n\n"
 
 
 clean:
