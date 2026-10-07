@@ -65,3 +65,15 @@ void frame_handler()
     update_object();
     *(volatile unsigned char*)(INTERRUPT_REGISTER) = 1;
 }
+
+
+void update_timer()
+{
+    
+}
+
+__attribute__((interrupt))
+void timer_handler()
+{
+    update_timer();
+}

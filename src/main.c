@@ -6,6 +6,7 @@
 #include "io.h"
 #include "loader.h"
 #include "apu.h"
+#include "timer.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
@@ -53,9 +54,12 @@ int main(int argc, char** argv)
     
     // Init APU
     apu_t* apu = init_apu();
+    // Init timer
+    timer tim;
+    init_timer(&tim);
     // Link to bus
     bus_t bus;
-    init_bus(&bus, &cartridge, apu);
+    init_bus(&bus, &cartridge, apu, &tim);
     
     cpu_t cpu;
     // Put .data in memory
@@ -82,7 +86,7 @@ int main(int argc, char** argv)
     int height  = SCREEN_HEIGHT*SCALE;
     int gFrameBuffer[width*height];
 
-    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_AUDIO))
+    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS))
     {
         fprintf(stderr, "Error while initializing SDL : %s\n", SDL_GetError());
         return EXIT_FAILURE;
@@ -113,6 +117,8 @@ int main(int argc, char** argv)
     // State variables
     int is_ebreak = 0;          // Check if any instructions to execute
     int running = 1;            // Is program still running
+    int test_timer = 0;
+    int test_sec = 0;
     Uint64 begin_ticks;
     Uint64 end_ticks;
     Uint32 ms_to_wait = 0;
@@ -143,6 +149,42 @@ int main(int argc, char** argv)
         {
             fetch_instruction(&cpu, cartridge.rom);
             res = decode_execute_instruction(&cpu);
+            // UPDATE TIMER
+            if(!(i % (FREQUENCY_MHZ / TIMER_FREQUENCIES[bus.timer->timer_enable_register & 0x7]))) 
+            {
+                //printf("Instruction n°%d timer interrupt.\n", i);
+                test_timer++;
+                if(test_timer >= FREQUENCY_MHZ)
+                {
+                    test_timer = 0;
+                    test_sec++;
+                    //write_memory(&bus, bus.ifr | IRQ_TIMER_F, INTERRUPT_FLAGS);
+                    printf("[%d]\n", test_sec);
+                }
+                if(update_timer(bus.timer))
+                {
+                    write_memory(&bus, bus.ifr | IRQ_TIMER_F, INTERRUPT_FLAGS);
+                }
+            }
+            // UPDATE APU
+            if(!(i % (FREQUENCY_MHZ / APU_SWEEP_FREQ)))
+            {
+                uint8_t deactivate_mask = 0;
+                if(!(i % (FREQUENCY_MHZ / APU_FREQUENCY_MHZ)))
+                {
+                    deactivate_mask |= update_apu_length(apu);
+                }
+                if(!(i % (FREQUENCY_MHZ / APU_ENV_FREQ)))
+                {
+                    deactivate_mask |= update_apu_volume(apu); // Nothing desactiveted if vol = 0, Gameboy does it, think it is error prone
+                }
+                if(update_apu_sweep(apu))
+                {
+                    fprintf(stderr, "Error while updating sweep.\n");
+                    exit(EXIT_FAILURE);
+                }
+                write_memory(&bus, apu->ar0, AUDIO_GEN_ENABLE);
+            }
             if(bus.ime && bus.ifr)
             {
                 uint8_t serviced_interrupt = handle_interrupt(&cpu);
@@ -151,6 +193,7 @@ int main(int argc, char** argv)
             if(res == 1)    // If EBREAK called ( see cpu.c )
             {
                 is_ebreak = 1;
+                printf("EBREAK ???? [0x%.8X] - Instruction : [0x%.8X]\n", cpu.pc, cpu.ir);
                 exit(EXIT_SUCCESS);
             }
         }

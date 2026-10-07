@@ -17,6 +17,8 @@ SECTIONS {
         . = 0x80;
         KEEP(*(.vector_frame))
         . = 0xC0;
+        KEEP(*(.vector_timer))
+        . = 0x100;
     } > CARTROM
     /* Custom header to check if valid cartridge */
     .marge_header : {

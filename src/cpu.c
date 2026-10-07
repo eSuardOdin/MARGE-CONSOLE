@@ -584,6 +584,8 @@ int i_type(cpu_t *cpu)
                 if(cpu->ir == 0x30200073) // BASIC MRET
                 {
                     cpu->pc = cpu->mepc;
+                    // Write back IME
+                    write_memory(cpu->bus, 1, INTERRUPT_REGISTER);
                 }
                 return 0; // *** TODO: implement fscsr/frcsr ***
             }
@@ -952,6 +954,8 @@ void print_registers(cpu_t* cpu)
 uint8_t handle_interrupt(cpu_t *cpu)
 {
     uint32_t vector_address = 0;
+    // Remove flag from ifr and disable interrupts
+    cpu->bus->ime = 0;
     for(int shift = 0; shift < 8; shift++)
     {
         //printf("Checking shift %d vs IFR 0x%.2X\n", shift, cpu->bus->ifr);
@@ -959,10 +963,10 @@ uint8_t handle_interrupt(cpu_t *cpu)
         {
             // Save next instruction address in mepc (pc already incremented in fetch_instruction())
             cpu->mepc = cpu->pc;
+            // printf("MEPC set to [0x%.8X], interrupt [0x%.1X]\n", cpu->mepc, 1<<shift);
             // "jump" to ISR address
             cpu->pc = 0x40 * (shift+1);
-            // Remove flag from ifr and disable interrupts
-            cpu->bus->ime = 0;
+            
             cpu->bus->ifr &= ~(1 << shift);
             // return serviced flag
             return 1 << shift;

@@ -1,4 +1,5 @@
 #include "bus.h"
+#include "timer.h"
 #include "apu.h"
 #include "cartridge.h"
 #include "common.h"
@@ -6,10 +7,11 @@
 #include "debug.h"
 #include <stdatomic.h>
 
-int init_bus(bus_t* bus, cartridge_t* cart, apu_t* apu)
+int init_bus(bus_t* bus, cartridge_t* cart, apu_t* apu, timer* t)
 {
     bus->cartridge = cart;
     bus->apu = apu;
+    bus->timer = t;
     // Init framebuffer
     for(int i = 0; i < 0x9600; i++)
     {
@@ -99,6 +101,23 @@ uint8_t read_memory(bus_t* bus, int32_t addr)
         {
             return bus->frame_counter;
         }
+        // TIMERS
+        else if(addr == TIMER_ENABLE)
+        {
+            return bus->timer->timer_enable_register;
+        }
+        else if(addr == TIMER)
+        {
+            return bus->timer->timer;
+        }
+        else if(addr == TIMER_MOD)
+        {
+            return bus->timer->timer_mod;
+        }
+        else if(addr == DIV_COUNTER)
+        {
+            return bus->timer->div_counter;
+        }
         else if(addr == INTERRUPT_REGISTER)
         {
             return bus->ime;
@@ -143,7 +162,7 @@ uint8_t read_memory(bus_t* bus, int32_t addr)
         {
             return bus->apu->ar1;
         }
-        // Channel 0
+        // Channel 0 - TODO : think about needs to read audio channels registers
         else if(addr == C0R0)
         {
             return atomic_load(&bus->apu->c0->r0);
@@ -242,6 +261,25 @@ void write_memory(bus_t* bus, uint8_t data, int32_t addr)
         {
             bus->frame_counter = data;
         }
+        // TIMERS
+        else if(addr == TIMER_ENABLE)
+        {
+            bus->timer->timer_enable_register = data;
+        }
+        else if(addr == TIMER)
+        {
+            // Writing to timer resets it to mod value, regardless of data sent
+            bus->timer->timer = bus->timer->timer_mod;
+        }
+        else if(addr == TIMER_MOD)
+        {
+            bus->timer->timer_mod = data;
+        }
+        else if(addr == DIV_COUNTER)
+        {
+            // Just resets the counter
+            bus->timer->div_counter = 0;
+        }
         else if(addr == INTERRUPT_REGISTER)
         {
             bus->ime = data;
@@ -296,6 +334,25 @@ void write_memory(bus_t* bus, uint8_t data, int32_t addr)
         {
             atomic_store(&bus->apu->c0->r1, data);
             apu_set_channel_freq(0);
+        }
+        else if(addr == C0R2)
+        {
+            atomic_store(&bus->apu->c0->length_r, data);
+            // printf("LENGTH [0x%.2X]\n", data);
+        }
+        else if(addr == C0R3)
+        {
+            atomic_store(&bus->apu->c0->sweep_r, data);
+        }
+        else if(addr == C0R4)
+        {
+            atomic_store(&bus->apu->c0->flag_r, data);
+        }
+        else if(addr == C0R5)
+        {
+            atomic_store(&bus->apu->c0->volume_r, data);
+            // printf("WRITE VOLUME [0x%.2X]\n", data);
+            apu_set_channel_volume(0);
         }
     }
 

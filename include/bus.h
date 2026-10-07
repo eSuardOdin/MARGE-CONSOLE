@@ -2,6 +2,7 @@
 #define BUS_H
 
 #include "common.h"
+#include "timer.h"
 #include "cartridge.h"
 #include "apu.h"
 #include "object.h"
@@ -56,6 +57,8 @@ typedef struct
     uint8_t         oam[OBJECT_NUMBER * sizeof(object_t)];
     /// APU of the console
     apu_t*          apu;
+    /// Timer of the console
+    timer*          timer;
 
 } bus_t;
 
@@ -66,7 +69,7 @@ typedef struct
  * @param cart Pointer to the cartridge struct to link - not allocated inside this function.
  * @return int Error code
  */
-int init_bus(bus_t* bus, cartridge_t* cart, apu_t* apu);
+int init_bus(bus_t* bus, cartridge_t* cart, apu_t* apu, timer* t);
 
 /**
  * @brief Switches the address in order to read into the console memory space or device registers mapped to the requested address.

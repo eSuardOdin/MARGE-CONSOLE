@@ -1,5 +1,6 @@
 .extern reset_handler
 .extern frame_handler
+.extern timer_handler
 
 .section ".text.boot"
 .globl _boot
@@ -19,3 +20,8 @@ vector_reset:
 .globl vector_frame
 vector_frame:
     j frame_handler
+
+.section ".vector_timer"
+.globl vector_timer
+vector_timer:
+    j timer_handler

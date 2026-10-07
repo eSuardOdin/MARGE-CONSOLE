@@ -21,7 +21,7 @@ static const int MAP_1_ADDR = 0x0407E000;
 
 static int MAX_ANIMATION_OFFSET = 3;
 static int CURRENT_ANIMATION_OFFSET = 0;
-static int FRAME_PACE = 5;
+static int FRAME_PACE = 8;
 static int CHANNEL_ADDR = 0x040FD404;
 static short g_X = 50;
 static short g_Y = 50;
@@ -327,3 +327,15 @@ void frame_handler()
 {
     update_object();
 }
+
+void update_timer()
+{
+    
+}
+
+__attribute__((interrupt))
+void timer_handler()
+{
+    update_timer();
+}
+

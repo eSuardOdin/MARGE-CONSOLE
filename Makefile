@@ -5,7 +5,7 @@ BUILD := build/oupinaiz
 
 all: $(SRCS)
 	@echo "Compiling..."
-	gcc $(SRCS) -o $(BUILD) $$(sdl2-config --cflags --libs) -lm -I./include
+	gcc $(SRCS) -o $(BUILD) $$(sdl2-config --cflags --libs) -lm -ldl -lpthread -I./include
 	@echo "Done !"
 	cd games && make
 clean:

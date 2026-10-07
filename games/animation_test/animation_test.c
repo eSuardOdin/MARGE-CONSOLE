@@ -453,3 +453,15 @@ void frame_handler()
 {
     update_object();
 }
+
+
+void update_timer()
+{
+    
+}
+
+__attribute__((interrupt))
+void timer_handler()
+{
+    update_timer();
+}

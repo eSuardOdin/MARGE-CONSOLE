@@ -1,5 +1,13 @@
 #include "../../include/common.h"
 
+
+/**
+ * @brief Test ROM used to check length and volume functionnalities on channel 0 
+ * Press space activates sound, press enter set/reset channel lenght
+ * Press Left/Right decreases/increases length register (beware higher length means lower time)
+ * Press Down/Up decreases/increases the channel volume  
+ */
+
 static const int OAM_ADDR = 0x040FC000;
 static const int OBJ_SIZE = 0xA;
 static const int OBJ_NUMBER = 0x40;
@@ -14,17 +22,20 @@ static const int MAP_0[64*64];
 
 static const int MAP_1[64*64];
 static const int MAP_1_ADDR = 0x0407E000;
+static int OCTAVE = 0x4;
+static e_notes NOTE = NOTE_C;
 
 static int CHANNEL_ADDR = 0x040FD404;
 
-static int OCTAVE = 0x1;
-static e_notes NOTE = NOTE_C;
-
 static int timer_interrupts = 0;
+static uint8_t lenght = 0;
+static uint8_t vol = 0xF0;
+
 static uint8_t BUTTONS_RELEASED = 0;
 static uint8_t BUTTONS_PRESSED = 0;
 static uint8_t BUTTONS_CURRENT = 0;
 static uint8_t BUTTONS_SAVED = 0;
+
 
 static int timer_speed = 3;
 // Tile at index 0
@@ -113,8 +124,7 @@ int main() {
     init_tileset();
     init_map();
     set_note(OCTAVE, NOTE);
-    // Enable timer
-    *(volatile unsigned char*)(TIMER_ENABLE) = 0x80;
+    *(volatile unsigned char*)(C0R5) = 0b00001011;
     // Setting the IME
     *(volatile unsigned char*)(IME) = 1;
     while(1)
@@ -129,18 +139,6 @@ void switch_map()
     *(volatile unsigned char*)(MAP_INDEX) = (current_index & 0x1) ? 0 : 1;
 }
 
-void switch_timer()
-{
-    if(timer_speed == 3)
-    {
-        timer_speed = 0;
-    }
-    else
-    {
-        timer_speed++;
-    }
-    *(volatile unsigned char*)(TIMER_ENABLE) = 0x80 | (timer_speed & 0x7);
-}
 
 void update_keys()
 {
@@ -151,32 +149,35 @@ void update_keys()
 
     if(BUTTONS_PRESSED & JOYPAD_RIGHT)
     {
-        OCTAVE = OCTAVE == 8 ? 1 : OCTAVE + 1;
-        set_note(OCTAVE,NOTE);
+        lenght+=0x10;
     }
-    else if(BUTTONS_PRESSED & JOYPAD_LEFT)
+    if(BUTTONS_PRESSED & JOYPAD_LEFT)
     {
-        OCTAVE = OCTAVE == 1 ? 8 : OCTAVE - 1;
-        set_note(OCTAVE,NOTE);
+        lenght-=0x10;
     }
     if(BUTTONS_PRESSED & JOYPAD_UP)
     {
-        NOTE = NOTE == NOTE_B ? NOTE_C : (e_notes)(NOTE + 1);
-        if(NOTE == NOTE_C)
+        if(vol < 0xF0)
         {
-            OCTAVE = OCTAVE == 8 ? 1 : OCTAVE + 1;
-        }
-        set_note(OCTAVE,NOTE);
+            vol += 0x10;
+            uint8_t current_vol_reg = *(volatile unsigned char*)(C0R5) & 0x0F;
+            *(volatile unsigned char*)(C0R5) = vol | current_vol_reg;
+        }  
     }
-    else if(BUTTONS_PRESSED & JOYPAD_DOWN)
+    if(BUTTONS_PRESSED & JOYPAD_DOWN)
     {
-        NOTE = NOTE == NOTE_C ? NOTE_B : (e_notes)(NOTE - 1);
-        if(NOTE == NOTE_B)
+        if(vol >= 0x10)
         {
-            OCTAVE = OCTAVE == 1 ? 8 : OCTAVE - 1;
-        }
-        set_note(OCTAVE,NOTE);
+            vol -= 0x10;
+            uint8_t current_vol_reg = *(volatile unsigned char*)(C0R5) & 0x0F;
+            *(volatile unsigned char*)(C0R5) = vol | current_vol_reg;
+        }  
     }
+    if(BUTTONS_PRESSED & JOYPAD_LEFT)
+    {
+        lenght-=0x10;
+    }
+
     if(BUTTONS_PRESSED & JOYPAD_START)
     {   
         //switch_map();
@@ -193,7 +194,10 @@ void update_keys()
     }
     if(BUTTONS_PRESSED & JOYPAD_SELECT)
     {
-        switch_timer();
+        *(volatile unsigned char*)(AUDIO_GEN_ENABLE) |= 3;    
+        // Enable length and channel
+        *(volatile unsigned char*)(C0R4) = 0x80;
+        *(volatile unsigned char*)(C0R2) = lenght;
     }
    
 
@@ -214,18 +218,6 @@ void frame_handler()
 }
 
 
-void update_timer()
-{
-    timer_interrupts = timer_interrupts + 1;
-    if(timer_interrupts >= 64)
-    {
-        timer_interrupts = 0;
-        switch_map();
-    }
-}
-
 __attribute__((interrupt))
 void timer_handler()
-{
-    update_timer();
-}
+{ }

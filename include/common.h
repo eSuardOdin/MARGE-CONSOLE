@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <elf.h>
+#include <math.h>
 
 /**
  * @file common.h
@@ -25,7 +26,11 @@
 
 
 // --- CPU SPECS ---
-#define FREQUENCY_MHZ       16800000
+#define FREQUENCY_MHZ       16777216
+#define TIMER_FREQUENCY_MHZ 16384
+#define APU_FREQUENCY_MHZ   32
+#define APU_SWEEP_FREQ      128
+#define APU_ENV_FREQ        64
 #define INSTRUCTION_COST    1
 #define FPS_TARGET          30
 #define MS_TARGET           33 // 1/30 seconds as ms
@@ -69,16 +74,21 @@
 #define SCROLL_X            0x0406B004 // Scroll of BG (X OFFSET)
 #define SCROLL_Y            0x0406B006 // Scroll of BG (Y OFFSET)
 #define FRAME_COUNTER       0x0406B0F0
+#define TIMER_ENABLE        0x0406B0F2
+#define TIMER               0x0406B0F4
+#define TIMER_MOD           0x0406B0F6
+#define DIV_COUNTER         0x0406B0F8
 #define INTERRUPT_REGISTER  0x0406B100
 #define INTERRUPT_FLAGS     0x0406B102
 #define DEBUG_REGISTER      0x0406B104
 // Interrupt flags
 #define IRQ_RESET_F         0x1
 #define IRQ_FRAME_F         0x2
-// Interrupt Vectors
-#define ISR_RESET           0x00
-#define ISR_FRAME           0x40
-
+#define IRQ_TIMER_F         0x4
+// Interrupt Vectors - Not accurate
+// #define ISR_RESET           0x00
+// #define ISR_FRAME           0x40
+// #define ISR_TIMER           0x80
 
 // --- Audio ---
 #define AUDIO_GEN_ENABLE    0x040FD400
@@ -87,20 +97,23 @@
 #define C0R0                0x040FD404  // LSB
 #define C0R1                0x040FD406  // MSB + DECIMAL
 #define C0R2                0x040FD408  // LEN REGISTER
-#define C0R3                0x040FD40A
-#define C0R4                0x040FD40C
+#define C0R3                0x040FD40A  // SWEEP REGISTER
+#define C0R4                0x040FD40C  // FLAG REGISTER
+#define C0R5                0x040FD40E  // SOUND REGISTER
 
-#define C1R0                0x040FD40E // LSB 
-#define C1R1                0x040FD410 // MSB + DECIMAL
-#define C1R2                0x040FD412 // LEN REGISTER
-#define C1R3                0x040FD414
-#define C1R4                0x040FD416
+#define C1R0                0x040FD410 // LSB 
+#define C1R1                0x040FD412 // MSB + DECIMAL
+#define C1R2                0x040FD414 // LEN REGISTER
+#define C1R3                0x040FD416 // SWEEP REGISTER
+#define C1R4                0x040FD418 // FLAG REGISTER
+#define C1R5                0x040FD41A // SOUND REGISTER
 
-#define C2R0                0x040FD418 // LSB
-#define C2R1                0x040FD41A // MSB + DECIMAL
-#define C2R2                0x040FD41C // LEN REGISTER
-#define C2R3                0x040FD41E
-#define C2R4                0x040FD420
+#define C2R0                0x040FD41C // LSB
+#define C2R1                0x040FD41E // MSB + DECIMAL
+#define C2R2                0x040FD420 // LEN REGISTER
+#define C2R3                0x040FD422 // SWEEP REGISTER
+#define C2R4                0x040FD424 // FLAG REGISTER
+#define C2R5                0x040FD426 // SOUND REGISTER
 
 
 // --- Utility ---
@@ -128,6 +141,10 @@ static const uint16_t NOTE_TABLE[108] = {
     0x0416, 0x0455, 0x0496, 0x04DD, 0x0526, 0x0575, 0x05C8, 0x0620, 0x067D, 0x06E0, 0x073E, 0x07B7, // Octave 6
     0x082D, 0x08A9, 0x092D, 0x09B9, 0x0A4D, 0x0AE9, 0x0B8F, 0x0C40, 0x0CFA, 0x0DC0, 0x0E91, 0x0F6F, // Octave 7
     0x105A, 0x1153, 0x125A, 0x1372, 0x149A, 0x15D5, 0x171F, 0x187F, 0x19F4, 0x1B80, 0x1D22, 0x1EDE  // Octave 8
+};
+
+static const int TIMER_FREQUENCIES[7] = {
+    65536, 32768, 16384, 8192, 4096, 2048, 1024
 };
 
 typedef struct {

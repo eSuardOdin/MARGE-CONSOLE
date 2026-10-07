@@ -1,5 +1,12 @@
 #include "../../include/common.h"
 
+
+/**
+ * @brief Press space set/reset channel length, press enter activates the sound
+ * 
+ * 
+ */
+
 static const int OAM_ADDR = 0x040FC000;
 static const int OBJ_SIZE = 0xA;
 static const int OBJ_NUMBER = 0x40;
@@ -14,15 +21,20 @@ static const int MAP_0[64*64];
 
 static const int MAP_1[64*64];
 static const int MAP_1_ADDR = 0x0407E000;
+static int OCTAVE = 0x5;
+static e_notes NOTE = NOTE_G;
 
 static int CHANNEL_ADDR = 0x040FD404;
 
-static int SELECTED_CHANNEL = 0x0;
-
+static int timer_interrupts = 0;
+static uint8_t length = 0xF0;
 static uint8_t BUTTONS_RELEASED = 0;
 static uint8_t BUTTONS_PRESSED = 0;
 static uint8_t BUTTONS_CURRENT = 0;
 static uint8_t BUTTONS_SAVED = 0;
+
+
+static int timer_speed = 3;
 // Tile at index 0
 static int BLANK_TILE_INDEX = 0;
 static int BLANK_TILE[64] = {
@@ -98,12 +110,23 @@ void init_map()
 }
 
 
-
+void set_note(int octave, e_notes note_enum)
+{
+    uint16_t note = NOTE_TABLE[note_enum + 12 * octave];
+    *(volatile unsigned char*)(C0R0) = note & 0xFF;
+    *(volatile unsigned char*)(C0R1) = (note >> 8) & 0x1F;
+}
 
 int main() {
     init_tileset();
     init_map();
-
+    set_note(OCTAVE, NOTE);
+    *(volatile unsigned char*)(AUDIO_GEN_ENABLE) |= 3;    
+    // Enable length and channel
+    *(volatile unsigned char*)(C0R4) = 0xC0;
+    *(volatile unsigned char*)(C0R2) = length;
+    *(volatile unsigned char*)(C0R3) = 0b11001010;
+    *(volatile unsigned char*)(C0R5) = 0b11010001;
     // Setting the IME
     *(volatile unsigned char*)(IME) = 1;
     while(1)
@@ -115,22 +138,6 @@ int main() {
 void switch_map()
 {
     uint8_t current_index = *(volatile unsigned char*)(MAP_INDEX);
-    if(current_index)
-    {
-        char* error = "MAP INDEX = 0\0";
-        int i = 0;
-        do {
-            *(volatile unsigned char*)(DEBUG_REG + i) = error[i];
-        } while (error[i++] != '\0');
-    }
-    else
-    {
-        char* error = "MAP INDEX = 1\0";
-        int i = 0;
-        do {
-            *(volatile unsigned char*)(DEBUG_REG + i) = error[i];
-        } while (error[i++] != '\0');
-    }
     *(volatile unsigned char*)(MAP_INDEX) = (current_index & 0x1) ? 0 : 1;
 }
 
@@ -142,79 +149,22 @@ void update_keys()
     BUTTONS_PRESSED     = BUTTONS_CURRENT & ~BUTTONS_SAVED;
     BUTTONS_RELEASED    = BUTTONS_SAVED & ~BUTTONS_CURRENT;
 
-    if(BUTTONS_PRESSED & JOYPAD_START)
-    {   
-        switch_map();
-        uint8_t ar0 =  *(volatile unsigned char*)(AUDIO_GEN_ENABLE);
-        uint8_t is_sound_enabled = ar0 & 0x1;
-        if(!is_sound_enabled)
-        {
-            *(volatile unsigned char*)(AUDIO_GEN_ENABLE) |= 1;    
-        }
-        else
-        {
-            *(volatile unsigned char*)(AUDIO_GEN_ENABLE) &= 0b11111110;
-        }
-    }
     if(BUTTONS_PRESSED & JOYPAD_RIGHT)
     {
-        SELECTED_CHANNEL = SELECTED_CHANNEL == 2 ? 0 : SELECTED_CHANNEL + 1;
     }
     if(BUTTONS_PRESSED & JOYPAD_LEFT)
     {
-        SELECTED_CHANNEL = SELECTED_CHANNEL ? SELECTED_CHANNEL - 1 : 2;
-    }
-    if(BUTTONS_PRESSED & JOYPAD_SELECT)
-    {   
-        uint8_t ar0 = *(volatile unsigned char*)(AUDIO_GEN_ENABLE);
-        switch(SELECTED_CHANNEL)
-        {
-            case 0:
-                if(!(ar0 & 0x2))
-                {
-                    *(volatile unsigned char*)(AUDIO_GEN_ENABLE) = ar0 | 0x2;  
-                }
-                else
-                {
-                    *(volatile unsigned char*)(AUDIO_GEN_ENABLE) = ar0 & 0xFD;
-                }
-                break;
-            case 1:
-                if(!(ar0 & 0x4))
-                {
-                    *(volatile unsigned char*)(AUDIO_GEN_ENABLE) = ar0 | 0x4;  
-                }
-                else
-                {
-                    *(volatile unsigned char*)(AUDIO_GEN_ENABLE) = ar0 & 0xFB;
-                }
-                break;
-            case 2:
-                if(!(ar0 & 0x8))
-                {
-                    *(volatile unsigned char*)(AUDIO_GEN_ENABLE) = ar0 | 0x8;  
-                }
-                else
-                {
-                    *(volatile unsigned char*)(AUDIO_GEN_ENABLE) = ar0 & 0xF7;
-                }
-                break;
-        }
     }
 
-    // if(joypad & 0xFF) {
-    //     is_moving = 1;
-    //     char current_sound_enable = *(volatile unsigned char*)(0x040FD400);
-    //     *(volatile unsigned char*)(0x040FD400) = 1;
-    // }
-    // else
-    // {
-    //     is_moving = 0;
-    //     init_objects();
-    //     remaining_frames = FRAME_PACE;
-    // }
+    if(BUTTONS_PRESSED & JOYPAD_START)
+    {
+    }
+    if(BUTTONS_PRESSED & JOYPAD_SELECT)
+    {
+    }
+   
+
     BUTTONS_SAVED = BUTTONS_CURRENT;
-    *(volatile unsigned char*)(IME) = 1;
 }
 
 // ISR
@@ -229,3 +179,8 @@ void frame_handler()
 {
     update_keys();
 }
+
+
+__attribute__((interrupt))
+void timer_handler()
+{ }

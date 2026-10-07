@@ -178,42 +178,6 @@ The registers that are going to influence the system's behavior
 
 
 
-
-
-
-
----------
-------
-----
-----
-
-# OLD README
-
-## Testing the CPU
-
-### R TYPE
-
-ADD: 
-![add instruction](./img/add.png)
-Test:
-- `ADD x1(1), x1(1), x2($FFFFFFFF) => x1 = -1`
-```
-x1:= 1
-x2:= $FFFFFFFF
-0000 0000 0010 0000 1000 0000 1011 0011
-00        20        80        B3
-B3 80 20 00
-```
-
-- `ADD x1($80000000), x1($80000000), x2(1) => x1 = Max negative value`
-```
-x1:= $80000000
-x2:= 1
-0000 0000 0010 0000 1000 0000 1011 0011
-00        20        80        B3
-B3 80 20 00
-```
-
 ## Memory Map
 
 The 32 bit architecture is able to adress ~4.1Gib
@@ -245,10 +209,6 @@ Controller state is stored on a single byte, bit 6 and 7 are selectors in order 
 - `11 - Bit 0 to 5 represents respectively: TBD`
 
 `[0x406B000] First controller` 
-
-## To think about
-
-- How to handle cartridge memory: allocating 64Mib for the program lifetime seems a lot when cartridge may be only 1Mib or less
 
 
 ## Palette

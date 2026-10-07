@@ -62,7 +62,7 @@ typedef struct
     /// Instruction register, populated by the fetched instruction
     uint32_t    ir;
     /// Interrupt return address
-    uint32_t        mepc;
+    uint32_t    mepc;
     /// Pointer to the bus granting READ/WRITE operations
     bus_t*      bus;
 } cpu_t;
