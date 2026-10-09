@@ -1,8 +1,8 @@
 ---
-icon: lucide/search
+icon: marge/icon
 ---
 
-# :marge-icon: About MARGE
+# About MARGE
 
 **MARGE** is born in 2025 as a school project of students from the french school of engineering *IMT Mines Ales*. It is an acronym for **M**inimalistic **A**ccessible **R**ISC-V **G**aming **E**nvironment.
 
