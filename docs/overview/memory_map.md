@@ -1,4 +1,4 @@
-# Memory Map
+# 2. Memory Map
 
 The {{console}} fantasy console has a 32-bit addressable memory
 

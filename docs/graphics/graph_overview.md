@@ -1,4 +1,4 @@
-# Graphics
+# 3. Graphics Overview
 
 The {{console}} fantasy console is able to display up to 32 colors. It has several layers of display that you will learn about in this section.
 

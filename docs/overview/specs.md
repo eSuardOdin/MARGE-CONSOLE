@@ -1,4 +1,4 @@
-# Specifications
+# 1. Specifications
 
 The {{console}} fantasy console runs a custom RISC-V architecture.
 
