@@ -26,7 +26,7 @@ nav = [
 
 [project.theme]
 # variant = "classic"
-# custom_dir = "overrides"
+custom_dir = "docs/overrides"
 favicon = "images/icon.svg"
 language = "en"
 features = [
