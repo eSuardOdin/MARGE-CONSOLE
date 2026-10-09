@@ -14,11 +14,11 @@ nav = [
   { "MARGE" = "index.md" },
   { "Contribute to MARGE" = "contribute.md" },
   {"Overview" = [
-    "overview/specs.md",
-    "overview/memory_map.md"
+    {"1. Specifications" = "overview/specs.md"},
+    {"2. Memory Map" = "overview/memory_map.md"}
   ]},
-  {"Graphics" = [
-    "graphics/graph_overview.md",
+  {"Definitions" = [
+    {"3. Graphics overview = "graphics/graph_overview.md"},
     {"Subtest" = [
       "graphics/graph_overview.md",
       "graphics/graph_overview.md",
