@@ -12,8 +12,13 @@ site_name = "Marge Documentation"
 
 nav = [
   { "Get started" = "index.md" },
-  { "Markdown in 5min" = "markdown.md" },
   { "About MARGE" = "about.md" },
+  { "Contribute to MARGE" = "contribute.md" },
+  {"Overview" = [
+    "overview/specs.md",
+    "overview/memory_map.md"
+  ]}
+
 ]
 
 # extra_css = ["stylesheets/extra.css"]
@@ -22,7 +27,7 @@ nav = [
 [project.theme]
 # variant = "classic"
 # custom_dir = "overrides"
-# favicon = "images/favicon.png"
+# favicon = "images/icon.svg"
 language = "en"
 features = [
   "announce.dismiss",

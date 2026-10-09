@@ -9,3 +9,4 @@ apu/miniaudio.h
 *.mrg
 doc
 *dump
+images
