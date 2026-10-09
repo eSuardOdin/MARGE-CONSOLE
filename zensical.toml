@@ -16,6 +16,14 @@ nav = [
   {"Overview" = [
     "overview/specs.md",
     "overview/memory_map.md"
+  ]},
+  {"Graphics" = [
+    "graphics/graph_overview.md",
+    "graphics/graph_overview.md",
+    "graphics/oam.md",
+  ]},
+  {"I/O" = [
+    "io/apu.md",
   ]}
 
 ]
@@ -45,7 +53,7 @@ features = [
   "navigation.instant",
   "navigation.instant.prefetch",
   # "navigation.instant.progress",
-  "navigation.path",
+  # "navigation.path",
   # "navigation.prune",
   "navigation.sections",
   # "navigation.tabs",

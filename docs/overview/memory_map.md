@@ -19,9 +19,10 @@ Here is how memory is arranged :
 | `0406B000` |`TO DEFINE`|  **I/O registers**  | Several registers to interact with the console, details below. |
 | `0406C000` | `0407BFFF`|  **Tileset**        | **Read/Write** - 1024 8x8 tiles are stored in this space. |
 | `0407C000` | `04084000`|  **Maps**           | **Read/Write** - Maps storage. 65536 bytes, can store 64 maps of 1024 bytes|
-| `04084000` | `04FFFFFF`|  **UNUSED**         | **Not used** - Is free to read/write until we update the console |
+| `040FC000` | `040FD3FF`|  **OAM**            | **Read/Write** - [Object attribute memory](../graphics/oam.md "OAM"). Used to display objects on screen.|
+| `040FD400` | `040FD426`|  **APU**            | **Read/Write** - [Audio processing unit](../io/apu.md "APU") registers. Controls console audio. *à compléter, va évoluer*|
+| `040FD428` | `04FFFFFF`|  **UNUSED**         | **Not used** - Is free to read/write until we update the console |
 | `05000000` | `05000080`|  **Debug**          | **Write** - Writing ASCII to this 128 bytes space prints in console's console. *You need to run the console locally for it to work* |
-
 
 
 
