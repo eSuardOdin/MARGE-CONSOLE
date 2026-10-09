@@ -13,6 +13,7 @@ site_name = "Marge Documentation"
 nav = [
   { "Get started" = "index.md" },
   { "Markdown in 5min" = "markdown.md" },
+  { "About MARGE" = "about.md" },
 ]
 
 # extra_css = ["stylesheets/extra.css"]
@@ -78,13 +79,9 @@ scheme = "slate"
 toggle.icon = "lucide/moon"
 toggle.name = "Switch to system preference"
 
-# [[project.extra.social]]
-# icon = "fontawesome/brands/github"
-# link = "https://github.com/user/repo"
-
-# [[project.extra.social]]
-# icon = "fontawesome/brands/mastodon"
-# link = "https://fosstodon.org/@user"
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/esuardodin/MARGE-CONSOLE"
 
 [project.markdown_extensions]
 abbr = {}
