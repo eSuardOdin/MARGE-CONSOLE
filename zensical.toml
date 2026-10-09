@@ -12,7 +12,7 @@ site_name = "Marge Documentation"
 
 nav = [
   #{ "Get started" = "index.md" },
-  { "About MARGE" = "about.md" },
+  { "About MARGE" = "index.md" },
   { "Contribute to MARGE" = "contribute.md" },
   {"Overview" = [
     "overview/specs.md",
