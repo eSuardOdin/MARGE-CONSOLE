@@ -38,3 +38,18 @@ static char CREEPY_GUY[64] = {
 Would be displayed as so :
 
 ![tile example](../images/creepy.png)
+
+
+## Tileset
+
+The tileset is a memory region where the created tiles can be **stored** to be used and **displayed** by the console.
+
+There is up to **1024 tiles** that can live *at the same time* in console's tileset.
+
+Tiles that are used in a game to be displayed can only be displayed as an index to their location in the tileset. 
+
+!!! warning
+
+    The index must be a 16-bit word as there is more than 255 possible memory storage.
+    That is a waste of space but we wanted to limit the size of the tileset without going
+    as low as 255 tiles but not to the extent of 65535 tiles either.

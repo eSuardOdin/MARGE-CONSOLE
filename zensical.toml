@@ -17,8 +17,9 @@ nav = [
     "overview/specs.md",
     "overview/memory_map.md"
   ]},
-  {"Definitions" = [
+  {"Graphics" = [
     "graphics/graph_overview.md",
+    "graphics/maps.md",
     {"Subtest" = [
       "graphics/graph_overview.md",
       "graphics/graph_overview.md",
@@ -98,6 +99,7 @@ toggle.name = "Switch to system preference"
 [[project.extra.social]]
 icon = "fontawesome/brands/github"
 link = "https://github.com/esuardodin/MARGE-CONSOLE"
+name = "Console repository"
 
 [project.markdown_extensions]
 abbr = {}
