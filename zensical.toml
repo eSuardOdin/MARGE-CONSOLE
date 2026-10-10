@@ -20,11 +20,11 @@ nav = [
   {"Graphics" = [
     "graphics/graph_overview.md",
     "graphics/maps.md",
-    {"Subtest" = [
-      "graphics/graph_overview.md",
-      "graphics/graph_overview.md",
-      "graphics/graph_overview.md",
-    ]},
+   # {"Subtest" = [
+   #   "graphics/graph_overview.md",
+   #   "graphics/graph_overview.md",
+   #   "graphics/graph_overview.md",
+   # ]},
     "graphics/oam.md",
   ]},
   {"I/O" = [
