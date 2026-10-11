@@ -62,4 +62,4 @@ Tiles that are used in a game to be displayed can only be displayed as an index 
 !!! note
 
     Notice how there is only the left part of the character present in the tileset or how there is only two tiles of heart for the 6 hearts on screen ?
-    That's because on how ![objects](./oam.md) can be defined and how several can refer to the same tile index. 
+    That's because on how [objects](./oam.md) can be defined and how several can refer to the same tile index. 
