@@ -20,16 +20,22 @@ nav = [
   {"Graphics" = [
     "graphics/graph_overview.md",
     "graphics/maps.md",
-   # {"Subtest" = [
-   #   "graphics/graph_overview.md",
+    "graphics/oam.md",
+  ]},
+  {"I/O" = [
+    "io/apu.md",
+  ]},
+  {"Programming {{Console}}" = [
+    "howto/general.md",
+   # {"Drawing" = [
+   #   "howto/drawing/tile.md",
+   #   "howto/drawing/map.md",
+   #   "howto/drawing/sprite.md",
    #   "graphics/graph_overview.md",
    #   "graphics/graph_overview.md",
    # ]},
     "graphics/oam.md",
   ]},
-  {"I/O" = [
-    "io/apu.md",
-  ]}
 
 ]
 

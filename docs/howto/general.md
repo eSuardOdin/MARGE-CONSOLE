@@ -1,0 +1,1 @@
+# General {{Console}} programming knowledge
