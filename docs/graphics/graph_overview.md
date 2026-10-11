@@ -53,3 +53,13 @@ Tiles that are used in a game to be displayed can only be displayed as an index 
     The index must be a 16-bit word as there is more than 255 possible memory storage.
     That is a waste of space but we wanted to limit the size of the tileset without going
     as low as 255 tiles but not to the extent of 65535 tiles either.
+
+
+![tileset image](../images/example_tileset.png)
+
+*Here is an exemple on how tiles are stored in memory*
+
+!!! note
+
+    Notice how there is only the left part of the character present in the tileset or how there is only two tiles of heart for the 6 hearts on screen ?
+    That's because on how ![objects](./oam.md) can be defined and how several can refer to the same tile index. 
