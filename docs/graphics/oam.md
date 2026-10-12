@@ -27,8 +27,7 @@ An object is a basic data structure stored in memory like so *(`n` being the num
 
 #### X_POS
 
-The objects's `X_POS` represents the object's top-left position of the sprite **plus** an offset of 32 pixels. This 
-offset is used to make an object appear on the screen.
+The objects's `X_POS` represents the object's top-left position of the sprite X axis **plus** an offset of 32 pixels. This offset is used to make an object appear on the screen.
 
 Here are 2 examples :
 
@@ -42,8 +41,21 @@ Here are 2 examples :
 <figcaption>X_POS = 30</figcaption>
 </figure>
 
-
 As you can see, the sprite can appear *from outside* of the screen, otherwise it would just spawn at top left (like it was done on the NES or old systems like this)
+
+#### Y_POS
+
+Same as the X_POS : 
+
+The objects's `X_POS` represents the object's top-left position of the sprite X axis **plus** an offset of 32 pixels.
+
+#### Tile Index
+
+This is the tileset's index of the object you want to display.
+
+!!! note
+
+    If this is an 8x8 object it's fine, but otherwise, know that this value represents the top-left tile of your object. Check informations about resolution flag lower in this page. 
 
 #### Flags
 
@@ -78,10 +90,12 @@ The next **tile index** of the object, the offset is multiplied by the **resolut
 
 These 4 bits tells the console the size of the object, it displays the object's `TILE_INDEX` first then displays contiguous tiles depending on the value of the resolution. 
 
+
+<figure markdown="span">
 ![tileset](../images/tileset.png)
-/// caption
-The tileset used in this example
-///
+<figcaption>The tileset used in this example</figcaption>
+</figure>
+
 
 *Every object displayed will have it's `TILE_INDEX` set to `9` (and so, top left will be displayed as a `0` tile)*
 
