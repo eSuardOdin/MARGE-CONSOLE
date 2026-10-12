@@ -44,3 +44,9 @@ The flags are switches that tells the console to display the sprites of an objec
 
 - *Here an exemple with **Transparency** flag set (`bit 9 == 1`) on the heart object* ![transp_set](../images/transparency_set.png)
 - *Here an exemple with **Transparency** flag unset (`bit 9 == 0`) on the heart object* ![transp_set](../images/transparency_unset.png)
+
+**Animation offset** : The next **tile index** of the object, the offset is multiplied by the **resolution**.
+
+**Resolution** : These 4 bits tells the console the size of the object, it displays the object's `TILE_INDEX` first then displays contiguous tiles depending on the value of the resolution. 
+
+*Here is the tileset we are going to use to demonstrate :* ![tileset](../images/tileset.png)
