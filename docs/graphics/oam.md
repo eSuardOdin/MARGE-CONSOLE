@@ -1,4 +1,4 @@
-# 5. Object Attribute Memory
+# Object Attribute Memory
 
 Object Attribute Memory -**OAM**- is a memory area where the currently displayed objects are stored.
 

@@ -1,4 +1,4 @@
-# 4. Maps
+# Maps
 
 The Map is a 512 x 512 pixel **background layer**. There is a maximum of **64 maps** that can be stored in the memory's **Maps region** *at the same time*.
 
