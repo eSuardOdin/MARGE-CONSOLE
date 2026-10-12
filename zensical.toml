@@ -15,7 +15,8 @@ nav = [
   { "Contribute to MARGE" = "contribute.md" },
   {"Overview" = [
     "overview/specs.md",
-    "overview/memory_map.md"
+    "overview/memory_map.md",
+    "overview/cartridge.md"
   ]},
   {"Graphics" = [
     "graphics/graph_overview.md",
