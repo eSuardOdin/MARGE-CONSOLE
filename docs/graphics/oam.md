@@ -23,8 +23,14 @@ An object is a basic data structure stored in memory like so *(`n` being the num
 |`OAM_BASE_ADDRESS + n x Object size + 6`| `16-bit`    |   `ANIM_SPRITES`      | Number of step to animate the object -if any- [TODO] : *Plus utilisé, délégué au developpeur car impose un rangement des tiles peu intuitif dans le tileset.* |
 |`OAM_BASE_ADDRESS + n x Object size + 8`| `16-bit`    |   `FLAGS`      | Several 1-bit flags telling how the object's sprites will be displayed |
 
+### Attributes
 
-### Flags
+#### X_POS
+
+The objects's `X_POS` represents the object's top-left position of the sprite **plus** an offset of 32 pixels. This 
+offset is used to make an object appear on the screen 
+
+#### Flags
 
 The flags are switches that tells the console to display the sprites of an object a way or another. Here what they are and what they mean.
 
@@ -38,26 +44,29 @@ The flags are switches that tells the console to display the sprites of an objec
 | Flag    |   *unused*    | Frame duration | Transparency | Animation offset | Resolution | Y Flip | X Flip |
 
 
-#### Frame duration
+##### Frame duration
 
 If the object is animated, [TODO] : *Comme le ANIM_SPRITE, pas sûr de l'utiliser*
 
-#### Transparency
+##### Transparency
 
 If set, the color index `0` is transparent and does not masks the Map layer 
 
 - *Here an exemple with **Transparency** flag set (`bit 9 == 1`) on the heart object* ![transp_set](../images/transparency_set.png)
 - *Here an exemple with **Transparency** flag unset (`bit 9 == 0`) on the heart object* ![transp_set](../images/transparency_unset.png)
 
-#### Animation offset
+##### Animation offset
 
 The next **tile index** of the object, the offset is multiplied by the **resolution**.
 
-#### Resolution
+##### Resolution
 
 These 4 bits tells the console the size of the object, it displays the object's `TILE_INDEX` first then displays contiguous tiles depending on the value of the resolution. 
 
-*Here is the tileset we are going to use to demonstrate :* ![tileset](../images/tileset.png)
+![tileset](../images/tileset.png)
+/// caption
+The tileset used in this example
+///
 
 *Every object displayed will have it's `TILE_INDEX` set to `9` (and so, top left will be displayed as a `0` tile)*
 
