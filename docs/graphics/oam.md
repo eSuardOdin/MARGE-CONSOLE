@@ -58,3 +58,19 @@ The next **tile index** of the object, the offset is multiplied by the **resolut
 These 4 bits tells the console the size of the object, it displays the object's `TILE_INDEX` first then displays contiguous tiles depending on the value of the resolution. 
 
 *Here is the tileset we are going to use to demonstrate :* ![tileset](../images/tileset.png)
+
+*Every object displayed will have it's `TILE_INDEX` set to `9` (and so, top left will be displayed as a `0` tile)*
+
+| Resolution value | Size  | Example |
+|------------------|-------|---------|
+| `0bOOOO`         | 8 X 8 | ![8x8](../images/8x8.png) |
+| `0bOOO1`         | 8 X 16 | ![8x16](../images/8x16.png) |
+| `0bOO10`         | 8 X 32 | ![8x32](../images/8x32.png) |
+| `0bOO11`         | 16 X 8 | ![16x8](../images/16x8.png) |
+| `0bO100`         | 16 X 16 | ![16x16](../images/16x16.png) |
+| `0bO101`         | 16 X 32 | ![16x32](../images/16x32.png) |
+| `0bO110`         | 32 X 8 | ![32x8](../images/32x8.png) |
+| `0bO111`         | 32 X 16 | ![32x16](../images/32x16.png) |
+| `0b1000`         | 32 X 32 | ![32x32](../images/32x32.png) |
+
+[TODO] : Comme vu dans la dernière image, j'ai un bug sur les objets en 32x32 (répétition du 6 et du 9)
