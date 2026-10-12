@@ -24,6 +24,7 @@ nav = [
     "graphics/oam.md",
   ]},
   {"I/O" = [
+    "io/gamepad.md",
     "io/apu.md",
   ]},
   {"Programming R0se" = [
