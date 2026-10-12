@@ -28,7 +28,21 @@ An object is a basic data structure stored in memory like so *(`n` being the num
 #### X_POS
 
 The objects's `X_POS` represents the object's top-left position of the sprite **plus** an offset of 32 pixels. This 
-offset is used to make an object appear on the screen 
+offset is used to make an object appear on the screen.
+
+Here are 2 examples :
+
+![tileset](../images/24.png)
+/// caption
+X_POS = 24
+///
+
+![tileset](../images/30.png)
+/// caption
+X_POS = 30
+///
+
+As you can see, the sprite can appear *from outside* of the screen, otherwise it would just spawn at top left (like it was done on the NES or old systems like this)
 
 #### Flags
 
