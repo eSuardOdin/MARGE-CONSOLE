@@ -32,15 +32,16 @@ offset is used to make an object appear on the screen.
 
 Here are 2 examples :
 
-![tileset](../images/24.png)
-/// caption
-X_POS = 24
-///
+<figure markdown="span">
+![offset](../images/24.png)
+<figcaption>X_POS = 24</figcaption>
+</figure>
 
-![tileset](../images/30.png)
-/// caption
-X_POS = 30
-///
+<figure markdown="span">
+![offset](../images/30.png)
+<figcaption>X_POS = 30</figcaption>
+</figure>
+
 
 As you can see, the sprite can appear *from outside* of the screen, otherwise it would just spawn at top left (like it was done on the NES or old systems like this)
 
