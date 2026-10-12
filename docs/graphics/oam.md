@@ -1,4 +1,4 @@
- # 5. Object Attribute Memory
+# 5. Object Attribute Memory
 
 Object Attribute Memory -**OAM**- is a memory area where the currently displayed objects are stored.
 
@@ -38,15 +38,23 @@ The flags are switches that tells the console to display the sprites of an objec
 | Flag    |   *unused*    | Frame duration | Transparency | Animation offset | Resolution | Y Flip | X Flip |
 
 
-**Frame duration** :  If the object is animated, [TODO] : *Comme le ANIM_SPRITE, pas sûr de l'utiliser*
+#### Frame duration
 
-**Transparency** : If set, the color index `0` is transparent and does not masks the Map layer 
+If the object is animated, [TODO] : *Comme le ANIM_SPRITE, pas sûr de l'utiliser*
+
+#### Transparency
+
+If set, the color index `0` is transparent and does not masks the Map layer 
 
 - *Here an exemple with **Transparency** flag set (`bit 9 == 1`) on the heart object* ![transp_set](../images/transparency_set.png)
 - *Here an exemple with **Transparency** flag unset (`bit 9 == 0`) on the heart object* ![transp_set](../images/transparency_unset.png)
 
-**Animation offset** : The next **tile index** of the object, the offset is multiplied by the **resolution**.
+#### Animation offset
 
-**Resolution** : These 4 bits tells the console the size of the object, it displays the object's `TILE_INDEX` first then displays contiguous tiles depending on the value of the resolution. 
+The next **tile index** of the object, the offset is multiplied by the **resolution**.
+
+#### Resolution
+
+These 4 bits tells the console the size of the object, it displays the object's `TILE_INDEX` first then displays contiguous tiles depending on the value of the resolution. 
 
 *Here is the tileset we are going to use to demonstrate :* ![tileset](../images/tileset.png)
