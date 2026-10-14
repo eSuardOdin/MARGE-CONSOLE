@@ -16,7 +16,7 @@ nav = [
   {"Overview" = [
     "overview/specs.md",
     "overview/memory_map.md",
-    "overview/cartridge.md"
+    "overview/cartridge.md",
   ]},
   {"Graphics" = [
     "graphics/graph_overview.md",
@@ -26,6 +26,7 @@ nav = [
   {"I/O" = [
     "io/gamepad.md",
     "io/apu.md",
+    "io/interrupt_model.md",
   ]},
   {"Programming R0se" = [
     "howto/general.md",
