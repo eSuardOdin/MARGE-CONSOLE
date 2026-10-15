@@ -17,7 +17,7 @@ The R0se console has an interrupt vector table and registers to handle hardware 
 
 ## Registers
 
-**IME** - Interrupt Master Enable
+<u>**IME** - Interrupt Master Enable</u>
 
 This register enable/disable the global interrupt and individual interrupt handlers.
 
@@ -25,7 +25,9 @@ This register enable/disable the global interrupt and individual interrupt handl
 |--------|---|---|---|---|---|---|---|---|
 | Enable | General interrupt  |   |   |   |   | Timer interrupt  | Frame interrupt  |Reset interrupt  |
 
-**IFR** - Interrupt Flag Register
+<u>**IFR** - Interrupt Flag Register</u>
 
 This register is not readable or writable by a program ([TODO] rendre ça vrai), this register is written by the console and is checked when the console checks for the interrupt branching : if a bit is set in **IFR** AND in **IME**, the program counter is set to the correct interrupt vector address.
+
+
 
