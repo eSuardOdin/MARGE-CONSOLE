@@ -44,8 +44,26 @@ And here are there registers and what they do
 
 | Register | Address offset | Purpose |
 |----------|----------------|---------|
-| r0       | `0`            | This register contains all the Less sSgnificant Bits of the channel frequency |
-| r1       | `1`            | This register contains 5 Most Significant Bits of the channel frequency + a 3 bit approximation of the frequency decimals ([TODO] *pas utilisé*) |
-| lenght_r       | `2`            | 8 bit value of the sound lenght, decreased at 32Hz |
+| r0       | `0`            | This register contains all the Less Sgnificant Bits of the channel frequency |
+| r1       | `2`            | This register contains 5 Most Significant Bits of the channel frequency + a 3 bit approximation of the frequency decimals ([TODO] *pas utilisé*) |
+| lenght_r       | `4`            | 8 bit value of the sound lenght, decreased at 32Hz |
+| sweep_r       | `6`            | This register orchestrates the sweep capability of the register |
+| flag_r       | `8`            | Enable/Disable some waves capabilities |
+| volume_r       | `A`            | Mixes channel volume and envelope settings for the channel |
+
+### Registers
+
+**r0**
+
+|Bits| [7-0]|
+|----|-------|
+|Purpose | Contains the 8 LSB of the 13-bits long frequency|
+
+**r1**
+
+|Bits| [7-5]| [4-0] |
+|----|-------|------|
+|Purpose | 3 bits for a decimal approximation of the frequency (1 bit = 10/7) | The 5 MSB of 13-bits long frequency |
+
 
 ## Noise channel

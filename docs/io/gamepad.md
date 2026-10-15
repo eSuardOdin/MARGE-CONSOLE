@@ -28,13 +28,12 @@ In order to test the input, you can then check the register value to check each 
 
 *Example*
 ``` C
-char joypad_register = get_pad_input();
+char joypad_register = get_current_gamepad();
 if(joypad_register & (JOYPAD_A | JOYPAD_B))
 {
     // Do something if both A and B are pressed...
 }
 ```
-
 
 !!! warning
 
