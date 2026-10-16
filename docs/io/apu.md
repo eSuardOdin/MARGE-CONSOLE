@@ -104,7 +104,16 @@ This register triggers a sweep sound effect on the channel frequency, what it me
 
     `uint16_t new_freq = is_inc ? freq + (freq/(1<<step)) : freq - (freq/(1<<step)) ;`
 
-
+ 
+<figure>
+    <figcaption>
+        <i>Sound sweep with a G5 base note :</i>
+    </figcaption>
+    <audio controls>
+    <source src="../sound/tiding3.wav" type="audio/wav">
+    Your browser does not support the audio element.
+    </audio> 
+</figure>
 
 ## Noise channel
 
@@ -121,13 +130,5 @@ First example is a short sweep with a G note at octave 5.
 Registers : 
 
 
-<figure>
-    <figcaption>
-        <i>Sound sweep with a G5 base note :</i>
-    </figcaption>
-    <audio controls>
-    <source src="../sound/tiding3.wav" type="audio/wav">
-    Your browser does not support the audio element.
-    </audio> 
-</figure>
+
 
