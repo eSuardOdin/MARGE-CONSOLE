@@ -76,4 +76,7 @@ Here are some sounds you can produce with the console :
 
 ## Sweep 
 
-![type:audio](sound/tiding3.wav)
+<audio controls>
+  <source src="../sound/tiding3.wav" type="audio/wav">
+Your browser does not support the audio element.
+</audio> 
