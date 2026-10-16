@@ -1,5 +1,7 @@
 # MARGE-CONSOLE
 
+There is a *work-in-progress* doc [HERE](https://esuardodin.github.io/MARGE-CONSOLE/)
+
 # Install
 You need 2 dependencies in order for make to compile console and games : 
 - RiscV compiler : sudo apt install gcc-riscv64-linux-gnu

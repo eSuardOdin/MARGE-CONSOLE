@@ -9,13 +9,29 @@ The APU encodes its frequency on a **13-bit word** and as so can produce sounds 
 
 ## Global registers
 
-**Audio general enable** : A global APU enable register.
 
 | Constant name     | Register address | Purpose |
 |-------------------|------------------|---------|
 | `AUDIO_GEN_ENABLE`| `0x040FD400`     | Enables or disable the APU and each individual channels |
 | `AUDIO_GEN_VOLUME`| `0x040FD402`     | Sets the global volume |
 
+### Audio general enable
+
+A global APU enable register, if a channel bit is set, it means it is enabled. The master must be enabled for the APU to produce any sound.
+
+|Bits    | [7] | [6] | [5] | [4] | [3] | [2] | [1] | [0] |
+|--------|-----|-----|-----|-----|-----|-----|-----|-----|
+|Purpose | TBD | TBD | TBD | TBD | C2  | C1  | C0  | Master enable |
+
+### Audio general volume
+
+A global APU stereo volume register.
+
+|Bits    | [7-4]       | [3-0]        |
+|--------|-------------|--------------|
+|Purpose | Left Volume | Right Volume |
+
+[TODO] : Je n'utilise pas encore ce registre -> les canaux utilisent leur volume indépendament. 
 
 ## Addresses
 
@@ -26,7 +42,6 @@ These are the channels base addresses.
 | C0      | `0x040FD404` | Square wave channel 0 |
 | C1      | `0x040FD410` | Square wave channel 1 |  
 | C2      | `0x040FD41C` | Square wave channel 2 |  
-
 
 
 ## Square wave channels
@@ -83,9 +98,20 @@ And here are there registers and what they do
 
     If you want to encode a G8 (6271Hz), you would have to put `0x18` in this register, as 6271 is `0x187F`.
 
+
+#### Length register
+
+|Bits    | [7-0]  |
+|--------|--------|
+|Purpose | Length |
+
+**Length**: This 8-bit value determine the time this channel will be activated. This register increments at 32Hz and when it overflows, the channel is disabled (by disabling channel's bit in [Audio general enable register](./apu.md#audio-general-enable)). 
+
 #### Sweep register
 
-This register triggers a sweep sound effect on the channel frequency, what it means is just that the **frequency is decreased or increased** by a defined value **each defined APU sweep tick number**. The sweep tick is **128Hz** (so a sweep step can occur every **7.8ms**) 
+This register triggers a sweep sound effect on the channel frequency, what it means is just that the **frequency is decreased or increased** by a defined value **each defined APU sweep tick number**. The sweep tick is **128Hz** (so a sweep step can occur every **7.8ms**).
+
+If the sweep **would make the frequency overflow** (make it over `0x7FF`), the sweep is **disabled** (by putting the [sweep flag](./apu.md#flag-register) to 0). 
 
 |Bits    | [7-4]      | [3]       | [2-0] |
 |--------|------------|-----------|-------|
@@ -104,7 +130,7 @@ This register triggers a sweep sound effect on the channel frequency, what it me
 
     `uint16_t new_freq = is_inc ? freq + (freq/(1<<step)) : freq - (freq/(1<<step)) ;`
 
- 
+
 <figure>
     <figcaption>
         <i>Sound sweep with a G5 base note :</i>
@@ -114,6 +140,25 @@ This register triggers a sweep sound effect on the channel frequency, what it me
     Your browser does not support the audio element.
     </audio> 
 </figure>
+
+**Some sweep examples**
+
+| Register       | Value        | Purpose |
+|----------------|--------------|---------|
+| Sweep register | `0b11001010` | `Pace = 12` : The sweep occurs at approx 11 Hz<br/>`Direction = 1` : The sweep increments frequency<br/>`Step = 2` the frequency is incremented by 4 at each step. |
+
+
+#### Flag register
+
+This register enables/disables some of the channel capabilities.
+
+|Bits    | [7]           | [6]          | [5-0] |
+|--------|---------------|--------------|-------|
+|Purpose | Length Enable | Sweep Enable | TBD   |
+
+**Length Enable** : If this bit is set, the [length register](./apu.md#length-register) will be increased at each 32Hz tick. Otherwise, it will be ignored.
+
+**Sweep Enable** : If this bit is set, the sweep will occur on the channel depending on the [sweep register](./apu.md#sweep-register). Otherwise, it will be ignored.
 
 ## Noise channel
 
