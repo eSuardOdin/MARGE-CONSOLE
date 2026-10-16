@@ -64,27 +64,47 @@ And here are there registers and what they do
 
 **Frequency LSB** : Constains the 8 Less Significants Bits of the 13-bit channel frequency.
 
-$$
-\cos x=\sum_{k=0}^{\infty}\frac{(-1)^k}{(2k)!}x^{2k}
-$$
 
 !!! note
 
-    If you want to encode a A4 (440Hz), you would have to put `0xB8` in this register, as 440 is 1B8_{16}.
+    If you want to encode a A4 (440Hz), you would have to put `0xB8` in this register, as 440 is `0x1B8`.
 
 #### Frequency register 1
 
 |Bits| [7-5]| [4-0] |
 |----|-------|------|
-|Purpose | Frequency decimal | The 5 MSB of 13-bits long frequency |
+|Purpose | Frequency decimal | Frequency MSB |
 
 **Frequency decimal** : This 3 bits (0-7) can be used to a frequency decimal approximation (each bit = 1/7 = 1.142) *[TODO] : Je ne l'utilise pas dans la console car ce n'est pas si utile en plus de bouffer de la place, à voir ce qu'on fait de ces bits dispo*
 
-**sweep_r**
+**Frequency MSB** : Contains the 5 MSB of the 13-bit channel frequency.
 
-|Bits| [7-5]| [4-0] |
-|----|-------|------|
-|Purpose | 3 bits for a decimal approximation of the frequency (1 bit = 10/7) | The 5 MSB of 13-bits long frequency |
+!!! note
+
+    If you want to encode a G8 (6271Hz), you would have to put `0x18` in this register, as 6271 is `0x187F`.
+
+#### Sweep register
+
+This register triggers a sweep sound effect on the channel frequency, what it means is just that the **frequency is decreased or increased** by a defined value **each defined APU sweep tick number**. The sweep tick is **128Hz** (so a sweep step can occur every **7.8ms**) 
+
+|Bits    | [7-4]      | [3]       | [2-0] |
+|--------|------------|-----------|-------|
+|Purpose | Sweep Pace | Direction | Step  |
+
+
+**Sweep Pace** : Number of APU ticks to trigger a sweep step (if you set this value to 3 for instance, a sweep step will occur every 128/3Hz)
+
+**Direction** : If this bit is set, the sweep will increment the frequency value, otherwise, it will decrement it.
+
+**Step** : This value is the power of 2 that will increase/decrease the frequency.
+
+!!! note
+
+    This is how is calculated the new frequency :
+
+    `uint16_t new_freq = is_inc ? freq + (freq/(1<<step)) : freq - (freq/(1<<step)) ;`
+
+
 
 ## Noise channel
 
