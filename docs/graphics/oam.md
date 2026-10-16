@@ -37,8 +37,8 @@ Here are 2 examples :
 </figure>
 
 <figure markdown="span">
-![offset](../images/30.png)
-<figcaption>X_POS = 30</figcaption>
+![offset](../images/33.png)
+<figcaption>X_POS = 33</figcaption>
 </figure>
 
 As you can see, the sprite can appear *from outside* of the screen, otherwise it would just spawn at top left (like it was done on the NES or old systems like this)

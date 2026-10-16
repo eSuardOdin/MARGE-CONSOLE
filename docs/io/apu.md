@@ -67,3 +67,13 @@ And here are there registers and what they do
 
 
 ## Noise channel
+
+
+
+## Sounds example
+
+Here are some sounds you can produce with the console :
+
+## Sweep 
+
+![type:audio](sound/tiding3.wav)
