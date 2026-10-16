@@ -64,15 +64,21 @@ And here are there registers and what they do
 
 **Frequency LSB** : Constains the 8 Less Significants Bits of the 13-bit channel frequency.
 
+$$
+\cos x=\sum_{k=0}^{\infty}\frac{(-1)^k}{(2k)!}x^{2k}
+$$
+
 !!! note
 
-    If you want to encode a A4 (440Hz), you would have to put `0xB8` in this register, as 440 is 0x1B8.
+    If you want to encode a A4 (440Hz), you would have to put `0xB8` in this register, as 440 is 1B8_{16}.
 
-**r1**
+#### Frequency register 1
 
 |Bits| [7-5]| [4-0] |
 |----|-------|------|
-|Purpose | 3 bits for a decimal approximation of the frequency (1 bit = 10/7) | The 5 MSB of 13-bits long frequency |
+|Purpose | Frequency decimal | The 5 MSB of 13-bits long frequency |
+
+**Frequency decimal** : This 3 bits (0-7) can be used to a frequency decimal approximation (each bit = 1/7 = 1.142) *[TODO] : Je ne l'utilise pas dans la console car ce n'est pas si utile en plus de bouffer de la place, à voir ce qu'on fait de ces bits dispo*
 
 **sweep_r**
 
